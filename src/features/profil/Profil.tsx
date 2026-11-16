@@ -7,7 +7,7 @@ import { useL, useT } from '../../i18n';
 import { PieceArt } from '../../pieces/PieceArt';
 import { useStore } from '../../state/store';
 import type { BoardTheme } from '../../state/store';
-import { loadSync, useSync } from '../../sync/state';
+import { useSync, withSync } from '../../sync/state';
 
 const BOARDS: BoardTheme[] = ['kelir', 'kawung', 'candi', 'jati'];
 const LEVELS = [0, 500, 800, 1100, 1400];
@@ -58,10 +58,10 @@ export function Profil() {
             <p className="account-email">{sync.email}</p>
             <p className={`small ${sync.status === 'error' ? 'note-bad' : 'dim'}`}>{syncText}</p>
             <div className="row-actions">
-              <button className="btn btn-ghost" onClick={() => void loadSync().then((m) => m.syncNow())}>
+              <button className="btn btn-ghost" onClick={() => void withSync((m) => m.syncNow())}>
                 {t('profil.syncNow')}
               </button>
-              <button className="btn btn-ghost" onClick={() => void loadSync().then((m) => m.signOut())}>
+              <button className="btn btn-ghost" onClick={() => void withSync((m) => m.signOut())}>
                 {t('profil.signOut')}
               </button>
             </div>
@@ -69,7 +69,7 @@ export function Profil() {
         ) : (
           <>
             <p className="dim">{t('profil.accountHelp')}</p>
-            <button className="btn btn-primary" onClick={() => void loadSync().then((m) => m.signInWithGoogle())}>
+            <button className="btn btn-primary" onClick={() => void withSync((m) => m.signInWithGoogle())}>
               {t('profil.signIn')}
             </button>
           </>
@@ -168,7 +168,7 @@ export function Profil() {
             onClick={() => {
               resetAll();
               // A reset is deliberate, so the server copy is replaced, not merged back in.
-              if (sync.email) void loadSync().then((m) => m.overwriteServer());
+              if (sync.email) void withSync((m) => m.overwriteServer());
               setConfirm(false);
             }}
           >

@@ -19,7 +19,7 @@ import { useT } from './i18n';
 import type { Key } from './i18n/strings';
 import { Lab } from './lab/Lab';
 import { useStore } from './state/store';
-import { loadSync } from './sync/state';
+import { withSync } from './sync/state';
 
 const TABS: { to: string; key: Key; icon: typeof House }[] = [
   { to: '/', key: 'nav.laku', icon: House },
@@ -81,8 +81,12 @@ export function App() {
   }, [path]);
 
   // Restores a saved sign-in, or finishes one that just came back from Google.
+  // If the first attempt fails for lack of a connection, it is tried again once back online.
   useEffect(() => {
-    void loadSync().then((m) => m.initSync());
+    const start = () => void withSync((m) => m.initSync());
+    start();
+    window.addEventListener('online', start);
+    return () => window.removeEventListener('online', start);
   }, []);
 
   if (path === '/lab') return <Lab />;

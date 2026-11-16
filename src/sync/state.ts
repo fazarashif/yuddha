@@ -15,3 +15,16 @@ export const useSync = create<SyncState>(() => ({ ready: false, email: null, sta
 
 /** The sync code is loaded on demand so it does not slow the first paint. */
 export const loadSync = () => import('./sync');
+
+type SyncModule = Awaited<ReturnType<typeof loadSync>>;
+
+/** Runs something from the sync code; a failed load (for instance offline) shows as a sync error instead of crashing. */
+export function withSync(run: (m: SyncModule) => unknown): Promise<void> {
+  return loadSync()
+    .then((m) => {
+      void run(m);
+    })
+    .catch(() => {
+      useSync.setState({ status: 'error' });
+    });
+}
