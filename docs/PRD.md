@@ -72,16 +72,18 @@ Dengan begitu cerita bebas dibentuk mengikuti kebutuhan pelajaran.
 
 ### 3.3 Bidak
 
-Istilah catur Indonesia sudah dekat dengan *chaturanga*, jadi pemetaan terasa alami.
+Bidak memakai **nama catur yang umum** (Raja, Menteri, Benteng, Gajah, Kuda, Pion), supaya
+tidak membingungkan dan cocok dengan istilah di tempat lain. Nuansa wayang hanya ada pada
+wujudnya.
 
-| Bidak | Nama di Yuddha | Wujud |
-| --- | --- | --- |
-| Raja | Prabu | Raja bermahkota |
-| Menteri | Mahapatih | Patih bersenjata keris |
-| Benteng | Ratha | Menara gapura candi |
-| Gajah | Gajah | Gajah perang berhias |
-| Kuda | Turangga | Kuda perang |
-| Pion | Bala | Prajurit kecil |
+| Bidak | Wujud |
+| --- | --- |
+| Raja | Mahkota bertingkat dengan puncak gunungan |
+| Menteri | Mahkota bergerigi dengan lekuk keris pada badan |
+| Benteng | Menara gapura candi |
+| Gajah | Mitra dengan celah miring dan sepasang gading |
+| Kuda | Kepala kuda dengan surai berukir |
+| Pion | Kepala bulat dengan ikat kepala |
 
 Aturan terpenting: **siluet tetap terbaca sebagai bidak catur standar**. Pemilik bermain di
 Chess.com, jadi pengenalan pola harus berpindah ke sana. Tersedia juga set **Klasik**
@@ -157,7 +159,7 @@ tetap terbuka tanpa mengubah struktur.
 | --- | --- | --- | --- |
 | Buta Cilik | 400 | Rakus, memakan apa saja | Menghukum bidak gantung |
 | Cantrik Lugu | 600 | Polos, mudah dijebak | Pola mat dasar |
-| Gandarwa Si Gegabah | 800 | Menyerang dini dengan Mahapatih | Bertahan dan mengembangkan bidak |
+| Gandarwa Si Gegabah | 800 | Menyerang dini dengan Menteri | Bertahan dan mengembangkan bidak |
 | Nyi Rara Jerat | 1000 | Suka garpu dan jebakan | Kewaspadaan taktik |
 | Senapati Wesi | 1200 | Kokoh, menghukum kecerobohan | Disiplin cek blunder |
 | Resi Wening | 1400 | Posisional, sabar | Rencana dan akhir permainan |

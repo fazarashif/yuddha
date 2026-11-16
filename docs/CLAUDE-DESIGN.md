@@ -90,7 +90,7 @@ Saya memilih arah [A/B/C]. [Tambahkan catatan campuran bila ada.]
 Sekarang dalami bidak dan papan pada arah itu, di kanvas baru.
 
 Bidak:
-- Rancang set "Yuddha": Prabu, Mahapatih, Ratha, Gajah, Turangga, Bala, untuk Kerajaan
+- Rancang set "Yuddha": Raja, Menteri, Benteng, Gajah, Kuda, Pion, untuk Kerajaan
   Rembulan (terang) dan Kerajaan Bara (gelap). Ikuti tabel ART-DIRECTION A4.
 - Tiap bidak adalah SVG tersendiri dengan viewBox 0 0 100 100.
 - Tampilkan lembar uji: keduabelas bidak pada petak terang dan gelap dalam ukuran 32, 48,
@@ -104,7 +104,7 @@ Papan:
   dan petunjuk Nyala.
 
 Periksa sendiri sebelum menyerahkan: apakah tiap bidak dikenali pada 32 px? Apakah Gajah
-dan Bala, juga Prabu dan Mahapatih, mudah dibedakan? Apakah bidak kedua warna menonjol
+dan Pion, juga Raja dan Menteri, mudah dibedakan? Apakah bidak kedua warna menonjol
 di kedua jenis petak pada keempat tema? Perbaiki dulu bila belum.
 ```
 
@@ -206,7 +206,7 @@ dan wujudnya mencerminkan gaya mainnya. Akhiri dengan satu lembar berisi semua t
 
 ## Cara meminta perbaikan
 
-- Tunjuk hal yang spesifik: "Gajah terlalu mirip Bala pada 32 px, pertegas celah
+- Tunjuk hal yang spesifik: "Gajah terlalu mirip Pion pada 32 px, pertegas celah
   miringnya", bukan "bidaknya kurang bagus".
 - Satu jenis perubahan per pesan.
 - Bila tersedia, beri komentar langsung pada elemen di kanvas.

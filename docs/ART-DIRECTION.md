@@ -51,17 +51,19 @@ Aturan wajib:
    harus langsung dikenali sebagai bidak caturnya. Hiasan wayang berada *di dalam* siluet.
 2. Hiasan berupa ukiran berlubang (*tatah*) dan garis emas/tembaga, bukan gambar rumit.
 3. Dua kerajaan memakai bentuk yang sama, berbeda warna dan aksen.
-4. Enam bidak harus mudah dibedakan satu sama lain, terutama Gajah dengan Bala, dan Prabu
-   dengan Mahapatih.
+4. Enam bidak harus mudah dibedakan satu sama lain, terutama Gajah dengan Pion, dan Raja
+   dengan Menteri.
 
 | Bidak | Siluet dasar | Sentuhan wayang |
 | --- | --- | --- |
-| Prabu (Raja) | Raja Staunton, puncak tertinggi | Mahkota bertingkat, puncak berbentuk gunungan kecil |
-| Mahapatih (Menteri) | Menteri Staunton, mahkota bergerigi | Hiasan *sumping* dan lekuk keris pada badan |
-| Ratha (Benteng) | Menara bergerigi | Gapura candi bentar bertingkat |
-| Gajah (Gajah) | Gajah Staunton dengan celah miring | Kepala gajah bergaya, belalai mengikuti celah miring |
-| Turangga (Kuda) | Kepala kuda menghadap kiri | Surai berlekuk seperti ukiran wayang |
-| Bala (Pion) | Pion Staunton, paling pendek | Kepala bulat dengan *caping* atau ikat kepala |
+| Raja | Raja Staunton, puncak tertinggi | Mahkota bertingkat, puncak berbentuk gunungan kecil |
+| Menteri | Menteri Staunton, mahkota bergerigi | Lekuk keris pada badan |
+| Benteng | Menara bergerigi | Gapura candi bentar bertingkat |
+| Gajah | Gajah Staunton dengan celah miring | Sepasang gading di kerah |
+| Kuda | Kepala kuda menghadap kiri | Surai berlekuk seperti ukiran wayang |
+| Pion | Pion Staunton, paling pendek | Kepala bulat dengan ikat kepala |
+
+Bidak memakai nama catur yang umum; nuansa wayang hanya pada wujudnya.
 
 Set kedua, **Klasik**, adalah bidak Staunton polos dengan palet Yuddha.
 
@@ -78,7 +80,7 @@ Aturan: motif pada petak harus sangat halus (kontras rendah) agar bidak tetap me
 Kontras petak terang dan gelap cukup untuk dibaca di bawah sinar matahari di HP.
 
 Penanda di papan: langkah terakhir (emas tembus pandang), langkah sah (titik Sukma), skak
-(pendar Bara di bawah Prabu), petunjuk Nyala (pendar Sukma).
+(pendar Bara di bawah Raja), petunjuk Nyala (pendar Sukma).
 
 ### A6. Tokoh
 
@@ -146,8 +148,8 @@ Verifikasi yang wajib kamu lakukan sendiri:
 1. Buat assets/pieces/yuddha/preview.html yang menampilkan keduabelas bidak pada petak
    terang dan gelap dalam ukuran 32, 48, 64, dan 128 px, ditambah satu baris siluet hitam polos.
 2. Ambil tangkapan layar dengan Playwright dan lihat hasilnya.
-3. Nilai dengan jujur: apakah tiap bidak dikenali pada 32 px? Apakah Gajah dan Bala,
-   juga Prabu dan Mahapatih, mudah dibedakan? Perbaiki dan ulangi sampai lolos,
+3. Nilai dengan jujur: apakah tiap bidak dikenali pada 32 px? Apakah Gajah dan Pion,
+   juga Raja dan Menteri, mudah dibedakan? Perbaiki dan ulangi sampai lolos,
    minimal tiga putaran perbaikan.
 
 Akhiri dengan tangkapan layar terakhir dan daftar kelemahan yang masih tersisa.
@@ -237,6 +239,6 @@ Buat preview.html yang memperlihatkan ketiga status, ambil tangkapan layar pada 
 - Bagian B hanya dipakai bila aset dari Claude Design belum cukup untuk produksi.
 - Bila dipakai, kerjakan **B1 lebih dulu**; set bidak menentukan rasa seluruh aplikasi.
 - Bila hasil kurang memuaskan, minta perbaikan dengan menunjuk hal spesifik pada tangkapan
-  layar (contoh: "Gajah terlalu mirip Bala pada 32 px, pertegas celah miringnya").
+  layar (contoh: "Gajah terlalu mirip Pion pada 32 px, pertegas celah miringnya").
 - Bila ilustrasi SVG tulisan tangan terasa kurang kaya untuk potret tokoh, alternatifnya
   adalah gambar dari generator gambar AI atau ilustrator, dengan bagian A sebagai brief.

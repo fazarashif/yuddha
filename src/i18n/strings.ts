@@ -124,12 +124,12 @@ export const id = {
   'cls.mistake': 'Salah',
   'cls.blunder': 'Blunder',
 
-  'piece.p': 'Bala',
-  'piece.n': 'Turangga',
+  'piece.p': 'Pion',
+  'piece.n': 'Kuda',
   'piece.b': 'Gajah',
-  'piece.r': 'Ratha',
-  'piece.q': 'Mahapatih',
-  'piece.k': 'Prabu',
+  'piece.r': 'Benteng',
+  'piece.q': 'Menteri',
+  'piece.k': 'Raja',
 
   'motif.missedMate': 'Ada skakmat dalam {n} langkah yang terlewat.',
   'motif.missedMate.best': 'Ada skakmat dalam {n} langkah, dimulai dengan {best}.',
