@@ -4,6 +4,7 @@ import { KI_SABDA } from '../../content/characters';
 import { useT } from '../../i18n';
 import type { Key } from '../../i18n/strings';
 import { useStore } from '../../state/store';
+import { loadSync } from '../../sync/state';
 
 const LEVELS: { level: number; title: Key; sub: Key }[] = [
   { level: 0, title: 'level.zero', sub: 'level.zero.sub' },
@@ -42,6 +43,9 @@ export function Mulai() {
           </div>
           <button className="btn btn-primary btn-wide" onClick={() => setStep(1)}>
             {t('mulai.begin')}
+          </button>
+          <button className="btn btn-text" onClick={() => void loadSync().then((m) => m.signInWithGoogle())}>
+            {t('mulai.haveAccount')}
           </button>
         </>
       ) : (

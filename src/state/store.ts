@@ -47,7 +47,7 @@ export interface LukaCard {
 
 export const dayNumber = (d = new Date()) => Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000);
 
-interface State {
+export interface State {
   settings: Settings;
   onboarded: boolean;
   /** Self-declared starting strength; 0 means complete beginner. */
@@ -67,6 +67,8 @@ interface State {
   beaten: Record<string, number>;
   games: GameRecord[];
   luka: LukaCard[];
+  /** When the saved data last changed on this device; used to settle sync conflicts. */
+  touched: number;
 
   setSettings: (patch: Partial<Settings>) => void;
   finishOnboarding: (level: number) => void;
@@ -79,8 +81,32 @@ interface State {
   gradeLuka: (id: string, correct: boolean) => void;
   recordPuzzle: (id: string, rating: number, solved: boolean, themes: string[]) => void;
   setVisionBest: (n: number) => void;
+  applySave: (data: Partial<SaveData>) => void;
   resetAll: () => void;
 }
+
+/** Everything that is saved and synced; the rest of the state is actions. */
+export const DATA_KEYS = [
+  'settings',
+  'onboarded',
+  'level',
+  'startChapter',
+  'xp',
+  'streak',
+  'daily',
+  'lessons',
+  'playRating',
+  'puzzleRating',
+  'puzzlesDone',
+  'puzzleSeen',
+  'themeStats',
+  'visionBest',
+  'beaten',
+  'games',
+  'luka',
+] as const satisfies readonly (keyof State)[];
+export type DataKey = (typeof DATA_KEYS)[number];
+export type SaveData = Pick<State, DataKey | 'touched'>;
 
 const emptyDaily = () => ({ day: dayNumber(), done: { warmup: false, lakon: false, puzzle: false, luka: false, tanding: false } });
 
@@ -102,6 +128,7 @@ const initial = {
   beaten: {} as Record<string, number>,
   games: [] as GameRecord[],
   luka: [] as LukaCard[],
+  touched: 0,
 };
 
 /** Advances the streak for today. A stored "oil" covers one missed day. */
@@ -189,11 +216,18 @@ export const useStore = create<State>()(
           };
         }),
       setVisionBest: (n) => set((s) => ({ visionBest: Math.max(s.visionBest, n) })),
+      applySave: (data) => set(data),
       resetAll: () => set({ ...initial, daily: emptyDaily() }),
     }),
     { name: 'yuddha-v1', version: 1 },
   ),
 );
+
+// Stamp every change to saved data, so two devices can tell whose copy is newer.
+useStore.subscribe((state, prev) => {
+  if (state.touched !== prev.touched) return;
+  if (DATA_KEYS.some((key) => state[key] !== prev[key])) useStore.setState({ touched: Date.now() });
+});
 
 /** Today's checklist, reset when the day changes. */
 export function useDaily() {

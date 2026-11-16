@@ -7,6 +7,7 @@ import { useL, useT } from '../../i18n';
 import { PieceArt } from '../../pieces/PieceArt';
 import { useStore } from '../../state/store';
 import type { BoardTheme } from '../../state/store';
+import { loadSync, useSync } from '../../sync/state';
 
 const BOARDS: BoardTheme[] = ['kelir', 'kawung', 'candi', 'jati'];
 const LEVELS = [0, 500, 800, 1100, 1400];
@@ -22,7 +23,16 @@ export function Profil() {
   const finishOnboarding = useStore((st) => st.finishOnboarding);
   const resetAll = useStore((st) => st.resetAll);
   const [confirm, setConfirm] = useState(false);
+  const sync = useSync();
   const { rank } = rankFor(xp);
+  const syncText =
+    sync.status === 'syncing'
+      ? t('sync.syncing')
+      : sync.status === 'error'
+        ? t('sync.error')
+        : sync.lastSync
+          ? t('sync.synced', { time: new Date(sync.lastSync).toLocaleTimeString(s.lang === 'id' ? 'id-ID' : 'en-GB', { hour: '2-digit', minute: '2-digit' }) })
+          : t('sync.waiting');
 
   const volume = (key: 'sfx' | 'music', value: number) => {
     const next = { ...s, [key]: value };
@@ -40,6 +50,31 @@ export function Profil() {
       <p className="lede">
         {l(rank.name)} · <span className="num">{xp} XP</span>
       </p>
+
+      <section className="panel">
+        <h3>{t('profil.account')}</h3>
+        {sync.email ? (
+          <>
+            <p className="account-email">{sync.email}</p>
+            <p className={`small ${sync.status === 'error' ? 'note-bad' : 'dim'}`}>{syncText}</p>
+            <div className="row-actions">
+              <button className="btn btn-ghost" onClick={() => void loadSync().then((m) => m.syncNow())}>
+                {t('profil.syncNow')}
+              </button>
+              <button className="btn btn-ghost" onClick={() => void loadSync().then((m) => m.signOut())}>
+                {t('profil.signOut')}
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="dim">{t('profil.accountHelp')}</p>
+            <button className="btn btn-primary" onClick={() => void loadSync().then((m) => m.signInWithGoogle())}>
+              {t('profil.signIn')}
+            </button>
+          </>
+        )}
+      </section>
 
       <section className="panel">
         <h3>{t('profil.look')}</h3>
@@ -122,7 +157,7 @@ export function Profil() {
         </button>
       </section>
 
-      <p className="note">{t('profil.localOnly')}</p>
+      <p className="note">{t('profil.credits')}</p>
 
       <Sheet open={confirm} onClose={() => setConfirm(false)}>
         <h3>{t('profil.resetAsk')}</h3>
@@ -132,6 +167,8 @@ export function Profil() {
             className="btn btn-danger"
             onClick={() => {
               resetAll();
+              // A reset is deliberate, so the server copy is replaced, not merged back in.
+              if (sync.email) void loadSync().then((m) => m.overwriteServer());
               setConfirm(false);
             }}
           >

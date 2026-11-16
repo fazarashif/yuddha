@@ -18,6 +18,7 @@ import { useT } from './i18n';
 import type { Key } from './i18n/strings';
 import { Lab } from './lab/Lab';
 import { useStore } from './state/store';
+import { loadSync } from './sync/state';
 
 const TABS: { to: string; key: Key; icon: typeof House }[] = [
   { to: '/', key: 'nav.laku', icon: House },
@@ -77,6 +78,11 @@ export function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [path]);
+
+  // Restores a saved sign-in, or finishes one that just came back from Google.
+  useEffect(() => {
+    void loadSync().then((m) => m.initSync());
+  }, []);
 
   if (path === '/lab') return <Lab />;
   if (!onboarded) return <Mulai />;
