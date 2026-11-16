@@ -1,0 +1,12 @@
+.pc { display: block; width: 100%; height: 100%; overflow: visible; }
+.pc-w { --pc-fill: var(--w-fill); --pc-line: var(--w-line); --pc-accent: var(--w-accent); --pc-cut: var(--w-cut); }
+.pc-b { --pc-fill: var(--b-fill); --pc-line: var(--b-line); --pc-accent: var(--b-accent); --pc-cut: var(--b-cut); }
+
+.pc-body { fill: var(--pc-fill); stroke: var(--pc-line); stroke-width: 2.6; stroke-linejoin: round; }
+.pc-accent { fill: var(--pc-accent); stroke: var(--pc-line); stroke-width: 2; stroke-linejoin: round; }
+.pc-cut { fill: var(--pc-cut); }
+.pc-line { fill: none; stroke: var(--pc-cut); stroke-width: 2.4; stroke-linecap: round; }
+.pc-slit { fill: none; stroke: var(--pc-line); stroke-width: 3.4; stroke-linecap: round; }
+
+/* Dark pieces get a faint warm rim so they separate from dark squares. */
+.pc-b { filter: drop-shadow(0 0 0.9px rgb(255 214 180 / 0.9)); }

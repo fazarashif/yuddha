@@ -1,0 +1,126 @@
+/* Yuddha design tokens. Dark ("Kelir malam") is the default theme. */
+:root {
+  color-scheme: dark;
+
+  --bg: #0f1524;
+  --bg-deep: #0a0f1b;
+  --surface: #182036;
+  --surface-2: #212b47;
+  --surface-3: #2b3759;
+  --line: rgb(242 230 207 / 0.12);
+  --line-strong: rgb(242 230 207 / 0.24);
+
+  --text: #f2e6cf;
+  --text-dim: #b3ad9b;
+  --text-faint: #7f8296;
+
+  --gold: #c9a24b;
+  --gold-bright: #e6c66f;
+  --gold-ink: #1b1508;
+  --sukma: #4fd1c5;
+  --bara: #e0694d;
+  --good: #7bc47f;
+
+  --font-display: 'Marcellus', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+
+  --shadow-1: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 24px rgb(4 7 15 / 0.45);
+  --shadow-2: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 18px 48px rgb(4 7 15 / 0.6);
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 140ms;
+  --t-move: 190ms;
+  --t-page: 320ms;
+
+  --z-nav: 20;
+  --z-sheet: 40;
+  --z-toast: 60;
+
+  --nav-h: 64px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #efe6d2;
+  --bg-deep: #e4d9c0;
+  --surface: #f8f1e1;
+  --surface-2: #ece2cb;
+  --surface-3: #dfd3b8;
+  --line: rgb(27 34 58 / 0.14);
+  --line-strong: rgb(27 34 58 / 0.3);
+  --text: #1b223a;
+  --text-dim: #4b5068;
+  --text-faint: #777a8c;
+  --gold: #8a6a1c;
+  --gold-bright: #a57f22;
+  --gold-ink: #fff8e6;
+  --sukma: #0f8f84;
+  --bara: #b8432a;
+  --good: #2f7d3a;
+  --shadow-1: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 8px 24px rgb(60 45 15 / 0.14);
+  --shadow-2: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 18px 48px rgb(60 45 15 / 0.2);
+}
+
+/* Board themes: set on any ancestor of a board with data-board. */
+[data-board='kelir'], :root {
+  --sq-light: #e7d9b9;
+  --sq-dark: #6a79a6;
+  --sq-light-motif: none;
+  --sq-dark-motif: none;
+  --board-frame: #232c49;
+  --board-frame-edge: #c9a24b;
+  --coord-on-light: #55638f;
+  --coord-on-dark: #f0e6cc;
+}
+[data-board='kawung'] {
+  --sq-light: #ead9b4;
+  --sq-dark: #8a5a34;
+  --sq-dark-motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23f2e6cf' stroke-opacity='.13' stroke-width='1.4'%3E%3Cellipse cx='20' cy='9' rx='5' ry='8'/%3E%3Cellipse cx='20' cy='31' rx='5' ry='8'/%3E%3Cellipse cx='9' cy='20' rx='8' ry='5'/%3E%3Cellipse cx='31' cy='20' rx='8' ry='5'/%3E%3C/g%3E%3C/svg%3E");
+  --board-frame: #3d2613;
+  --board-frame-edge: #c9a24b;
+  --coord-on-light: #8a5a34;
+  --coord-on-dark: #ead9b4;
+}
+[data-board='candi'] {
+  --sq-light: #c9c7bd;
+  --sq-dark: #6b6f72;
+  --sq-light-motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cg fill='%23000' fill-opacity='.05'%3E%3Ccircle cx='9' cy='14' r='1.6'/%3E%3Ccircle cx='41' cy='8' r='1.1'/%3E%3Ccircle cx='27' cy='33' r='1.8'/%3E%3Ccircle cx='51' cy='44' r='1.3'/%3E%3Ccircle cx='14' cy='50' r='1.1'/%3E%3C/g%3E%3C/svg%3E");
+  --sq-dark-motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cg fill='%23fff' fill-opacity='.06'%3E%3Ccircle cx='12' cy='10' r='1.4'/%3E%3Ccircle cx='44' cy='18' r='1.8'/%3E%3Ccircle cx='24' cy='40' r='1.2'/%3E%3Ccircle cx='50' cy='50' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+  --board-frame: #3c4043;
+  --board-frame-edge: #9aa0a3;
+  --coord-on-light: #55595c;
+  --coord-on-dark: #dedcd2;
+}
+[data-board='jati'] {
+  --sq-light: #e3c594;
+  --sq-dark: #96643a;
+  --sq-light-motif: repeating-linear-gradient(92deg, rgb(120 80 30 / 0.07) 0 2px, transparent 2px 9px);
+  --sq-dark-motif: repeating-linear-gradient(88deg, rgb(40 20 5 / 0.12) 0 2px, transparent 2px 11px);
+  --board-frame: #5a3719;
+  --board-frame-edge: #d9b06a;
+  --coord-on-light: #7a4f2a;
+  --coord-on-dark: #f0d9ae;
+}
+
+/* Piece colours. Rembulan = light side, Bara = dark side. */
+:root {
+  --w-fill: #f6ecd6;
+  --w-shade: #dccba6;
+  --w-line: #3a2f1c;
+  --w-accent: #c9972f;
+  --w-cut: #7a5a1e;
+
+  --b-fill: #2c2430;
+  --b-shade: #1a141d;
+  --b-line: #0d0a0f;
+  --b-accent: #d9703f;
+  --b-cut: #f0a070;
+  --b-rim: #8d6a5c;
+}
