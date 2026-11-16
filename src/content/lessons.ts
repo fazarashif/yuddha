@@ -1,3 +1,4 @@
+import { matBenteng, matMenteri, pembukaan, polaMat, tukar } from './babak1b';
 import type { L, Mood } from './types';
 
 export type SceneMark = 'good' | 'bad' | 'target' | 'danger';
@@ -29,8 +30,22 @@ export type Scene =
       /** Specific feedback for tempting wrong moves, keyed by UCI. */
       punish?: Record<string, L>;
       hint?: string;
+      /** The first accepted move delivers checkmate; checked by the tests. */
+      mate?: true;
     })
-  | (SceneBase & { kind: 'quiz'; options: L[]; correct: number; explain: L });
+  | (SceneBase & { kind: 'quiz'; options: L[]; correct: number; explain: L })
+  /** Play the position out against the engine until checkmate. */
+  | (SceneBase & {
+      kind: 'play';
+      fen: string;
+      /** Moves allowed before the attempt is called off. */
+      maxMoves: number;
+      right: L;
+      stalemate: L;
+      tooLong: L;
+      /** Shown when the winning material is lost. */
+      lost: L;
+    });
 
 export interface Lesson {
   id: string;
@@ -559,13 +574,8 @@ export const CHAPTERS: Chapter[] = [
     n: 1,
     title: { id: 'Mata Ksatria', en: 'The Warrior\'s Eye' },
     range: { id: '600 sampai 1000', en: '600 to 1000' },
-    lessons: [mata1, mata2, mata3],
-    upcoming: [
-      { id: 'Tukar yang Menguntungkan', en: 'Trades That Pay' },
-      { id: 'Pola Mat Dasar', en: 'Basic Mating Patterns' },
-      { id: 'Prinsip Pembukaan', en: 'Opening Principles' },
-      { id: 'Mat Raja dan Menteri', en: 'King and Queen Mate' },
-    ],
+    lessons: [mata1, mata2, mata3, tukar, polaMat, pembukaan, matMenteri, matBenteng],
+    upcoming: [],
   },
   {
     n: 2,

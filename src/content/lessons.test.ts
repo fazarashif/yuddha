@@ -30,8 +30,27 @@ describe('lesson content', () => {
           }
           expect(scene.accept || scene.goal, 'needs an answer').toBeTruthy();
           if (scene.hint) expect(judgeMove(scene, scene.hint), `hint ${scene.hint} must pass`).toBe(true);
+          if (scene.mate) {
+            // A scene that promises checkmate must deliver it with every accepted move.
+            for (const uci of scene.accept ?? []) {
+              const after = new Chess(scene.fen);
+              after.move(parseUci(uci));
+              expect(after.isCheckmate(), `${uci} must be checkmate`).toBe(true);
+            }
+          }
         }
         if (scene.kind === 'quiz') expect(scene.correct).toBeLessThan(scene.options.length);
+        if (scene.kind === 'play') {
+          const start = new Chess(scene.fen);
+          expect(start.isGameOver()).toBe(false);
+          expect(scene.maxMoves).toBeGreaterThan(4);
+          for (const text of [scene.right, scene.stalemate, scene.tooLong, scene.lost]) {
+            expect(text.id.length).toBeGreaterThan(0);
+            expect(text.en.length).toBeGreaterThan(0);
+          }
+        }
+        // No long dashes anywhere in the copy.
+        expect(JSON.stringify(scene)).not.toMatch(/[—–]/);
       });
     });
   }

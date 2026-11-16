@@ -12,7 +12,8 @@ Lisensi: [GPL-3.0](LICENSE).
   langkah, peringatan sebelum blunder) dan mode murni yang mengubah rating.
 - Ulasan partai: kelas tiap langkah, grafik evaluasi, komentar Ki Sabda, dan "coba lagi".
 - Kitab Luka: kesalahan dari partai sendiri diulang secara berkala.
-- Lakon: lima pelajaran interaktif (dua di Babak 0, tiga di Babak 1).
+- Lakon: sepuluh pelajaran interaktif. Babak 1 lengkap (delapan pelajaran), Babak 0 berisi
+  dua. Dua pelajaran akhir permainan ditutup dengan latihan melawan mesin sampai skakmat.
 - Puzzle adaptif: 12.304 puzzle dari basis data Lichess (CC0), rating 400 sampai 2200,
   dengan rating puzzle yang mengikuti kemampuan dan statistik per pola.
 - Pemanasan: latihan 60 detik mencari bidak gantung.
@@ -27,7 +28,8 @@ Lisensi: [GPL-3.0](LICENSE).
 ## Yang belum ada
 
 - Impor partai dari Lichess.
-- Pelajaran lain di Babak 1 sampai 4, pelatih pembukaan, latihan akhir permainan.
+- Sisa Babak 0 (rokade, en passant, remis) dan pelajaran Babak 2 sampai 4.
+- Pelatih pembukaan dan latihan akhir permainan yang lebih luas.
 - Kalibrasi kekuatan penantang terhadap rating sungguhan.
 
 ## Menjalankan

@@ -15,6 +15,7 @@ import type { L } from '../../content/types';
 import { useL, useT } from '../../i18n';
 import type { PieceType } from '../../pieces/PieceArt';
 import { useStore } from '../../state/store';
+import { PlayScene } from './PlayScene';
 
 type Verdict = { ok: boolean; text: L } | null;
 
@@ -207,7 +208,11 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
   return (
     <div className="lesson">
       <TopBar close={() => go('/lakon')} title={<Meter value={i} max={lesson.scenes.length} />} />
-      <SceneView key={`${lesson.id}-${i}`} scene={lesson.scenes[i]} onSolved={() => setI(i + 1)} onMistake={() => setMistakes((n) => n + 1)} />
+      {lesson.scenes[i].kind === 'play' ? (
+        <PlayScene key={`${lesson.id}-${i}`} scene={lesson.scenes[i]} onSolved={() => setI(i + 1)} onMistake={() => setMistakes((n) => n + 1)} />
+      ) : (
+        <SceneView key={`${lesson.id}-${i}`} scene={lesson.scenes[i]} onSolved={() => setI(i + 1)} onMistake={() => setMistakes((n) => n + 1)} />
+      )}
     </div>
   );
 }

@@ -53,6 +53,8 @@ export const id = {
   'lakon.soon': 'Segera hadir',
 
   'lesson.found': 'Ditemukan {n} dari {total}',
+  'lesson.movesLeft': 'Sisa langkah: {n}',
+  'lesson.restart': 'Ulangi dari awal',
   'lesson.doneTitle': 'Bab selesai',
   'lesson.flawless': 'Tanpa satu pun salah langkah.',
   'lesson.mistakes': '{n} salah langkah. Ulangi kapan saja untuk memperbaikinya.',
@@ -319,6 +321,8 @@ export const en: Record<Key, string> = {
   'lakon.soon': 'Coming soon',
 
   'lesson.found': 'Found {n} of {total}',
+  'lesson.movesLeft': 'Moves left: {n}',
+  'lesson.restart': 'Start over',
   'lesson.doneTitle': 'Lesson complete',
   'lesson.flawless': 'Without a single slip.',
   'lesson.mistakes': '{n} slips. Replay any time to improve.',
