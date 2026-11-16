@@ -2,12 +2,13 @@ import '@fontsource/marcellus/400.css';
 import '@fontsource-variable/plus-jakarta-sans';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Lab } from './lab/Lab';
+import { App } from './App';
 import './styles/tokens.css';
 import './styles/global.css';
+import './styles/app.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Lab />
+    <App />
   </StrictMode>,
 );

@@ -23,8 +23,8 @@
 .sq-dark { background-color: var(--sq-dark); background-image: var(--sq-dark-motif); background-size: 100% 100%; }
 
 .sq::after { content: ''; position: absolute; inset: 0; pointer-events: none; }
-.sq-last::after { background: rgb(214 170 60 / 0.42); }
-.sq-selected::after { background: rgb(214 170 60 / 0.6); }
+.sq-last::after { background: rgb(236 190 70 / 0.6); }
+.sq-selected::after { background: rgb(236 190 70 / 0.82); }
 .sq-check::after { background: radial-gradient(circle, rgb(232 84 52 / 0.95) 0%, rgb(232 84 52 / 0.55) 45%, transparent 75%); }
 .sq-hint::after { box-shadow: inset 0 0 0 3px var(--sukma), inset 0 0 18px rgb(79 209 197 / 0.7); animation: hint-pulse 1.4s ease-in-out infinite; }
 .sq-mark-good::after { box-shadow: inset 0 0 0 3px var(--good); background: rgb(123 196 127 / 0.3); }

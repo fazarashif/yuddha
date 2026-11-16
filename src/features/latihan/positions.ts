@@ -1,5 +1,5 @@
 import { Chess } from 'chess.js';
-import { PIECE_VALUE, hangingPieces } from '../../chess/vision';
+import { PIECE_VALUE, undefendedAttacked } from '../../chess/vision';
 
 /**
  * Makes a messy but legal middlegame by playing a loose, capture-happy game
@@ -28,7 +28,8 @@ export function makeVisionPosition(rng: () => number = Math.random): { fen: stri
     if (chess.isGameOver() || chess.inCheck()) continue;
     const mover = chess.turn();
     const victim = mover === 'w' ? 'b' : 'w';
-    const loose = hangingPieces(chess.fen(), victim);
+    // Only pieces with no guard at all: unambiguous at a glance.
+    const loose = undefendedAttacked(chess.fen(), victim);
     if (loose.length >= 1 && loose.length <= 3) {
       return { fen: chess.fen(), answers: loose.map((p) => p.square), side: mover };
     }

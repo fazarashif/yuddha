@@ -79,7 +79,7 @@ function SceneView({ scene, onSolved, onMistake }: { scene: Scene; onSolved: () 
 
   const hintMove = scene.kind === 'move' && scene.hint ? parseUci(scene.hint) : null;
   const hint = hintMove && hinted > 0 && !solved ? (hinted === 1 ? { from: hintMove.from } : hintMove) : null;
-  const who = scene.kind === 'say' ? scene.who : undefined;
+  const who = scene.kind === 'say' && scene.who === 'nyala' ? 'nyala' : undefined;
   const mood = solved ? 'happy' : verdict ? 'surprised' : scene.kind === 'say' ? (scene.mood ?? 'neutral') : 'neutral';
   const canContinue = scene.kind === 'say' || solved || (scene.kind === 'quiz' && picked !== null);
 

@@ -36,7 +36,7 @@ function Eyes({ spec, mood }: { spec: FaceSpec; mood: Mood }) {
         : spec.brows === 'arched'
           ? `M${cx - 8} ${44 + lift} Q${cx} ${36 + lift} ${cx + 8} ${44 + lift}`
           : `M${cx - 8} ${43 + lift} Q${cx} ${40 + lift} ${cx + 8} ${43 + lift}`;
-    return <path key={cx} d={d} fill="none" stroke={INK} strokeWidth={spec.brows === 'fierce' ? 3.4 : 2.4} strokeLinecap="round" />;
+    return <path key={`brow${cx}`} d={d} fill="none" stroke={INK} strokeWidth={spec.brows === 'fierce' ? 3.4 : 2.4} strokeLinecap="round" />;
   };
   return (
     <>
