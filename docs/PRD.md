@@ -1,6 +1,7 @@
 # Yuddha — Requirement Produk
 
-Versi 0.1 (draf untuk didiskusikan). Bagian bertanda **[PUTUSKAN]** masih menunggu keputusan pemilik.
+Versi 0.2. Semua keputusan pokok sudah diambil; desain visual dikerjakan lebih dulu di
+Claude Design (lihat `CLAUDE-DESIGN.md`), baru kemudian pengembangan.
 
 ## 1. Ringkasan
 
@@ -13,14 +14,20 @@ Keputusan yang sudah diambil:
 | Hal | Keputusan |
 | --- | --- |
 | Pengguna | Dibangun untuk pemilik dulu (Chess.com ±800), desain siap publik |
+| Target pemilik | Rating 1500 Chess.com |
+| Titik mulai | Tiap pengguna memilih level awalnya; babak pemula total tetap tersedia |
 | Tema | Wayang/Nusantara berbalut fantasi |
-| Coach | Naskah tertulis (bukan AI), sekreatif dan seseru mungkin |
+| Coach | Naskah tertulis (bukan AI), sekreatif dan seseru mungkin; teks saja, tanpa suara narator |
+| Audio | Musik latar dan efek suara |
 | Bahasa | Indonesia dan Inggris, bisa dipilih |
 | Akun | Login dan sinkron antar perangkat |
 | Lawan manusia | Tidak ada, untuk sementara |
 | Perangkat utama | HP (mobile-first), tetap nyaman di web |
 | Impor partai | Ya, dari Chess.com dan Lichess |
-| Aset visual | Dibuat lewat Claude Code memakai prompt di `ART-DIRECTION.md` |
+| Aset visual | Dirancang di Claude Design memakai panduan `CLAUDE-DESIGN.md` |
+| Dunia dan tokoh | Mandala Caturangga, Ki Sabda, Nyala (disetujui) |
+| Lisensi | GPL-3.0 |
+| Infrastruktur | Vercel (hosting) dan Supabase (akun dan data) |
 | Biaya | Gratis, tanpa monetisasi |
 
 ## 2. Pelajaran dari aplikasi lain
@@ -62,8 +69,6 @@ Dengan begitu cerita bebas dibentuk mengikuti kebutuhan pelajaran.
 | **Ki Sabda** | Dalang tua pengembara, bijak dan jenaka (arketipe punakawan) | Narator dan coach: membuka bab, menjelaskan konsep, mengulas partai |
 | **Nyala** | Roh api lampu *blencong* milik Ki Sabda | Sistem petunjuk: menyorot petak, memberi isyarat bertahap |
 | **Para Penantang** | Tokoh-tokoh yang dijumpai di perjalanan | Bot lawan, lihat bagian 6 |
-
-**[PUTUSKAN]** Nama dan tokoh di atas adalah usulan; boleh diganti.
 
 ### 3.3 Bidak
 
@@ -115,7 +120,7 @@ Motivasi:
 | # | Fitur | Keterangan |
 | --- | --- | --- |
 | F1 | Papan dan bidak | Sentuh dan seret, sorotan langkah sah, animasi, suara, beberapa tema |
-| F2 | Tes penempatan | ±10 posisi untuk menentukan titik mulai dan rating awal |
+| F2 | Pilih level awal | Saat mendaftar, pengguna memilih "pemula total" atau memasukkan perkiraan rating; tersedia tes penempatan ±10 posisi bagi yang ragu. Level bisa diubah kapan saja, dan semua babak bisa dibuka ulang |
 | F3 | Kampanye "Lakon" | Peta dunia; tiap bab berisi cerita, pelajaran interaktif, latihan, dan boss |
 | F4 | Puzzle adaptif | Rating pemain per tema, tingkat kesulitan menyesuaikan |
 | F5 | Tanding lawan penantang | Bot berkarakter; mode berpemandu (petunjuk, batal langkah, peringatan blunder) dan mode murni |
@@ -128,6 +133,7 @@ Motivasi:
 | F12 | Akun dan sinkron | Login, progres sama di HP dan web |
 | F13 | Dua bahasa | Indonesia dan Inggris |
 | F14 | PWA | Bisa di-install; pelajaran dan puzzle tersimpan untuk dipakai offline |
+| F15 | Audio | Musik latar bernuansa gamelan dan efek suara; volume musik dan efek diatur terpisah, bisa dimatikan |
 
 ### 5.2 Lanjutan
 
@@ -136,8 +142,6 @@ Motivasi:
 | L1 | Pelatih pembukaan | Repertoar kecil sesuai level, dilatih dengan pengulangan berjarak |
 | L2 | Latihan akhir permainan | Posisi teori dimainkan melawan mesin sampai menang atau remis |
 | L3 | Tebak langkah | Partai legendaris dengan cerita; pemain menebak langkah sang maestro |
-| L4 | Audio | Musik dan efek bernuansa gamelan |
-| L5 | Suara narator | **[PUTUSKAN]** teks saja, atau ditambah suara di kemudian hari |
 
 ### 5.3 Catatan tentang coach bernaskah
 
@@ -184,8 +188,9 @@ Cara kerja:
 **Tiga Tanya** adalah kebiasaan cek blunder sebelum melangkah: *Skak? Makan? Ancaman?*
 Kebiasaan ini dilatih sebagai mekanik permainan, bukan sekadar nasihat.
 
-Pemilik berada di awal Babak 1. **[PUTUSKAN]** target rating yang ingin dicapai (usulan:
-1200 Chess.com sebagai tonggak pertama).
+Pemilik mulai di Babak 1 dengan target 1500. Jalur menuju target itu adalah Babak 1
+sampai Babak 3, sehingga ketiganya diprioritaskan; Babak 4 melampaui target dan dikerjakan
+terakhir. Babak 0 tersedia sejak rilis pertama bagi pengguna yang benar-benar baru.
 
 ## 8. Penilaian skill
 
@@ -207,6 +212,7 @@ Pemilik berada di awal Babak 1. **[PUTUSKAN]** target rating yang ingin dicapai 
 | Partai pemilik | API publik Chess.com dan API Lichess | Hanya membaca partai publik berdasarkan nama pengguna |
 | Mesin analisis | Stockfish (WASM, versi lite satu-thread ±1,7 MB) | Berjalan di perangkat pengguna |
 | Naskah cerita dan pelajaran | Ditulis khusus untuk Yuddha | Disimpan sebagai data terstruktur dua bahasa |
+| Musik dan efek suara | Sumber berlisensi bebas (CC0 atau CC-BY) atau dibuat khusus | Belum dipilih; lisensi tiap berkas harus dicatat |
 
 ## 10. Teknologi
 
@@ -221,9 +227,12 @@ Pemilik berada di awal Babak 1. **[PUTUSKAN]** target rating yang ingin dicapai 
 | Bahasa | Pustaka i18n dengan berkas ID dan EN | Bahasa bisa ditambah |
 | Uji | Vitest (logika) dan Playwright (alur di HP dan desktop) | — |
 
-**Lisensi**: Stockfish berlisensi GPL-3.0. Karena Yuddha gratis dan tanpa monetisasi,
-usulan paling sederhana adalah melisensikan repo ini dengan **GPL-3.0** juga.
-**[PUTUSKAN]** setuju GPL-3.0, dan apakah repo publik atau privat.
+**Lisensi**: Stockfish berlisensi GPL-3.0, dan repo ini juga dilisensikan **GPL-3.0**
+(lihat `LICENSE`).
+
+**Tempat berjalan**: kode di GitHub; Vercel membangun dan menayangkan aplikasi setiap ada
+perubahan di `main`; Supabase menyimpan akun dan progres. Mesin catur berjalan di
+perangkat pengguna, jadi tidak ada server tambahan dan tidak ada biaya per pemakaian.
 
 ## 11. Tahapan
 
@@ -233,19 +242,17 @@ Bagian yang paling lama adalah naskah cerita, karena kualitasnya menentukan rasa
 
 | Tahap | Isi | Hasil yang bisa dicoba |
 | --- | --- | --- |
-| 0 — Fondasi | Kerangka aplikasi, sistem desain, papan dan bidak, PWA, dua bahasa, akun | Papan Yuddha bisa dimainkan di HP |
+| D — Desain | Arah visual, bidak, papan, sistem desain, layar utama, tokoh (di Claude Design) | Rancangan yang disetujui pemilik |
+| 0 — Fondasi | Kerangka aplikasi, sistem desain, papan dan bidak, PWA, dua bahasa, akun, audio dasar | Papan Yuddha bisa dimainkan di HP |
 | 1 — Tanding dan Nilai | Penantang, mode berpemandu, ulasan partai, puzzle adaptif, Kitab Luka, latihan penglihatan papan | Bisa bertanding, diulas, dan berlatih dari kesalahan sendiri |
-| 2 — Lakon | Mesin kampanye, tes penempatan, Babak 1 lengkap, Laku Harian, streak, pangkat | Pengalaman belajar utuh untuk level pemilik |
-| 3 — Cermin | Impor partai, profil kelemahan, Babak 0 dan Babak 2, pelatih pembukaan | Aplikasi mengenali kelemahan nyata pemilik |
-| 4 — Kedalaman | Babak 3–4, akhir permainan, tebak langkah, audio, skin tambahan | Cakupan sampai level lanjut |
-
-**[PUTUSKAN]** urutan ini memulai dari Babak 1 (level pemilik), dengan Babak 0 untuk
-pemula total menyusul di tahap 3. Setuju?
+| 2 — Lakon | Mesin kampanye, pilih level awal, Babak 0 dan Babak 1 lengkap, Laku Harian, streak, pangkat | Pengalaman belajar utuh untuk pemula total dan untuk level pemilik |
+| 3 — Cermin | Impor partai, profil kelemahan, Babak 2, pelatih pembukaan | Aplikasi mengenali kelemahan nyata pemilik |
+| 4 — Kedalaman | Babak 3, akhir permainan, tebak langkah, musik dan skin tambahan, lalu Babak 4 | Cakupan sampai target 1500 dan seterusnya |
 
 ## 12. Di luar cakupan
 
 - Bermain melawan manusia secara online.
-- Coach berbasis AI.
+- Coach berbasis AI dan suara narator.
 - Monetisasi, iklan, pembelian dalam aplikasi.
 - Aplikasi native di toko aplikasi (PWA sudah bisa di-install dari peramban).
 

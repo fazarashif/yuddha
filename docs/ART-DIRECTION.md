@@ -1,11 +1,15 @@
 # Yuddha — Arahan Visual dan Prompt Aset
 
-Dokumen ini punya dua bagian: **arahan** (aturan visual yang berlaku untuk semua aset) dan
-**prompt** siap tempel untuk sesi Claude Code di repo ini. Tiap prompt merujuk ke bagian
-arahan, jadi jalankan dari dalam repo `yuddha`.
+Dokumen ini punya dua bagian:
 
-Semua aset berupa **SVG yang ditulis tangan sebagai kode**: ringan, tajam di semua ukuran,
-dan bisa diwarnai ulang lewat CSS.
+- **Bagian A — Arahan**: aturan visual yang berlaku untuk semua rancangan dan aset. Bagian
+  ini dilampirkan ke Claude Design; langkah dan prompt-nya ada di `CLAUDE-DESIGN.md`.
+- **Bagian B — Prompt Claude Code**: cadangan untuk membuat aset produksi (SVG) di repo
+  ini, dipakai setelah arah visual dikunci dan hanya bila aset dari Claude Design belum
+  cukup.
+
+Bidak, papan, ikon, dan tokoh berupa **SVG**: ringan, tajam di semua ukuran, dan bisa
+diwarnai ulang lewat CSS.
 
 ## Bagian A — Arahan
 
@@ -94,7 +98,31 @@ netral, senang, dan terkejut.
 - Hormati pengaturan "kurangi gerakan" di perangkat.
 - Suara: ketukan kayu untuk langkah, denting saron untuk memakan, gong untuk skakmat.
 
-## Bagian B — Prompt untuk Claude Code
+### A8. Daftar layar
+
+Rancangan dibuat untuk HP lebih dulu (390 × 844), lalu disesuaikan untuk layar lebar
+(1280 × 800). Navigasi bawah di HP berisi empat tab: **Laku**, **Lakon**, **Tanding**,
+**Cermin**.
+
+| # | Layar | Isi pokok |
+| --- | --- | --- |
+| 1 | Sambutan dan pilih level | Perkenalan Ki Sabda; pilihan "pemula total", perkiraan rating, atau tes penempatan; pilih bahasa |
+| 2 | Laku (beranda) | Laku Harian empat langkah, Nyala Blencong (streak), pangkat, tombol lanjut |
+| 3 | Lakon (peta kampanye) | Peta digulir ke bawah, simpul bab terkunci / terbuka / selesai, babak aktif |
+| 4 | Adegan pelajaran | Papan di atas, dialog Ki Sabda di bawah, tugas interaktif, petunjuk Nyala |
+| 5 | Puzzle | Papan, tema dan rating puzzle, umpan balik benar / salah, penjelasan singkat |
+| 6 | Latihan penglihatan papan | Papan dengan tugas "cari bidak gantung", hitung waktu, skor |
+| 7 | Pilih penantang | Kartu tokoh: potret, rating, gaya main, status terbuka |
+| 8 | Tanding | Papan, bidak tertangkap, celetukan penantang, tombol petunjuk dan batal langkah, peringatan blunder |
+| 9 | Hasil partai | Menang / kalah / remis, komentar Ki Sabda, perubahan rating, tombol ulasan |
+| 10 | Ulasan partai | Papan, daftar langkah berkelas, grafik evaluasi, momen kunci, tombol "coba lagi" |
+| 11 | Kitab Luka | Kartu kesalahan yang jatuh tempo hari ini, jumlah tersisa |
+| 12 | Cermin | Peta skill empat area, blunder per partai dari waktu ke waktu, motif yang sering terlewat, impor partai |
+| 13 | Profil dan pengaturan | Pangkat, riwayat, tema papan dan bidak, bahasa, volume musik dan efek |
+
+Keadaan yang juga perlu dirancang: kosong (belum ada data), memuat, offline, dan galat.
+
+## Bagian B — Prompt cadangan untuk Claude Code
 
 Jalankan satu prompt per sesi, berurutan. Tiap prompt meminta lembar pratinjau agar hasil
 bisa dinilai lewat gambar sebelum diterima.
@@ -206,7 +234,8 @@ Buat preview.html yang memperlihatkan ketiga status, ambil tangkapan layar pada 
 
 ## Catatan pemakaian
 
-- Kerjakan **B1 lebih dulu**; set bidak menentukan rasa seluruh aplikasi.
+- Bagian B hanya dipakai bila aset dari Claude Design belum cukup untuk produksi.
+- Bila dipakai, kerjakan **B1 lebih dulu**; set bidak menentukan rasa seluruh aplikasi.
 - Bila hasil kurang memuaskan, minta perbaikan dengan menunjuk hal spesifik pada tangkapan
   layar (contoh: "Gajah terlalu mirip Bala pada 32 px, pertegas celah miringnya").
 - Bila ilustrasi SVG tulisan tangan terasa kurang kaya untuk potret tokoh, alternatifnya
