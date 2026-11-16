@@ -5,7 +5,7 @@ import type { Lang } from '../content/types';
 import type { PieceSet } from '../pieces/PieceArt';
 
 export type BoardTheme = 'kelir' | 'kawung' | 'candi' | 'jati';
-export type DailyStep = 'warmup' | 'lakon' | 'luka' | 'tanding';
+export type DailyStep = 'warmup' | 'lakon' | 'puzzle' | 'luka' | 'tanding';
 
 export interface Settings {
   lang: Lang;
@@ -58,6 +58,11 @@ interface State {
   daily: { day: number; done: Record<DailyStep, boolean> };
   lessons: Record<string, { at: number; mistakes: number }>;
   playRating: number;
+  puzzleRating: number;
+  puzzlesDone: number;
+  /** Ids of puzzles already shown, newest last. */
+  puzzleSeen: string[];
+  themeStats: Record<string, { seen: number; solved: number }>;
   visionBest: number;
   beaten: Record<string, number>;
   games: GameRecord[];
@@ -72,11 +77,12 @@ interface State {
   attachReview: (id: string, patch: Pick<GameRecord, 'accuracy' | 'blunders' | 'mistakes'>) => void;
   addLuka: (cards: Omit<LukaCard, 'due' | 'interval' | 'reps' | 'lapses'>[]) => void;
   gradeLuka: (id: string, correct: boolean) => void;
+  recordPuzzle: (id: string, rating: number, solved: boolean, themes: string[]) => void;
   setVisionBest: (n: number) => void;
   resetAll: () => void;
 }
 
-const emptyDaily = () => ({ day: dayNumber(), done: { warmup: false, lakon: false, luka: false, tanding: false } });
+const emptyDaily = () => ({ day: dayNumber(), done: { warmup: false, lakon: false, puzzle: false, luka: false, tanding: false } });
 
 const initial = {
   settings: { lang: 'id', theme: 'dark', board: 'kelir', pieceSet: 'yuddha', sfx: 0.7, music: 0.3 } as Settings,
@@ -88,6 +94,10 @@ const initial = {
   daily: emptyDaily(),
   lessons: {} as State['lessons'],
   playRating: 800,
+  puzzleRating: 800,
+  puzzlesDone: 0,
+  puzzleSeen: [] as string[],
+  themeStats: {} as State['themeStats'],
   visionBest: 0,
   beaten: {} as Record<string, number>,
   games: [] as GameRecord[],
@@ -113,7 +123,13 @@ export const useStore = create<State>()(
       ...initial,
       setSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
       finishOnboarding: (level) =>
-        set({ onboarded: true, level, startChapter: level < 600 ? 0 : 1, playRating: Math.max(400, level || 400) }),
+        set((s) => ({
+          onboarded: true,
+          level,
+          startChapter: level < 600 ? 0 : 1,
+          playRating: s.games.length ? s.playRating : Math.max(400, level || 400),
+          puzzleRating: s.puzzlesDone ? s.puzzleRating : Math.max(400, level || 400),
+        })),
       completeLesson: (id, mistakes) =>
         set((s) => ({
           lessons: { ...s.lessons, [id]: { at: Date.now(), mistakes: Math.min(mistakes, s.lessons[id]?.mistakes ?? Infinity) } },
@@ -154,6 +170,24 @@ export const useStore = create<State>()(
           }),
           xp: s.xp + (correct ? 6 : 2),
         })),
+      recordPuzzle: (id, rating, solved, themes) =>
+        set((s) => {
+          // Early results move the rating faster so it settles quickly.
+          const k = s.puzzlesDone < 10 ? 48 : 24;
+          const expected = 1 / (1 + 10 ** ((rating - s.puzzleRating) / 400));
+          const themeStats = { ...s.themeStats };
+          for (const t of themes) {
+            const cur = themeStats[t] ?? { seen: 0, solved: 0 };
+            themeStats[t] = { seen: cur.seen + 1, solved: cur.solved + (solved ? 1 : 0) };
+          }
+          return {
+            puzzleRating: Math.max(400, Math.round(s.puzzleRating + k * ((solved ? 1 : 0) - expected))),
+            puzzlesDone: s.puzzlesDone + 1,
+            puzzleSeen: [...s.puzzleSeen, id].slice(-4000),
+            themeStats,
+            xp: s.xp + (solved ? 5 : 1),
+          };
+        }),
       setVisionBest: (n) => set((s) => ({ visionBest: Math.max(s.visionBest, n) })),
       resetAll: () => set({ ...initial, daily: emptyDaily() }),
     }),

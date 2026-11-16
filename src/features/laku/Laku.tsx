@@ -1,4 +1,4 @@
-import { BookOpenText, Check, Eye, Fire, Scroll, Sword } from '@phosphor-icons/react';
+import { BookOpenText, Check, Eye, Fire, PuzzlePiece, Scroll, Sword } from '@phosphor-icons/react';
 import type { ReactNode } from 'react';
 import { useLocation } from 'wouter';
 import { Bubble, Meter } from '../../components/ui';
@@ -35,6 +35,7 @@ export function Laku() {
       sub: lesson ? l(lesson.title) : t('laku.lakonNone'),
       to: lesson ? `/lakon/${lesson.id}` : '/lakon',
     },
+    { key: 'puzzle', icon: <PuzzlePiece size={24} />, title: t('laku.puzzle'), sub: t('laku.puzzleSub'), to: '/puzzle' },
     {
       key: 'luka',
       icon: <Scroll size={24} />,

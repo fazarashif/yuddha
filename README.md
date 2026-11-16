@@ -13,6 +13,8 @@ Lisensi: [GPL-3.0](LICENSE).
 - Ulasan partai: kelas tiap langkah, grafik evaluasi, komentar Ki Sabda, dan "coba lagi".
 - Kitab Luka: kesalahan dari partai sendiri diulang secara berkala.
 - Lakon: lima pelajaran interaktif (dua di Babak 0, tiga di Babak 1).
+- Puzzle adaptif: 12.304 puzzle dari basis data Lichess (CC0), rating 400 sampai 2200,
+  dengan rating puzzle yang mengikuti kemampuan dan statistik per pola.
 - Pemanasan: latihan 60 detik mencari bidak gantung.
 - Laku Harian, streak, pangkat, dan Cermin (statistik dari partai sendiri).
 - Bahasa Indonesia dan Inggris. Efek suara dan musik latar dibuat langsung di perangkat.
@@ -21,7 +23,6 @@ Lisensi: [GPL-3.0](LICENSE).
 ## Yang belum ada
 
 - Akun dan sinkron antar perangkat (progres masih tersimpan di perangkat).
-- Puzzle adaptif dari basis data Lichess.
 - Impor partai dari Chess.com dan Lichess.
 - Pelajaran lain di Babak 1 sampai 4, pelatih pembukaan, latihan akhir permainan.
 - Kalibrasi kekuatan penantang terhadap rating sungguhan.
@@ -45,6 +46,9 @@ npm run build
 ```
 
 `npm install` menyalin mesin catur Stockfish (versi lite satu-thread) ke `public/engine`.
+
+Data puzzle di `public/puzzles` dibuat oleh `scripts/build-puzzles.py` dari basis data
+puzzle Lichess; petunjuknya ada di bagian atas skrip itu.
 
 ## Struktur
 

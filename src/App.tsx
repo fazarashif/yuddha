@@ -10,6 +10,7 @@ import { Latihan } from './features/latihan/Latihan';
 import { Luka } from './features/luka/Luka';
 import { Mulai } from './features/mulai/Mulai';
 import { Profil } from './features/profil/Profil';
+import { Puzzle } from './features/puzzle/Puzzle';
 import { Game } from './features/tanding/Game';
 import { Review } from './features/tanding/Review';
 import { Select } from './features/tanding/Select';
@@ -27,7 +28,7 @@ const TABS: { to: string; key: Key; icon: typeof House }[] = [
 ];
 
 /** Screens that take the whole viewport and hide the navigation. */
-const IMMERSIVE = /^\/(lakon\/.+|tanding\/.+|ulasan\/.+|latihan|luka)/;
+const IMMERSIVE = /^\/(lakon\/.+|tanding\/.+|ulasan\/.+|latihan|luka|puzzle)/;
 
 function Nav() {
   const t = useT();
@@ -94,6 +95,7 @@ export function App() {
           <Route path="/ulasan/:id">{(p) => <Review key={p.id} gameId={p.id} />}</Route>
           <Route path="/latihan" component={Latihan} />
           <Route path="/luka" component={Luka} />
+          <Route path="/puzzle" component={Puzzle} />
           <Route path="/cermin" component={Cermin} />
           <Route path="/profil" component={Profil} />
           <Route component={Laku} />

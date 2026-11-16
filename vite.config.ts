@@ -25,9 +25,15 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
-        // The engine is fetched on first use, then kept for offline play.
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globIgnores: ['engine/**', 'puzzles/**'],
+        // The engine and puzzle bands are fetched on first use, then kept for offline play.
         runtimeCaching: [
+          {
+            urlPattern: /\/puzzles\//,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'puzzles', expiration: { maxEntries: 24 } },
+          },
           {
             urlPattern: /\/engine\//,
             handler: 'CacheFirst',

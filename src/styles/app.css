@@ -273,3 +273,12 @@ input[type='range'] { width: 100%; accent-color: var(--gold); height: 28px; }
 .pill-win { background: color-mix(in srgb, var(--good) 22%, transparent); color: var(--good); }
 .pill-loss { background: color-mix(in srgb, var(--bara) 20%, transparent); color: var(--bara); }
 .pill-draw { background: var(--surface-3); color: var(--text-dim); }
+
+/* Puzzles ----------------------------------------------------------------- */
+.puzzle-rating { font-weight: 800; font-size: 1.1rem; display: inline-flex; align-items: baseline; gap: 6px; }
+.delta-up { color: var(--good); font-size: 0.85rem; }
+.delta-down { color: var(--bara); font-size: 0.85rem; }
+.row-actions { display: flex; gap: 10px; }
+.row-actions .btn { flex: 1; padding: 0 10px; }
+.board-loading { opacity: 0.45; transition: opacity var(--t-fast); }
+.hbar-good { background: var(--sukma); }
