@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Link, Route, Switch, useLocation } from 'wouter';
 import { setVolumes, startMusic, unlockAudio } from './audio/sound';
 import { Cermin } from './features/cermin/Cermin';
+import { Impor } from './features/impor/Impor';
 import { Lakon } from './features/lakon/Lakon';
 import { LessonPlayer } from './features/lakon/LessonPlayer';
 import { Laku } from './features/laku/Laku';
@@ -29,7 +30,7 @@ const TABS: { to: string; key: Key; icon: typeof House }[] = [
 ];
 
 /** Screens that take the whole viewport and hide the navigation. */
-const IMMERSIVE = /^\/(lakon\/.+|tanding\/.+|ulasan\/.+|latihan|luka|puzzle)/;
+const IMMERSIVE = /^\/(lakon\/.+|tanding\/.+|ulasan\/.+|latihan|luka|puzzle|impor)/;
 
 function Nav() {
   const t = useT();
@@ -102,6 +103,7 @@ export function App() {
           <Route path="/latihan" component={Latihan} />
           <Route path="/luka" component={Luka} />
           <Route path="/puzzle" component={Puzzle} />
+          <Route path="/impor" component={Impor} />
           <Route path="/cermin" component={Cermin} />
           <Route path="/profil" component={Profil} />
           <Route component={Laku} />

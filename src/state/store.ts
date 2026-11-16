@@ -29,7 +29,15 @@ export interface GameRecord {
   accuracy?: number;
   blunders?: number;
   mistakes?: number;
+  /** Set on games brought in from elsewhere; games against the built-in opponents have none. */
+  source?: 'chesscom';
+  opponent?: { name: string; rating: number };
+  myRating?: number;
+  timeClass?: string;
 }
+
+/** How many games are kept, newest first. */
+export const MAX_GAMES = 60;
 
 /** A mistake kept for spaced repetition. */
 export interface LukaCard {
@@ -67,6 +75,8 @@ export interface State {
   beaten: Record<string, number>;
   games: GameRecord[];
   luka: LukaCard[];
+  /** Chess.com username last used for importing games. */
+  chesscomUser: string;
   /** When the saved data last changed on this device; used to settle sync conflicts. */
   touched: number;
 
@@ -77,6 +87,7 @@ export interface State {
   addXp: (n: number) => void;
   recordGame: (game: GameRecord, newRating: number | null) => void;
   attachReview: (id: string, patch: Pick<GameRecord, 'accuracy' | 'blunders' | 'mistakes'>) => void;
+  importGames: (username: string, games: GameRecord[]) => void;
   addLuka: (cards: Omit<LukaCard, 'due' | 'interval' | 'reps' | 'lapses'>[]) => void;
   gradeLuka: (id: string, correct: boolean) => void;
   recordPuzzle: (id: string, rating: number, solved: boolean, themes: string[]) => void;
@@ -104,6 +115,7 @@ export const DATA_KEYS = [
   'beaten',
   'games',
   'luka',
+  'chesscomUser',
 ] as const satisfies readonly (keyof State)[];
 export type DataKey = (typeof DATA_KEYS)[number];
 export type SaveData = Pick<State, DataKey | 'touched'>;
@@ -128,6 +140,7 @@ const initial = {
   beaten: {} as Record<string, number>,
   games: [] as GameRecord[],
   luka: [] as LukaCard[],
+  chesscomUser: '',
   touched: 0,
 };
 
@@ -175,12 +188,21 @@ export const useStore = create<State>()(
       addXp: (n) => set((s) => ({ xp: s.xp + n })),
       recordGame: (game, newRating) =>
         set((s) => ({
-          games: [game, ...s.games].slice(0, 40),
+          games: [game, ...s.games].slice(0, MAX_GAMES),
           playRating: newRating ?? s.playRating,
           beaten: game.result === 'win' ? { ...s.beaten, [game.botId]: (s.beaten[game.botId] ?? 0) + 1 } : s.beaten,
           xp: s.xp + (game.result === 'win' ? 30 : game.result === 'draw' ? 15 : 8),
         })),
       attachReview: (id, patch) => set((s) => ({ games: s.games.map((g) => (g.id === id ? { ...g, ...patch } : g)) })),
+      importGames: (username, games) =>
+        set((s) => {
+          const known = new Set(s.games.map((g) => g.id));
+          const fresh = games.filter((g) => !known.has(g.id));
+          return {
+            chesscomUser: username,
+            games: [...s.games, ...fresh].sort((a, b) => b.at - a.at).slice(0, MAX_GAMES),
+          };
+        }),
       addLuka: (cards) =>
         set((s) => {
           const known = new Set(s.luka.map((c) => c.fen));

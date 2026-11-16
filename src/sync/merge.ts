@@ -1,4 +1,4 @@
-import { DATA_KEYS } from '../state/store';
+import { DATA_KEYS, MAX_GAMES } from '../state/store';
 import type { GameRecord, LukaCard, SaveData } from '../state/store';
 
 export const pickSave = (state: SaveData): SaveData => {
@@ -51,7 +51,7 @@ export function mergeSaves(local: SaveData, incoming: unknown): SaveData {
 
   const games = unionBy<GameRecord>(local.games, remote.games, (g) => g.id, (x, y) => (y.accuracy !== undefined && x.accuracy === undefined ? y : x))
     .sort((x, y) => y.at - x.at)
-    .slice(0, 40);
+    .slice(0, MAX_GAMES);
 
   // The copy that has been reviewed more is the more recent one.
   const progress = (c: LukaCard) => c.reps + c.lapses;
@@ -68,6 +68,7 @@ export function mergeSaves(local: SaveData, incoming: unknown): SaveData {
     daily: lead.daily,
     playRating: lead.playRating,
     puzzleRating: lead.puzzleRating,
+    chesscomUser: lead.chesscomUser || local.chesscomUser || remote.chesscomUser,
     xp: Math.max(local.xp, remote.xp),
     puzzlesDone: Math.max(local.puzzlesDone, remote.puzzlesDone),
     visionBest: Math.max(local.visionBest, remote.visionBest),

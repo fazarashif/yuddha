@@ -92,7 +92,9 @@ export function Review({ gameId }: { gameId: string }) {
     listRef.current?.querySelector('.mv-on')?.scrollIntoView({ block: 'nearest', inline: 'center' });
   }, [at]);
 
-  const bot = game ? botById(game.botId) : undefined;
+  const imported = game?.source === 'chesscom';
+  const opponentName = game ? (game.opponent?.name ?? botById(game.botId)?.name) : undefined;
+  const backTo = imported ? '/cermin' : '/tanding';
   const move = review && at > 0 ? review.moves[at - 1] : null;
   const myBad = useMemo(() => (review && game ? review.moves.filter((m) => m.color === game.color && BAD.includes(m.cls)) : []), [review, game]);
 
@@ -108,7 +110,7 @@ export function Review({ gameId }: { gameId: string }) {
   if (!review) {
     return (
       <div className="screen">
-        <TopBar back="/tanding" title={<h2>{t('review.title')}</h2>} />
+        <TopBar back={backTo} title={<h2>{t('review.title')}</h2>} right={<span className="dim">{opponentName}</span>} />
         <Bubble name="Ki Sabda">{failed ? t('game.engineError') : t('review.working')}</Bubble>
         {!failed && <Meter value={progress.done} max={progress.total} tone="sukma" />}
       </div>
@@ -122,7 +124,7 @@ export function Review({ gameId }: { gameId: string }) {
 
   return (
     <div className="screen review">
-      <TopBar back="/tanding" title={<h2>{t('review.title')}</h2>} right={<span className="dim">{bot?.name}</span>} />
+      <TopBar back={backTo} title={<h2>{t('review.title')}</h2>} right={<span className="dim">{opponentName}</span>} />
 
       <div className="stats-row">
         <div className="stat">

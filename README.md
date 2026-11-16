@@ -18,13 +18,15 @@ Lisensi: [GPL-3.0](LICENSE).
 - Pemanasan: latihan 60 detik mencari bidak gantung.
 - Laku Harian, streak, pangkat, dan Cermin (statistik dari partai sendiri).
 - Bahasa Indonesia dan Inggris. Efek suara dan musik latar dibuat langsung di perangkat.
+- Impor partai dari Chess.com lewat nama pengguna; partai impor bisa diulas seperti partai
+  lain dan kesalahannya masuk Kitab Luka.
 - Akun (masuk dengan Google) dan sinkron antar perangkat lewat Supabase. Data tiap pengguna
   ada di skema `yuddha` pada proyek `konco-mlayu`; lihat `supabase/migrations`.
 - Bisa di-install sebagai PWA.
 
 ## Yang belum ada
 
-- Impor partai dari Chess.com dan Lichess.
+- Impor partai dari Lichess.
 - Pelajaran lain di Babak 1 sampai 4, pelatih pembukaan, latihan akhir permainan.
 - Kalibrasi kekuatan penantang terhadap rating sungguhan.
 

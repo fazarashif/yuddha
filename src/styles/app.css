@@ -286,3 +286,26 @@ input[type='range'] { width: 100%; accent-color: var(--gold); height: 28px; }
 /* Account ----------------------------------------------------------------- */
 .account-email { font-weight: 700; overflow-wrap: anywhere; }
 .btn-text { background: none; color: var(--gold-bright); font-weight: 600; font-size: 0.92rem; min-height: 44px; white-space: normal; text-align: center; }
+
+/* Import ------------------------------------------------------------------ */
+.input-row { display: flex; gap: 8px; }
+.input { flex: 1; min-width: 0; min-height: 48px; padding: 0 14px; border-radius: var(--r-md); border: 0; background: var(--bg-deep); color: var(--text); font: inherit; box-shadow: inset 0 0 0 1px var(--line-strong); }
+.input:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 1px; }
+.field-error { color: var(--bara); font-size: 0.86rem; font-weight: 600; }
+.pick-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.pick-row { width: 100%; min-height: 60px; display: flex; align-items: center; gap: 12px; text-align: left; padding: 10px 12px; border-radius: var(--r-md); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.pick-row:active:not(:disabled) { transform: scale(0.99); }
+.pick-row:disabled { opacity: 0.55; }
+.pick-on { box-shadow: inset 0 0 0 1.5px var(--gold); background: var(--surface-2); }
+.pick-box { width: 24px; height: 24px; flex: none; display: grid; place-items: center; border-radius: 7px; box-shadow: inset 0 0 0 1.5px var(--line-strong); color: var(--gold-ink); }
+.pick-on .pick-box { background: var(--gold); box-shadow: none; }
+.pick-row:disabled .pick-box { color: var(--text-dim); }
+.pick-who { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pick-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick-meta { font-size: 0.8rem; color: var(--text-dim); }
+.pick-skeleton { min-height: 60px; background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.sticky-actions { position: sticky; bottom: calc(var(--safe-b) + 8px); }
+.game-src { margin-left: 8px; font-size: 0.68rem; font-weight: 700; color: var(--text-faint); border: 1px solid var(--line-strong); border-radius: 999px; padding: 1px 7px; vertical-align: middle; }
+.game-who { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.game-state { flex: none; white-space: nowrap; }

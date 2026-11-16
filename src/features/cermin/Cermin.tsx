@@ -35,9 +35,14 @@ export function Cermin() {
   const avg = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
   const blundersPerGame = avg(reviewed.slice(0, 10).map((g) => g.blunders ?? 0));
   const accuracy = avg(reviewed.slice(0, 10).map((g) => g.accuracy ?? 0));
-  const wins = games.filter((g) => g.result === 'win').length;
-  const losses = games.filter((g) => g.result === 'loss').length;
-  const draws = games.length - wins - losses;
+  // Games against the built-in opponents and imported games are tallied apart.
+  const tally = (list: typeof games) => {
+    const w = list.filter((g) => g.result === 'win').length;
+    const l = list.filter((g) => g.result === 'loss').length;
+    return { w, l, d: list.length - w - l, n: list.length };
+  };
+  const here = tally(games.filter((g) => !g.source));
+  const chesscom = tally(games.filter((g) => g.source === 'chesscom'));
 
   const motifCounts = new Map<Motif['kind'], number>();
   for (const c of luka) motifCounts.set(c.motif.kind, (motifCounts.get(c.motif.kind) ?? 0) + 1);
@@ -60,6 +65,9 @@ export function Cermin() {
           <div className="sheet-actions">
             <button className="btn btn-primary" onClick={() => go('/tanding')}>
               {t('luka.play')}
+            </button>
+            <button className="btn btn-ghost" onClick={() => go('/impor')}>
+              {t('cermin.import')}
             </button>
           </div>
         </>
@@ -84,7 +92,9 @@ export function Cermin() {
             </div>
           </div>
           <p className="note num">
-            {t('cermin.record', { w: wins, d: draws, l: losses })} · {t('cermin.visionBest', { n: visionBest })}
+            {here.n > 0 && `${t('cermin.record', here)} · `}
+            {chesscom.n > 0 && `${t('cermin.recordCc', chesscom)} · `}
+            {t('cermin.visionBest', { n: visionBest })}
           </p>
 
           <section className="panel">
@@ -141,17 +151,27 @@ export function Cermin() {
 
           <section className="panel">
             <h3>{t('cermin.games')}</h3>
-            <ul className="game-list">
-              {games.slice(0, 12).map((g) => (
-                <li key={g.id}>
-                  <button onClick={() => go(`/ulasan/${g.id}`)}>
-                    <span className={`pill pill-${g.result}`}>{t(`result.short.${g.result}`)}</span>
-                    <span className="game-who">{botById(g.botId)?.name ?? g.botId}</span>
-                    <span className="dim num small">{g.accuracy !== undefined ? t('cermin.acc', { n: g.accuracy }) : t('cermin.unreviewed')}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            {games.length === 0 ? (
+              <p className="dim">{t('cermin.gamesEmpty')}</p>
+            ) : (
+              <ul className="game-list">
+                {games.slice(0, 20).map((g) => (
+                  <li key={g.id}>
+                    <button onClick={() => go(`/ulasan/${g.id}`)}>
+                      <span className={`pill pill-${g.result}`}>{t(`result.short.${g.result}`)}</span>
+                      <span className="game-who">
+                        {g.opponent?.name ?? botById(g.botId)?.name ?? g.botId}
+                        {g.source === 'chesscom' && <span className="game-src">Chess.com</span>}
+                      </span>
+                      <span className="dim num small game-state">{g.accuracy !== undefined ? t('cermin.acc', { n: g.accuracy }) : t('cermin.unreviewed')}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <button className="btn btn-ghost" onClick={() => go('/impor')}>
+              {t('cermin.import')}
+            </button>
           </section>
         </>
       )}
