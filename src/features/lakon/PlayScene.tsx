@@ -29,7 +29,7 @@ async function reply(fen: string): Promise<string | null> {
   return `${m.from}${m.to}${m.promotion ?? ''}`;
 }
 
-/** A lesson exercise that is played out, move by move, until checkmate. */
+/** A lesson exercise that is played out, move by move, until checkmate or a safe promotion. */
 export function PlayScene({ scene, onSolved, onMistake }: { scene: PlaySceneData; onSolved: () => void; onMistake: () => void }) {
   const t = useT();
   const l = useL();
@@ -95,10 +95,12 @@ export function PlayScene({ scene, onSolved, onMistake }: { scene: PlaySceneData
       setStatus('won');
       return;
     }
+    // A promotion only counts once the new piece has survived the defender's answer.
+    const promoted = scene.goal === 'promote' && Boolean(m.promotion);
     play(c.inCheck() ? 'check' : m.captured ? 'capture' : 'move');
     if (c.isStalemate()) return fail(scene.stalemate);
     if (c.isDraw()) return fail(scene.lost);
-    if (count >= scene.maxMoves) return fail(scene.tooLong);
+    if (!promoted && count >= scene.maxMoves) return fail(scene.tooLong);
 
     setStatus('wait');
     const answer = await reply(c.fen());
@@ -109,6 +111,11 @@ export function PlayScene({ scene, onSolved, onMistake }: { scene: PlaySceneData
     play(r.captured ? 'capture' : 'move');
     // If the defender's capture leaves no way to mate, the attempt is over.
     if (c.isDraw()) return fail(scene.lost);
+    if (promoted) {
+      play('win');
+      setStatus('won');
+      return;
+    }
     setStatus('you');
   };
 

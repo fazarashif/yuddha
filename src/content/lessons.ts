@@ -1,4 +1,6 @@
+import { langkahRahasia, remis } from './babak0b';
 import { matBenteng, matMenteri, pembukaan, polaMat, tukar } from './babak1b';
+import { garpu, paku, penjaga, pionAkhir, terbuka } from './babak2';
 import type { L, Mood } from './types';
 
 export type SceneMark = 'good' | 'bad' | 'target' | 'danger';
@@ -32,18 +34,22 @@ export type Scene =
       hint?: string;
       /** The first accepted move delivers checkmate; checked by the tests. */
       mate?: true;
+      /** The opponent's answer, shown on the board once the task is solved. */
+      reply?: string;
     })
   | (SceneBase & { kind: 'quiz'; options: L[]; correct: number; explain: L })
-  /** Play the position out against the engine until checkmate. */
+  /** Play the position out against the engine until checkmate, or until a pawn is safely promoted. */
   | (SceneBase & {
       kind: 'play';
       fen: string;
+      /** What ends the exercise; checkmate when left out. */
+      goal?: 'promote';
       /** Moves allowed before the attempt is called off. */
       maxMoves: number;
       right: L;
       stalemate: L;
       tooLong: L;
-      /** Shown when the winning material is lost. */
+      /** Shown when the winning material is lost, or the pawn becomes too little to win with. */
       lost: L;
     });
 
@@ -251,8 +257,8 @@ const wiwitan2: Lesson = {
       kind: 'say',
       mood: 'happy',
       text: {
-        id: 'Kau sudah mengenal semua bidak. Ada dua langkah khusus lagi, rokade dan en passant, yang kuceritakan lain waktu. Sekarang, cobalah bertanding melawan Buta Cilik.',
-        en: 'You now know every piece. Two special moves remain, castling and en passant, which I will tell another day. For now, try a game against Buta Cilik.',
+        id: 'Kau sudah mengenal semua bidak. Ada dua langkah khusus lagi, rokade dan en passant, yang kuceritakan di bab berikutnya. Kalau sudah tidak sabar, cobalah bertanding melawan Buta Cilik.',
+        en: 'You now know every piece. Two special moves remain, castling and en passant, which I will tell in the next lesson. If you cannot wait, try a game against Buta Cilik.',
       },
     },
   ],
@@ -564,11 +570,8 @@ export const CHAPTERS: Chapter[] = [
     n: 0,
     title: { id: 'Wiwitan', en: 'Beginnings' },
     range: { id: 'Pemula total', en: 'Complete beginner' },
-    lessons: [wiwitan1, wiwitan2],
-    upcoming: [
-      { id: 'Rokade dan En Passant', en: 'Castling and En Passant' },
-      { id: 'Remis dan Pat', en: 'Draws and Stalemate' },
-    ],
+    lessons: [wiwitan1, wiwitan2, langkahRahasia, remis],
+    upcoming: [],
   },
   {
     n: 1,
@@ -581,14 +584,8 @@ export const CHAPTERS: Chapter[] = [
     n: 2,
     title: { id: 'Senjata', en: 'Weapons' },
     range: { id: '1000 sampai 1400', en: '1000 to 1400' },
-    lessons: [],
-    upcoming: [
-      { id: 'Garpu', en: 'Forks' },
-      { id: 'Pin dan Tusuk', en: 'Pins and Skewers' },
-      { id: 'Serangan Terbuka', en: 'Discovered Attacks' },
-      { id: 'Menyingkirkan Penjaga', en: 'Removing the Guard' },
-      { id: 'Akhir Permainan Pion', en: 'Pawn Endgames' },
-    ],
+    lessons: [garpu, paku, terbuka, penjaga, pionAkhir],
+    upcoming: [],
   },
   {
     n: 3,

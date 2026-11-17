@@ -1,5 +1,5 @@
 import { Chess } from 'chess.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import { play } from '../../audio/sound';
 import { legalDests, parseUci } from '../../chess/vision';
@@ -29,7 +29,11 @@ function SceneView({ scene, onSolved, onMistake }: { scene: Scene; onSolved: () 
   const [wrongSq, setWrongSq] = useState<string | null>(null);
   const [hinted, setHinted] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
+  const [lastMove, setLastMove] = useState<[string, string] | null>(null);
+  const replyTimer = useRef<number | undefined>(undefined);
   const solved = verdict?.ok === true;
+
+  useEffect(() => () => window.clearTimeout(replyTimer.current), []);
 
   const chess = useMemo(() => (scene.fen ? new Chess(scene.fen) : null), [scene.fen]);
   const orient = scene.orient ?? (chess?.turn() ?? 'w');
@@ -51,7 +55,18 @@ function SceneView({ scene, onSolved, onMistake }: { scene: Scene; onSolved: () 
       const c = new Chess(scene.fen);
       c.move({ from, to, promotion });
       setFen(c.fen());
+      setLastMove([from, to]);
       pass(scene.right);
+      if (scene.reply) {
+        // Show the opponent's answer, so the point of the move is seen on the board.
+        const answer = parseUci(scene.reply);
+        replyTimer.current = window.setTimeout(() => {
+          const r = c.move(answer);
+          setFen(c.fen());
+          setLastMove([r.from, r.to]);
+          play(r.captured ? 'capture' : 'move');
+        }, 900);
+      }
     } else {
       fail(scene.punish?.[uci] ?? scene.wrong);
     }
@@ -96,6 +111,7 @@ function SceneView({ scene, onSolved, onMistake }: { scene: Scene; onSolved: () 
             onSquareTap={scene.kind === 'tap' ? onTap : undefined}
             marks={marks}
             hint={hint}
+            lastMove={lastMove}
             pieceSet={pieceSet}
           />
         ) : (
