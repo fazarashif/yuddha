@@ -104,7 +104,7 @@ export function Board({
   const [promo, setPromo] = useState<{ from: Sq; to: Sq; color: PieceColor } | null>(null);
   const [dragId, setDragId] = useState<number | null>(null);
   const boardRef = useRef<HTMLDivElement>(null);
-  const drag = useRef<{ id: number; from: Sq; startX: number; startY: number; moved: boolean; el: HTMLElement | null } | null>(null);
+  const drag = useRef<{ id: number; from: Sq; startX: number; startY: number; moved: boolean; wasSelected: boolean; el: HTMLElement | null } | null>(null);
   const skipAnim = useRef(false);
 
   useEffect(() => {
@@ -118,6 +118,10 @@ export function Board({
     const f = fileOf(sq);
     const r = rankOf(sq);
     return { x: flipped ? 7 - f : f, y: flipped ? r : 7 - r };
+  };
+  const pieceTransform = (sq: Sq) => {
+    const { x, y } = xy(sq);
+    return `translate(${x * 100}%, ${y * 100}%)`;
   };
   const sqAt = (clientX: number, clientY: number): Sq | null => {
     const rect = boardRef.current?.getBoundingClientRect();
@@ -159,9 +163,9 @@ export function Board({
       const piece = pieces.find((p) => p.sq === sq);
       if (!piece) return;
       const el = boardRef.current?.querySelector<HTMLElement>(`[data-pid="${piece.id}"]`) ?? null;
-      drag.current = { id: piece.id, from: sq, startX: e.clientX, startY: e.clientY, moved: false, el };
+      drag.current = { id: piece.id, from: sq, startX: e.clientX, startY: e.clientY, moved: false, wasSelected: selected === sq, el };
       boardRef.current?.setPointerCapture(e.pointerId);
-      setSelected((cur) => (cur === sq ? cur : sq));
+      setSelected(sq);
       return;
     }
     setSelected(null);
@@ -190,9 +194,15 @@ export function Board({
     const d = drag.current;
     drag.current = null;
     if (!d) return;
-    if (d.el) d.el.style.transform = '';
     setDragId(null);
-    if (!d.moved) return;
+    if (!d.moved) {
+      // Tapping the selected piece again puts it down.
+      if (d.wasSelected) setSelected(null);
+      return;
+    }
+    // Put the piece back where React placed it. Clearing the inline transform instead would
+    // leave it at the top-left corner, because React only rewrites a style when its value changes.
+    if (d.el) d.el.style.transform = pieceTransform(d.from);
     const sq = sqAt(e.clientX, e.clientY);
     if (sq && sq !== d.from) tryMove(d.from, sq, true);
   };
@@ -243,14 +253,13 @@ export function Board({
       >
         <div className="board-squares">{squares}</div>
         {pieces.map((p) => {
-          const { x, y } = xy(p.sq);
           const dragging = dragId === p.id;
           return (
             <div
               key={p.id}
               data-pid={p.id}
               className={`piece${dragging ? ' piece-drag' : ''}${skipAnim.current ? ' piece-instant' : ''}`}
-              style={{ transform: `translate(${x * 100}%, ${y * 100}%)` }}
+              style={{ transform: pieceTransform(p.sq) }}
             >
               <PieceArt type={p.type} color={p.color} set={pieceSet} />
             </div>
