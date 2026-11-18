@@ -20,6 +20,7 @@ import type { Key } from './i18n/strings';
 import { Lab } from './lab/Lab';
 import { useStore } from './state/store';
 import { withSync } from './sync/state';
+import { onRouteChange, watchForUpdates } from './update';
 
 const TABS: { to: string; key: Key; icon: typeof House }[] = [
   { to: '/', key: 'nav.laku', icon: House },
@@ -78,7 +79,10 @@ export function App() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    onRouteChange();
   }, [path]);
+
+  useEffect(() => watchForUpdates((p) => IMMERSIVE.test(p)), []);
 
   // Restores a saved sign-in, or finishes one that just came back from Google.
   // If the first attempt fails for lack of a connection, it is tried again once back online.
