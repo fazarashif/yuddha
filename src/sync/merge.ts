@@ -69,6 +69,8 @@ export function mergeSaves(local: SaveData, incoming: unknown): SaveData {
     playRating: lead.playRating,
     puzzleRating: lead.puzzleRating,
     chesscomUser: lead.chesscomUser || local.chesscomUser || remote.chesscomUser,
+    // Saves from before the repertoire existed have none.
+    repertoire: lead.repertoire ?? local.repertoire ?? remote.repertoire ?? { w: null, e4: null, d4: null },
     xp: Math.max(local.xp, remote.xp),
     puzzlesDone: Math.max(local.puzzlesDone, remote.puzzlesDone),
     visionBest: Math.max(local.visionBest, remote.visionBest),

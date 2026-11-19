@@ -11,7 +11,9 @@ export type Motif =
   | { kind: 'hung'; piece: PieceSymbol; square: string }
   | { kind: 'missedFree'; piece: PieceSymbol; square: string }
   | { kind: 'missedCapture'; piece: PieceSymbol; square: string }
-  | { kind: 'generic' };
+  | { kind: 'generic' }
+  /** Left the player's opening book with a move the engine also dislikes. */
+  | { kind: 'book' };
 
 export interface ReviewedMove {
   ply: number;

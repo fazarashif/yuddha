@@ -58,8 +58,12 @@ const after = (moves: string) => {
   return c.fen();
 };
 
+/** The three choices of a repertoire: an opening for White, and answers to 1.e4 and to 1.d4. */
+export type RepertoireSlot = 'w' | 'e4' | 'd4';
+
 export interface OpeningInfo {
   side: 'w' | 'b';
+  slot: RepertoireSlot;
   /** One or two words on the character of the opening. */
   style: L;
 }
@@ -875,8 +879,8 @@ const repertoire: Lesson = {
     {
       kind: 'say',
       text: {
-        id: 'Cara belajar yang paling cepat:\n• Pelajari alur utama dan alasan tiap langkahnya.\n• Ulangi latihan hafalan sampai lancar.\n• Mainkan pembukaan itu di Tanding dan di Chess.com.\n• Setelah partai, buka Ulasan dan cek di langkah ke berapa kau atau lawan keluar dari buku.',
-        en: 'The fastest way to learn:\n• Study the main line and the reason for each move.\n• Repeat the memory drill until it flows.\n• Play the opening in Tanding and on Chess.com.\n• After the game, open the Review and check on which move you or your opponent left the book.',
+        id: 'Cara belajar yang paling cepat:\n• Tandai pilihanmu dengan tombol "Jadikan repertoar" di Pustaka.\n• Pelajari alur utama dan alasan tiap langkahnya, lalu ulangi latihan hafalan sampai lancar.\n• Mainkan pembukaan itu di Tanding dan di Chess.com.\n• Setelah partai, Ulasan menunjukkan di langkah ke berapa kau atau lawan keluar dari buku. Langkah yang juga dinilai kurang tepat oleh mesin masuk Kitab Luka.\n• Cermin menunjukkan hasilmu per pembukaan.',
+        en: 'The fastest way to learn:\n• Mark your choices with the "Add to repertoire" button in the library.\n• Study the main line and the reason for each move, then repeat the memory drill until it flows.\n• Play the opening in Tanding and on Chess.com.\n• After the game, the Review shows on which move you or your opponent left the book. A move the engine also dislikes goes into the Book of Scars.\n• Cermin shows your results per opening.',
       },
     },
     {
@@ -895,13 +899,13 @@ const repertoire: Lesson = {
 export const OPENINGS: Lesson[] = [repertoire, italian, ruyLopez, london, openGame, caroKann, sicilian, qgd];
 
 export const OPENING_INFO: Record<string, OpeningInfo> = {
-  'p-italian': { side: 'w', style: { id: 'Klasik, terbuka', en: 'Classical, open' } },
-  'p-ruy': { side: 'w', style: { id: 'Klasik, manuver', en: 'Classical, manoeuvring' } },
-  'p-london': { side: 'w', style: { id: 'Kokoh, sistematis', en: 'Solid, systematic' } },
-  'p-e5': { side: 'b', style: { id: 'Klasik, terbuka', en: 'Classical, open' } },
-  'p-caro': { side: 'b', style: { id: 'Kokoh', en: 'Solid' } },
-  'p-sicilian': { side: 'b', style: { id: 'Tajam, serangan balik', en: 'Sharp, counterattacking' } },
-  'p-qgd': { side: 'b', style: { id: 'Kokoh, klasik', en: 'Solid, classical' } },
+  'p-italian': { side: 'w', slot: 'w', style: { id: 'Klasik, terbuka', en: 'Classical, open' } },
+  'p-ruy': { side: 'w', slot: 'w', style: { id: 'Klasik, manuver', en: 'Classical, manoeuvring' } },
+  'p-london': { side: 'w', slot: 'w', style: { id: 'Kokoh, sistematis', en: 'Solid, systematic' } },
+  'p-e5': { side: 'b', slot: 'e4', style: { id: 'Klasik, terbuka', en: 'Classical, open' } },
+  'p-caro': { side: 'b', slot: 'e4', style: { id: 'Kokoh', en: 'Solid' } },
+  'p-sicilian': { side: 'b', slot: 'e4', style: { id: 'Tajam, serangan balik', en: 'Sharp, counterattacking' } },
+  'p-qgd': { side: 'b', slot: 'd4', style: { id: 'Kokoh, klasik', en: 'Solid, classical' } },
 };
 
 /** How the library page groups the openings. */

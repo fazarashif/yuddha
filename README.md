@@ -20,6 +20,9 @@ Lisensi: [GPL-3.0](LICENSE).
   1.e4; Queen's Gambit Declined melawan 1.d4; plus pengantar memilih repertoar.
   Tiap pembukaan berisi ide, kelebihan dan kekurangan, alur langkah utama dengan alasan tiap
   langkah, jebakan, tips, dan latihan hafalan dengan variasi acak.
+- Pembukaan di partai sendiri: pilih repertoar di Pustaka; Ulasan menyebut nama pembukaan dan
+  langkah pertama tempat kau atau lawan keluar dari buku (langkah yang juga dinilai kurang tepat
+  oleh mesin masuk Kitab Luka), dan Cermin menampilkan hasil per pembukaan.
 - Kiat Kilat: tujuh tips dan trik singkat yang berdiri sendiri (cek tiga detik, mat dua
   langkah, jebakan Legal, smothered mate, perpetual check, kapan bertukar, Raja di endgame).
 - Istilah catur yang lazim dipakai dalam bahasa Inggris (fork, skewer, passed pawn, endgame,

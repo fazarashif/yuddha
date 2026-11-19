@@ -7,6 +7,8 @@ import type { T } from '../../i18n';
  */
 export function motifText(t: T, motif: Motif, bestSan: string | null): string {
   switch (motif.kind) {
+    case 'book':
+      return bestSan ? t('motif.book.best', { best: bestSan }) : t('motif.book');
     case 'missedMate':
       return bestSan ? t('motif.missedMate.best', { n: motif.n, best: bestSan }) : t('motif.missedMate', { n: motif.n });
     case 'allowedMate':

@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Motif } from '../chess/review';
+import type { Repertoire } from '../content/book';
+import type { RepertoireSlot } from '../content/openings';
 import type { Lang } from '../content/types';
 import type { PieceSet } from '../pieces/PieceArt';
 
@@ -77,6 +79,8 @@ export interface State {
   luka: LukaCard[];
   /** Chess.com username last used for importing games. */
   chesscomUser: string;
+  /** Opening lesson ids chosen as the player's repertoire. */
+  repertoire: Repertoire;
   /** When the saved data last changed on this device; used to settle sync conflicts. */
   touched: number;
 
@@ -92,6 +96,7 @@ export interface State {
   gradeLuka: (id: string, correct: boolean) => void;
   recordPuzzle: (id: string, rating: number, solved: boolean, themes: string[]) => void;
   setVisionBest: (n: number) => void;
+  setRepertoire: (slot: RepertoireSlot, id: string | null) => void;
   applySave: (data: Partial<SaveData>) => void;
   resetAll: () => void;
 }
@@ -116,6 +121,7 @@ export const DATA_KEYS = [
   'games',
   'luka',
   'chesscomUser',
+  'repertoire',
 ] as const satisfies readonly (keyof State)[];
 export type DataKey = (typeof DATA_KEYS)[number];
 export type SaveData = Pick<State, DataKey | 'touched'>;
@@ -141,6 +147,7 @@ const initial = {
   games: [] as GameRecord[],
   luka: [] as LukaCard[],
   chesscomUser: '',
+  repertoire: { w: null, e4: null, d4: null } as Repertoire,
   touched: 0,
 };
 
@@ -238,6 +245,7 @@ export const useStore = create<State>()(
           };
         }),
       setVisionBest: (n) => set((s) => ({ visionBest: Math.max(s.visionBest, n) })),
+      setRepertoire: (slot, id) => set((s) => ({ repertoire: { ...s.repertoire, [slot]: id } })),
       applySave: (data) => set(data),
       resetAll: () => set({ ...initial, daily: emptyDaily() }),
     }),

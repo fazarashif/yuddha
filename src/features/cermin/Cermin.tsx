@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useLocation } from 'wouter';
 import type { Motif } from '../../chess/review';
 import { Bubble, TopBar } from '../../components/ui';
@@ -6,6 +7,7 @@ import { useL, useT } from '../../i18n';
 import type { Key } from '../../i18n/strings';
 import { useStore } from '../../state/store';
 import { THEME_NAME } from '../puzzle/themes';
+import { openingStats } from './openingStats';
 import type { PuzzleTheme } from '../puzzle/themes';
 
 const MOTIF_LABEL: Record<Motif['kind'], Key> = {
@@ -15,6 +17,7 @@ const MOTIF_LABEL: Record<Motif['kind'], Key> = {
   missedMate: 'cermin.motif.missedMate',
   allowedMate: 'cermin.motif.allowedMate',
   generic: 'cermin.motif.generic',
+  book: 'cermin.motif.book',
 };
 
 /** The mirror: what the player's own games say about their play. */
@@ -43,6 +46,8 @@ export function Cermin() {
   };
   const here = tally(games.filter((g) => !g.source));
   const chesscom = tally(games.filter((g) => g.source === 'chesscom'));
+
+  const openings = useMemo(() => openingStats(games).slice(0, 8), [games]);
 
   const motifCounts = new Map<Motif['kind'], number>();
   for (const c of luka) motifCounts.set(c.motif.kind, (motifCounts.get(c.motif.kind) ?? 0) + 1);
@@ -131,6 +136,28 @@ export function Cermin() {
             )}
             <p className="dim small">{t('cermin.trendHelp')}</p>
           </section>
+
+          {openings.length > 0 && (
+            <section className="panel">
+              <h3>{t('cermin.openings')}</h3>
+              <ul className="opening-rows">
+                {openings.map((o) => (
+                  <li key={`${o.family}-${o.color}`} className="opening-row">
+                    <span className="opening-row-name">
+                      <span className={`opening-side opening-side-${o.color}`}>{t(o.color === 'w' ? 'cermin.asWhite' : 'cermin.asBlack')}</span> {o.family}
+                    </span>
+                    <span className="opening-row-meta num">
+                      {o.n} · {o.w}/{o.d}/{o.l} · {Math.round(o.score * 100)}%
+                    </span>
+                    <span className="opening-row-bar">
+                      <span style={{ width: `${Math.max(3, o.score * 100)}%` }} />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="dim small">{t('cermin.openingsHelp')}</p>
+            </section>
+          )}
 
           <section className="panel">
             <h3>{t('cermin.motifs')}</h3>

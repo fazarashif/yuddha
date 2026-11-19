@@ -1,7 +1,9 @@
-import { CaretLeft, CaretRight, WarningDiamond } from '@phosphor-icons/react';
+import { BookOpen, CaretLeft, CaretRight, WarningDiamond } from '@phosphor-icons/react';
+import { Chess } from 'chess.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import { getEngine } from '../../chess/engine';
+import { nameOpening } from '../../chess/openingNames';
 import { winPercent } from '../../chess/eval';
 import type { MoveClass } from '../../chess/eval';
 import { reviewGame } from '../../chess/review';
@@ -9,8 +11,11 @@ import type { Review as ReviewData, ReviewedMove } from '../../chess/review';
 import { parseUci } from '../../chess/vision';
 import { Board } from '../../components/Board';
 import { Bubble, Meter, TopBar } from '../../components/ui';
+import { checkBook } from '../../content/book';
+import type { BookCheck } from '../../content/book';
 import { botById } from '../../content/characters';
 import { useT } from '../../i18n';
+import type { T } from '../../i18n';
 import { useStore } from '../../state/store';
 import { FindBetter } from '../shared/FindBetter';
 import { motifText } from './motif';
@@ -18,6 +23,46 @@ import { motifText } from './motif';
 const cache = new Map<string, ReviewData>();
 const BAD: MoveClass[] = ['inaccuracy', 'mistake', 'blunder'];
 const START = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+/** "5.Nc3" or "4...Nf6" for the move at this ply. */
+const moveLabel = (ply: number, san: string) => `${Math.ceil(ply / 2)}${ply % 2 === 1 ? '.' : '...'}${san}`;
+
+/** The opening card: the opening's name and where the game left the player's book. */
+function OpeningPanel({ t, name, book, moves, onSee, onTrain }: { t: T; name: string | null; book: BookCheck | null; moves: ReviewedMove[]; onSee: (ply: number) => void; onTrain: (id: string) => void }) {
+  const left = book?.left;
+  const leftMove = left ? moves[left.ply - 1] : undefined;
+  return (
+    <section className="panel book-panel">
+      <h3>
+        <BookOpen size={18} weight="duotone" /> {t('review.opening')}: {name ?? '-'}
+      </h3>
+      {!book ? (
+        <p className="dim">{t('review.book.unknown')}</p>
+      ) : !left ? (
+        <p>{t('review.book.end', { n: Math.ceil(book.followed / 2) })}</p>
+      ) : left.by === 'me' ? (
+        <p>
+          {t('review.book.me', { n: Math.ceil(left.ply / 2), played: moveLabel(left.ply, left.played), book: left.book.join(' / ') })}{' '}
+          {leftMove && BAD.includes(leftMove.cls) ? t('review.book.meBad') : t('review.book.meFine')}
+        </p>
+      ) : (
+        <p>{t('review.book.them', { n: Math.ceil(left.ply / 2), played: moveLabel(left.ply, left.played) })}</p>
+      )}
+      {book && (
+        <div className="book-actions">
+          {left && (
+            <button className="btn btn-ghost" onClick={() => onSee(left.ply)}>
+              {t('review.book.see')}
+            </button>
+          )}
+          <button className="btn btn-ghost" onClick={() => onTrain(book.lessonId)}>
+            {t('review.book.train')}
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
 
 function EvalGraph({ moves, at, onPick }: { moves: ReviewedMove[]; at: number; onPick: (i: number) => void }) {
   const n = moves.length;
@@ -73,12 +118,18 @@ export function Review({ gameId }: { gameId: string }) {
           mistakes: r.counts[game.color].mistake,
         });
         // Serious slips go into the Kitab Luka for spaced repetition.
-        addLuka(
-          mine
-            .filter((m) => m.cls === 'blunder' || m.cls === 'mistake')
-            .slice(0, 6)
-            .map((m) => ({ id: `${gameId}-${m.ply}`, fen: m.fenBefore, best: m.best, played: m.uci, motif: m.motif })),
-        );
+        const cards = mine
+          .filter((m) => m.cls === 'blunder' || m.cls === 'mistake')
+          .slice(0, 6)
+          .map((m) => ({ id: `${gameId}-${m.ply}`, fen: m.fenBefore, best: m.best, played: m.uci, motif: m.motif }));
+        // Leaving the book with a move the engine also calls inaccurate is worth repeating too; the book move is the answer.
+        const book = checkBook(r.moves.map((m) => m.san), game.color, useStore.getState().repertoire);
+        const off = book?.left?.by === 'me' ? r.moves[book.left.ply - 1] : undefined;
+        if (book?.left && off && off.cls === 'inaccuracy') {
+          const answer = new Chess(off.fenBefore).move(book.left.book[0]);
+          cards.push({ id: `${gameId}-${off.ply}`, fen: off.fenBefore, best: `${answer.from}${answer.to}${answer.promotion ?? ''}`, played: off.uci, motif: { kind: 'book' } });
+        }
+        addLuka(cards);
         const first = r.moves.find((m) => m.color === game.color && BAD.includes(m.cls));
         setAt(first ? first.ply : r.moves.length);
       })
@@ -97,6 +148,12 @@ export function Review({ gameId }: { gameId: string }) {
   const backTo = imported ? '/cermin' : '/tanding';
   const move = review && at > 0 ? review.moves[at - 1] : null;
   const myBad = useMemo(() => (review && game ? review.moves.filter((m) => m.color === game.color && BAD.includes(m.cls)) : []), [review, game]);
+  const repertoire = useStore((s) => s.repertoire);
+  const opening = useMemo(() => {
+    if (!review || !game) return null;
+    const sans = review.moves.map((m) => m.san);
+    return { name: nameOpening(sans), book: checkBook(sans, game.color, repertoire) };
+  }, [review, game, repertoire]);
 
   if (!game) {
     return (
@@ -211,6 +268,8 @@ export function Review({ gameId }: { gameId: string }) {
               {t('review.toLuka')}
             </button>
           </div>
+
+          {opening && <OpeningPanel t={t} name={opening.name} book={opening.book} moves={review.moves} onSee={setAt} onTrain={(id) => go(`/lakon/${id}`)} />}
         </>
       )}
     </div>
