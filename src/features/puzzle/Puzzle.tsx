@@ -1,6 +1,6 @@
 import { Chess } from 'chess.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation } from 'wouter';
+import { useLocation, useSearchParams } from 'wouter';
 import { play } from '../../audio/sound';
 import { kingSquare, legalDests, parseUci } from '../../chess/vision';
 import { NyalaIcon } from '../../components/Avatar';
@@ -11,7 +11,8 @@ import type { PieceType } from '../../pieces/PieceArt';
 import { useStore } from '../../state/store';
 import { pickPuzzle } from './data';
 import type { PuzzleItem } from './data';
-import { THEME_NAME, mainTheme } from './themes';
+import { PUZZLE_THEMES, THEME_NAME, mainTheme } from './themes';
+import type { PuzzleTheme } from './themes';
 
 type Phase = 'loading' | 'error' | 'empty' | 'lead' | 'play' | 'wait' | 'wrong' | 'solved' | 'shown';
 const DAILY_GOAL = 5;
@@ -21,6 +22,10 @@ export function Puzzle() {
   const t = useT();
   const l = useL();
   const [, go] = useLocation();
+  // ?tema=fork practises one pattern; without it the puzzles follow the rating alone.
+  const [params] = useSearchParams();
+  const asked = params.get('tema');
+  const focus = asked && (PUZZLE_THEMES as readonly string[]).includes(asked) ? (asked as PuzzleTheme) : undefined;
   const pieceSet = useStore((s) => s.settings.pieceSet);
   const rating = useStore((s) => s.puzzleRating);
   const recordPuzzle = useStore((s) => s.recordPuzzle);
@@ -56,7 +61,7 @@ export function Puzzle() {
     const state = useStore.getState();
     let next: PuzzleItem | null;
     try {
-      next = await pickPuzzle(state.puzzleRating, new Set(state.puzzleSeen));
+      next = await pickPuzzle(state.puzzleRating, new Set(state.puzzleSeen), Math.random, focus);
     } catch {
       if (my === gen.current) setPhase('error');
       return;
@@ -79,6 +84,8 @@ export function Puzzle() {
       apply(next.moves[0]);
       setPhase('play');
     }, 650);
+    // The focus comes from the address and does not change while this screen is open.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -182,7 +189,7 @@ export function Puzzle() {
     <div className="screen">
       <TopBar
         back="/"
-        title={<h2>{t('puzzle.title')}</h2>}
+        title={<h2>{focus ? l(THEME_NAME[focus]) : t('puzzle.title')}</h2>}
         right={
           <span className="puzzle-rating num">
             {rating}
@@ -225,7 +232,8 @@ export function Puzzle() {
             tone={phase === 'solved' ? 'good' : phase === 'wrong' ? 'bad' : undefined}
           >
             {phase === 'loading' && t('puzzle.loading')}
-            {(phase === 'lead' || phase === 'play' || phase === 'wait') && t(side === 'w' ? 'puzzle.askWhite' : 'puzzle.askBlack')}
+            {(phase === 'lead' || phase === 'play' || phase === 'wait') &&
+              (focus ? t(side === 'w' ? 'puzzle.askWhiteTheme' : 'puzzle.askBlackTheme', { theme: l(THEME_NAME[focus]) }) : t(side === 'w' ? 'puzzle.askWhite' : 'puzzle.askBlack'))}
             {phase === 'wrong' && t('puzzle.wrong')}
             {phase === 'solved' && (theme ? t('puzzle.solvedTheme', { theme: l(THEME_NAME[theme]) }) : t('puzzle.solved'))}
             {phase === 'shown' && (theme ? t('puzzle.shownTheme', { theme: l(THEME_NAME[theme]) }) : t('puzzle.shown'))}

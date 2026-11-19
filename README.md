@@ -29,6 +29,9 @@ Lisensi: [GPL-3.0](LICENSE).
   dan seterusnya) dibiarkan dalam bahasa Inggris di teks Indonesia.
 - Puzzle adaptif: 12.304 puzzle dari basis data Lichess (CC0), rating 400 sampai 2200,
   dengan rating puzzle yang mengikuti kemampuan dan statistik per pola.
+- Saran Ki Sabda: dari jenis kesalahan di partai sendiri, pola puzzle yang paling sering gagal,
+  dan pembukaan dengan skor rendah, aplikasi menyarankan pelajaran dan puzzle yang tepat. Puzzle
+  bisa dilatih per pola, dan puzzle harian di Laku diarahkan ke pola terlemah.
 - Pemanasan: latihan 60 detik mencari bidak gantung.
 - Laku Harian, streak, pangkat, dan Cermin (statistik dari partai sendiri).
 - Bahasa Indonesia dan Inggris. Efek suara dan musik latar dibuat langsung di perangkat.

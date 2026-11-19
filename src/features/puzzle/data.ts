@@ -35,12 +35,16 @@ export function loadBand(band: number): Promise<PuzzleItem[]> {
   return job;
 }
 
-/** An unseen puzzle close to the solver's rating; widens the net when the band runs dry. */
-export async function pickPuzzle(rating: number, seen: Set<string>, rng: () => number = Math.random): Promise<PuzzleItem | null> {
+/**
+ * An unseen puzzle close to the solver's rating; widens the net when the band runs dry. With a theme,
+ * only puzzles with that theme count, and the search may go further from the rating to find one.
+ */
+export async function pickPuzzle(rating: number, seen: Set<string>, rng: () => number = Math.random, theme?: PuzzleTheme): Promise<PuzzleItem | null> {
   const home = bandOf(rating);
-  const order = [home, home - 100, home + 100, home - 200, home + 200].filter((b) => b >= MIN_BAND && b <= MAX_BAND);
+  const steps = theme ? [0, -100, 100, -200, 200, -300, 300, -400, 400, -500, 500] : [0, -100, 100, -200, 200];
+  const order = steps.map((d) => home + d).filter((b) => b >= MIN_BAND && b <= MAX_BAND);
   for (const band of order) {
-    const fresh = (await loadBand(band)).filter((p) => !seen.has(p.id));
+    const fresh = (await loadBand(band)).filter((p) => !seen.has(p.id) && (!theme || p.themes.includes(theme)));
     if (fresh.length === 0) continue;
     const near = fresh.filter((p) => Math.abs(p.rating - rating) <= 60);
     const pool = near.length >= 5 ? near : fresh;

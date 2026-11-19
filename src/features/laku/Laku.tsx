@@ -2,6 +2,8 @@ import { BookOpenText, Check, Eye, Fire, PuzzlePiece, Scroll, Sword } from '@pho
 import type { ReactNode } from 'react';
 import { useLocation } from 'wouter';
 import { Bubble, Meter } from '../../components/ui';
+import { THEME_NAME } from '../puzzle/themes';
+import { SaranList, useAdvice } from '../saran/Saran';
 import { rankFor } from '../../content/characters';
 import { nextLesson } from '../../content/lessons';
 import { useL, useT } from '../../i18n';
@@ -25,6 +27,10 @@ export function Laku() {
   const { rank, next } = rankFor(xp);
   const lesson = nextLesson(lessons, startChapter);
   const due = dueLuka(luka).length;
+  const advice = useAdvice();
+  // The daily puzzles aim at the weakest pattern, once there is one to aim at.
+  const focus = advice.flatMap((a) => a.actions).find((a) => a.kind === 'puzzles');
+  const focusTheme = focus?.kind === 'puzzles' ? focus.theme : null;
 
   const steps: { key: DailyStep; icon: ReactNode; title: string; sub: string; to: string; skip?: boolean }[] = [
     { key: 'warmup', icon: <Eye size={24} />, title: t('laku.warmup'), sub: t('laku.warmupSub'), to: '/latihan' },
@@ -35,7 +41,13 @@ export function Laku() {
       sub: lesson ? l(lesson.title) : t('laku.lakonNone'),
       to: lesson ? `/lakon/${lesson.id}` : '/lakon',
     },
-    { key: 'puzzle', icon: <PuzzlePiece size={24} />, title: t('laku.puzzle'), sub: t('laku.puzzleSub'), to: '/puzzle' },
+    {
+      key: 'puzzle',
+      icon: <PuzzlePiece size={24} />,
+      title: t('laku.puzzle'),
+      sub: focusTheme ? t('laku.puzzleFocus', { theme: l(THEME_NAME[focusTheme]) }) : t('laku.puzzleSub'),
+      to: focusTheme ? `/puzzle?tema=${focusTheme}` : '/puzzle',
+    },
     {
       key: 'luka',
       icon: <Scroll size={24} />,
@@ -92,6 +104,13 @@ export function Laku() {
           })}
         </ol>
       </section>
+
+      {advice.length > 0 && (
+        <section className="panel saran-panel">
+          <h3>{t('saran.title')}</h3>
+          <SaranList advice={advice} limit={1} />
+        </section>
+      )}
 
       <section className="rank-card">
         <div className="rank-row">

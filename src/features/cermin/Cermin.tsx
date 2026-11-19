@@ -8,6 +8,7 @@ import type { Key } from '../../i18n/strings';
 import { useStore } from '../../state/store';
 import { THEME_NAME } from '../puzzle/themes';
 import { unreviewed, useBatch } from '../tanding/reviews';
+import { SaranList, useAdvice } from '../saran/Saran';
 import { openingStats } from './openingStats';
 import type { PuzzleTheme } from '../puzzle/themes';
 
@@ -51,6 +52,7 @@ export function Cermin() {
   const openings = useMemo(() => openingStats(games).slice(0, 8), [games]);
   const pending = unreviewed(games);
   const batch = useBatch();
+  const advice = useAdvice();
 
   const motifCounts = new Map<Motif['kind'], number>();
   for (const c of luka) motifCounts.set(c.motif.kind, (motifCounts.get(c.motif.kind) ?? 0) + 1);
@@ -139,6 +141,11 @@ export function Cermin() {
             </section>
           )}
 
+          <section className="panel saran-panel">
+            <h3>{t('saran.title')}</h3>
+            {advice.length === 0 ? <p className="dim">{t('saran.empty')}</p> : <SaranList advice={advice} limit={3} />}
+          </section>
+
           <section className="panel">
             <h3>{t('cermin.weak')}</h3>
             {weak.length === 0 ? (
@@ -146,7 +153,7 @@ export function Cermin() {
             ) : (
               <ul className="hbars">
                 {weak.map((w) => (
-                  <li key={w.name}>
+                  <li key={w.name} className="hbar-link" onClick={() => go(`/puzzle?tema=${w.name}`)}>
                     <span className="hbar-label">{l(THEME_NAME[w.name])}</span>
                     <span className="hbar hbar-good" style={{ width: `${Math.max(4, w.rate * 100)}%` }} />
                     <span className="num">{Math.round(w.rate * 100)}%</span>

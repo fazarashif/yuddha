@@ -355,3 +355,13 @@ input[type='range'] { width: 100%; accent-color: var(--gold); height: 28px; }
 .opening-side-b { background: #1d1a22; color: #f1e8d4; box-shadow: inset 0 0 0 1px var(--line-strong); }
 .opening-style { background: var(--surface-3); color: var(--text-dim); }
 .opening-done .opening-title { color: var(--text-dim); }
+
+/* Practice advice ---------------------------------------------------------- */
+.saran-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.saran { display: flex; flex-direction: column; gap: 8px; }
+.saran + .saran { padding-top: 14px; border-top: 1px solid var(--line); }
+.saran-why { margin: 0; line-height: 1.45; }
+.saran-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn-small { min-height: 38px; padding: 6px 12px; font-size: 0.86rem; gap: 6px; }
+.hbar-link { cursor: pointer; }
+.hbar-link:active { opacity: 0.7; }
