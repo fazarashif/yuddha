@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { useLocation } from 'wouter';
 import type { Motif } from '../../chess/review';
-import { Bubble, TopBar } from '../../components/ui';
+import { Bubble, Meter, TopBar } from '../../components/ui';
 import { botById } from '../../content/characters';
 import { useL, useT } from '../../i18n';
 import type { Key } from '../../i18n/strings';
 import { useStore } from '../../state/store';
 import { THEME_NAME } from '../puzzle/themes';
+import { unreviewed, useBatch } from '../tanding/reviews';
 import { openingStats } from './openingStats';
 import type { PuzzleTheme } from '../puzzle/themes';
 
@@ -48,6 +49,8 @@ export function Cermin() {
   const chesscom = tally(games.filter((g) => g.source === 'chesscom'));
 
   const openings = useMemo(() => openingStats(games).slice(0, 8), [games]);
+  const pending = unreviewed(games);
+  const batch = useBatch();
 
   const motifCounts = new Map<Motif['kind'], number>();
   for (const c of luka) motifCounts.set(c.motif.kind, (motifCounts.get(c.motif.kind) ?? 0) + 1);
@@ -101,6 +104,40 @@ export function Cermin() {
             {chesscom.n > 0 && `${t('cermin.recordCc', chesscom)} · `}
             {t('cermin.visionBest', { n: visionBest })}
           </p>
+
+          {(pending.length > 0 || batch.running || batch.total > 0) && (
+            <section className="panel batch-panel">
+              <h3>{t('batch.title')}</h3>
+              {batch.running ? (
+                <>
+                  <p className="num">{t('batch.running', { i: Math.min(batch.done + 1, batch.total), n: batch.total })}</p>
+                  <Meter value={batch.done + batch.step.done / Math.max(1, batch.step.total)} max={batch.total} tone="sukma" />
+                  <p className="dim small">{t('batch.note')}</p>
+                  <button className="btn btn-ghost" onClick={batch.cancel}>
+                    {t('batch.cancel')}
+                  </button>
+                </>
+              ) : (
+                <>
+                  {batch.failed ? (
+                    <p>{t('batch.failed')}</p>
+                  ) : batch.total > 0 && batch.done >= batch.total ? (
+                    <p>{t('batch.done', { n: batch.done, k: batch.added })}</p>
+                  ) : batch.total > 0 ? (
+                    <p>{t('batch.stopped', { n: batch.done })}</p>
+                  ) : null}
+                  {pending.length > 0 && (
+                    <>
+                      <p className="dim">{t('batch.pending', { n: pending.length })}</p>
+                      <button className="btn btn-primary" onClick={() => batch.start(pending.map((g) => g.id))}>
+                        {t('batch.start')}
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
+            </section>
+          )}
 
           <section className="panel">
             <h3>{t('cermin.weak')}</h3>

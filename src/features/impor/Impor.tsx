@@ -7,6 +7,7 @@ import { useT } from '../../i18n';
 import type { Key } from '../../i18n/strings';
 import { useStore } from '../../state/store';
 import type { GameRecord } from '../../state/store';
+import { useBatch } from '../tanding/reviews';
 import { ImportError, fetchChessComGames, normaliseUsername } from './chesscom';
 
 type Phase = 'idle' | 'loading' | 'list' | 'error';
@@ -66,10 +67,10 @@ export function Impor() {
     });
 
   const confirm = () => {
-    importGames(
-      normaliseUsername(name),
-      found.filter((g) => picked.has(g.id)),
-    );
+    const chosen = found.filter((g) => picked.has(g.id));
+    importGames(normaliseUsername(name), chosen);
+    // Imported games are reviewed straight away, so their mistakes reach the Kitab Luka without opening each one.
+    useBatch.getState().start(chosen.map((g) => g.id));
     go('/cermin');
   };
 

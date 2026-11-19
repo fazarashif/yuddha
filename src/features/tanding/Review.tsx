@@ -1,12 +1,9 @@
 import { BookOpen, CaretLeft, CaretRight, WarningDiamond } from '@phosphor-icons/react';
-import { Chess } from 'chess.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
-import { getEngine } from '../../chess/engine';
 import { nameOpening } from '../../chess/openingNames';
 import { winPercent } from '../../chess/eval';
 import type { MoveClass } from '../../chess/eval';
-import { reviewGame } from '../../chess/review';
 import type { Review as ReviewData, ReviewedMove } from '../../chess/review';
 import { parseUci } from '../../chess/vision';
 import { Board } from '../../components/Board';
@@ -19,8 +16,8 @@ import type { T } from '../../i18n';
 import { useStore } from '../../state/store';
 import { FindBetter } from '../shared/FindBetter';
 import { motifText } from './motif';
+import { cachedReview, runReview, useBatch } from './reviews';
 
-const cache = new Map<string, ReviewData>();
 const BAD: MoveClass[] = ['inaccuracy', 'mistake', 'blunder'];
 const START = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -94,9 +91,8 @@ export function Review({ gameId }: { gameId: string }) {
   const [, go] = useLocation();
   const game = useStore((s) => s.games.find((g) => g.id === gameId));
   const pieceSet = useStore((s) => s.settings.pieceSet);
-  const attachReview = useStore((s) => s.attachReview);
-  const addLuka = useStore((s) => s.addLuka);
-  const [review, setReview] = useState<ReviewData | null>(cache.get(gameId) ?? null);
+  const [review, setReview] = useState<ReviewData | null>(cachedReview(gameId));
+  const batchStep = useBatch((b) => (b.current === gameId ? b.step : null));
   const [progress, setProgress] = useState({ done: 0, total: 1 });
   const [failed, setFailed] = useState(false);
   const [at, setAt] = useState(0);
@@ -106,38 +102,23 @@ export function Review({ gameId }: { gameId: string }) {
   useEffect(() => {
     if (!game || review) return;
     let cancelled = false;
-    reviewGame(getEngine(), game.pgn, 10, (done, total) => !cancelled && setProgress({ done, total }), () => cancelled)
-      .then((r) => {
-        if (cancelled || !r) return;
-        cache.set(gameId, r);
+    // Joins the background queue's review of this game if it is already running.
+    const attempt = (): Promise<void> =>
+      runReview(game, (done, total) => !cancelled && setProgress({ done, total }), () => cancelled).then((r) => {
+        if (cancelled) return;
+        // A review this screen joined may have been stopped by whoever started it; start again.
+        if (!r) return attempt();
         setReview(r);
-        const mine = r.moves.filter((m) => m.color === game.color);
-        attachReview(gameId, {
-          accuracy: Math.round(r.accuracy[game.color]),
-          blunders: r.counts[game.color].blunder,
-          mistakes: r.counts[game.color].mistake,
-        });
-        // Serious slips go into the Kitab Luka for spaced repetition.
-        const cards = mine
-          .filter((m) => m.cls === 'blunder' || m.cls === 'mistake')
-          .slice(0, 6)
-          .map((m) => ({ id: `${gameId}-${m.ply}`, fen: m.fenBefore, best: m.best, played: m.uci, motif: m.motif }));
-        // Leaving the book with a move the engine also calls inaccurate is worth repeating too; the book move is the answer.
-        const book = checkBook(r.moves.map((m) => m.san), game.color, useStore.getState().repertoire);
-        const off = book?.left?.by === 'me' ? r.moves[book.left.ply - 1] : undefined;
-        if (book?.left && off && off.cls === 'inaccuracy') {
-          const answer = new Chess(off.fenBefore).move(book.left.book[0]);
-          cards.push({ id: `${gameId}-${off.ply}`, fen: off.fenBefore, best: `${answer.from}${answer.to}${answer.promotion ?? ''}`, played: off.uci, motif: { kind: 'book' } });
-        }
-        addLuka(cards);
         const first = r.moves.find((m) => m.color === game.color && BAD.includes(m.cls));
         setAt(first ? first.ply : r.moves.length);
-      })
-      .catch(() => !cancelled && setFailed(true));
+      });
+    attempt().catch(() => !cancelled && setFailed(true));
     return () => {
       cancelled = true;
     };
-  }, [game, gameId, review, attachReview, addLuka]);
+    // Only the game's identity matters; its stored summary changes once the review lands.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameId, review]);
 
   useEffect(() => {
     listRef.current?.querySelector('.mv-on')?.scrollIntoView({ block: 'nearest', inline: 'center' });
@@ -169,7 +150,7 @@ export function Review({ gameId }: { gameId: string }) {
       <div className="screen">
         <TopBar back={backTo} title={<h2>{t('review.title')}</h2>} right={<span className="dim">{opponentName}</span>} />
         <Bubble name="Ki Sabda">{failed ? t('game.engineError') : t('review.working')}</Bubble>
-        {!failed && <Meter value={progress.done} max={progress.total} tone="sukma" />}
+        {!failed && <Meter value={batchStep?.done ?? progress.done} max={batchStep?.total ?? progress.total} tone="sukma" />}
       </div>
     );
   }
