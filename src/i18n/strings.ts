@@ -76,7 +76,7 @@ export const id = {
 
   'select.lede': 'Tiap penantang punya watak sendiri dan menguji satu kelemahanmu.',
   'select.locked': 'Kalahkan {name} dulu',
-  'select.eloNote': 'Angka di samping nama adalah perkiraan kekuatan, belum dikalibrasi terhadap rating sungguhan.',
+  'select.eloNote': 'Angka di samping nama adalah perkiraan rating rapid Chess.com. Kekuatan tiap penantang diukur dengan mencocokkan frekuensi blunder dan akurasinya dengan partai manusia di Lichess, jadi anggap angkanya perkiraan dengan selisih sekitar 150.',
   'select.color': 'Warna',
   'select.color.w': 'Putih',
   'select.color.r': 'Acak',
@@ -420,7 +420,7 @@ export const en: Record<Key, string> = {
 
   'select.lede': 'Each challenger has a temperament and tests one of your weaknesses.',
   'select.locked': 'Beat {name} first',
-  'select.eloNote': 'The number beside each name is an estimated strength, not yet calibrated against real ratings.',
+  'select.eloNote': 'The number beside each name is an estimated Chess.com rapid rating. Each challenger was measured by matching its blunder rate and accuracy to human games on Lichess, so treat it as an estimate within about 150 points.',
   'select.color': 'Colour',
   'select.color.w': 'White',
   'select.color.r': 'Random',

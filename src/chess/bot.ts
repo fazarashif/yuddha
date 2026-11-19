@@ -1,8 +1,9 @@
 import { Chess } from 'chess.js';
 import type { EngineLike, Line } from './engine';
+import { winPercent } from './eval';
 import { parseUci } from './vision';
 
-/** Tunable error model for one opponent. Values are design targets, not calibrated ratings. */
+/** Tunable error model for one opponent; tuned so its blunder rate matches human players (docs/KALIBRASI.md). */
 export interface BotBrain {
   /** Search depth for the candidate list. */
   depth: number;
@@ -10,8 +11,13 @@ export interface BotBrain {
   multipv: number;
   /** Softmax temperature in centipawns: higher = sloppier choices. */
   temp: number;
-  /** Chance per move of ignoring the scores and playing any candidate. */
+  /** Chance per move of a real blunder, the kind that loses material, as weaker players make. */
   blunder: number;
+  /**
+   * How much a blunder gives away, in winning-chance points (0 to 100) as the Review measures it:
+   * [least, most]. Defaults to [24, 60]; 22 or more counts as a blunder in the Review.
+   */
+  blunderLoss?: [number, number];
   /** Extra appeal (centipawns) of capturing something. */
   greed?: number;
   /** Extra appeal of giving check. */
@@ -52,10 +58,13 @@ export async function chooseBotMove(
   const chess = new Chess(fen);
   const best = lines[0].cp;
 
-  if (rng() < brain.blunder && lines.length > 1) {
-    // A lapse: any candidate that is not completely absurd.
-    const pool = lines.filter((l) => best - l.cp < 700);
-    return { move: pool[Math.floor(rng() * pool.length)].move, lines };
+  if (rng() < brain.blunder) {
+    // A lapse: a move that really costs something, chosen from a wide, quick look at the position.
+    const [least, most] = brain.blunderLoss ?? [24, 60];
+    const wide = await engine.analyse(fen, { depth: Math.min(brain.depth, 6), multipv: 40 });
+    const top = winPercent(wide[0]?.cp ?? best);
+    const pool = wide.filter((l) => top - winPercent(l.cp) >= least && top - winPercent(l.cp) <= most);
+    if (pool.length > 0) return { move: pool[Math.floor(rng() * pool.length)].move, lines };
   }
 
   const weights = lines.map((l) => Math.exp(-(best - l.cp - appeal(chess, l, brain)) / Math.max(1, brain.temp)));

@@ -8,7 +8,8 @@ Lisensi: [GPL-3.0](LICENSE).
 ## Yang sudah ada
 
 - Papan dan bidak rancangan sendiri (set Yuddha dan Klasik), empat tema papan, tema malam dan siang.
-- Tanding melawan sembilan penantang berkarakter, dengan mode berpemandu (petunjuk, batal
+- Tanding melawan sembilan penantang berkarakter (kekuatannya dikalibrasi terhadap partai
+  manusia; lihat `docs/KALIBRASI.md`), dengan mode berpemandu (petunjuk, batal
   langkah, peringatan sebelum blunder) dan mode murni yang mengubah rating.
 - Ulasan partai: kelas tiap langkah, grafik evaluasi, komentar Ki Sabda, dan "coba lagi".
 - Kitab Luka: kesalahan dari partai sendiri diulang secara berkala.
@@ -51,7 +52,6 @@ Lisensi: [GPL-3.0](LICENSE).
 
 - Impor partai dari Lichess.
 - Pembukaan lain (misalnya King's Indian, French) dan latihan endgame yang lebih luas.
-- Kalibrasi kekuatan penantang terhadap rating sungguhan.
 
 ## Menjalankan
 

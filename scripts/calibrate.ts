@@ -90,12 +90,15 @@ interface Player {
 function botPlayer(id: string): Player {
   const bot = BOTS.find((b) => b.id === id);
   if (!bot) throw new Error(`unknown bot ${id}`);
+  // BRAINS='{"gandarwa":{"blunder":0.1}}' tries other settings without editing the app.
+  const override = (JSON.parse(process.env.BRAINS ?? '{}') as Record<string, Partial<typeof bot.brain>>)[id];
+  const brain = { ...bot.brain, ...override };
   const uci = new Uci();
   uci.send('uci');
   const engine = new CliEngine(uci);
   return {
     name: id,
-    move: async (fen) => (await chooseBotMove(engine, fen, bot.brain))?.move ?? null,
+    move: async (fen) => (await chooseBotMove(engine, fen, brain))?.move ?? null,
     quit: () => uci.quit(),
   };
 }
@@ -109,7 +112,7 @@ function stockfishPlayer(elo: number): Player {
     name: `sf${elo}`,
     move: async (fen) => {
       let best: string | null = null;
-      await uci.ask([`position fen ${fen}`, 'go movetime 150'], (line) => {
+      await uci.ask([`position fen ${fen}`, `go movetime ${MOVETIME}`], (line) => {
         if (!line.startsWith('bestmove')) return false;
         best = line.split(' ')[1];
         return true;
@@ -119,6 +122,9 @@ function stockfishPlayer(elo: number): Player {
     quit: () => uci.quit(),
   };
 }
+
+/** Thinking time for the limited Stockfish. Its UCI_Elo scale was tuned at about a second a move. */
+const MOVETIME = Number(process.env.MOVETIME ?? 1000);
 
 const playerFor = (id: string) => (/^sf\d+$/.test(id) ? stockfishPlayer(Number(id.slice(2))) : botPlayer(id));
 
@@ -150,7 +156,47 @@ async function playGame(white: Player, black: Player, opening: string, judge: Cl
   return cp > 250 ? 1 : cp < -250 ? 0 : 0.5;
 }
 
+const winPct = (cp: number) => 50 + 50 * (2 / (1 + Math.exp(-0.00368208 * Math.max(-1500, Math.min(1500, cp)))) - 1);
+const moveAcc = (loss: number) => Math.max(0, Math.min(100, 103.1668 * Math.exp(-0.04354 * loss) - 3.1669));
+
+/**
+ * Self-play for one bot, judging every move at depth 12 with the same formulas as the Review:
+ * the share of moves losing 22 or more winning-chance points (blunders) and the mean move accuracy.
+ * Only moves from undecided positions (|eval| < 400 cp) count, as in the human sample.
+ */
+async function stats(id: string, games: number) {
+  const player = playerFor(id);
+  const judgeUci = new Uci();
+  judgeUci.send('uci');
+  const judge = new CliEngine(judgeUci);
+  let moves = 0;
+  let blunders = 0;
+  let accSum = 0;
+  for (let g = 0; g < games; g++) {
+    const chess = new Chess();
+    for (const san of OPENINGS[g % OPENINGS.length].split(' ')) chess.move(san);
+    let before = (await judge.analyse(chess.fen(), { depth: 12 }))[0]?.cp ?? 0;
+    while (!chess.isGameOver() && chess.history().length < 160) {
+      const uci = await player.move(chess.fen());
+      if (!uci) break;
+      chess.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci[4] });
+      const after = chess.isCheckmate() ? -100000 : chess.isGameOver() ? 0 : ((await judge.analyse(chess.fen(), { depth: 12 }))[0]?.cp ?? 0);
+      if (Math.abs(before) < 400) {
+        const loss = Math.max(0, winPct(before) - winPct(-after));
+        moves += 1;
+        accSum += moveAcc(loss);
+        if (loss >= 22) blunders += 1;
+      }
+      before = after;
+    }
+  }
+  console.log(JSON.stringify({ bot: id, moves, blunderRate: Math.round((blunders / moves) * 10000) / 10000, accuracy: Math.round((accSum / moves) * 10) / 10 }));
+  player.quit();
+  judgeUci.quit();
+}
+
 async function main() {
+  if (process.argv[2] === 'stats') return stats(process.argv[3], Number(process.argv[4] ?? 6));
   const [a, b, gamesArg] = process.argv.slice(2);
   const games = Number(gamesArg ?? 16);
   const pa = playerFor(a);

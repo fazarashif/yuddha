@@ -1,0 +1,106 @@
+{
+ "gamesWithEval": 40550,
+ "used": 12152,
+ "bands": {
+  "500": {
+   "games": 55,
+   "blunderRate": 0.1355,
+   "accuracy": 76.0
+  },
+  "600": {
+   "games": 135,
+   "blunderRate": 0.1289,
+   "accuracy": 76.1
+  },
+  "700": {
+   "games": 314,
+   "blunderRate": 0.102,
+   "accuracy": 78.5
+  },
+  "800": {
+   "games": 548,
+   "blunderRate": 0.0942,
+   "accuracy": 80.1
+  },
+  "900": {
+   "games": 974,
+   "blunderRate": 0.0794,
+   "accuracy": 81.2
+  },
+  "1000": {
+   "games": 1249,
+   "blunderRate": 0.0732,
+   "accuracy": 82.2
+  },
+  "1100": {
+   "games": 1553,
+   "blunderRate": 0.0635,
+   "accuracy": 83.0
+  },
+  "1200": {
+   "games": 1731,
+   "blunderRate": 0.058,
+   "accuracy": 83.9
+  },
+  "1300": {
+   "games": 2015,
+   "blunderRate": 0.051,
+   "accuracy": 84.9
+  },
+  "1400": {
+   "games": 2105,
+   "blunderRate": 0.0467,
+   "accuracy": 85.3
+  },
+  "1500": {
+   "games": 2438,
+   "blunderRate": 0.0441,
+   "accuracy": 85.9
+  },
+  "1600": {
+   "games": 2301,
+   "blunderRate": 0.0394,
+   "accuracy": 86.6
+  },
+  "1700": {
+   "games": 2141,
+   "blunderRate": 0.0355,
+   "accuracy": 87.1
+  },
+  "1800": {
+   "games": 2062,
+   "blunderRate": 0.0331,
+   "accuracy": 87.7
+  },
+  "1900": {
+   "games": 1802,
+   "blunderRate": 0.0297,
+   "accuracy": 88.5
+  },
+  "2000": {
+   "games": 1204,
+   "blunderRate": 0.0274,
+   "accuracy": 88.8
+  },
+  "2100": {
+   "games": 842,
+   "blunderRate": 0.0225,
+   "accuracy": 89.8
+  },
+  "2200": {
+   "games": 481,
+   "blunderRate": 0.0222,
+   "accuracy": 90.3
+  },
+  "2300": {
+   "games": 217,
+   "blunderRate": 0.0159,
+   "accuracy": 91.8
+  },
+  "2400": {
+   "games": 100,
+   "blunderRate": 0.015,
+   "accuracy": 92.4
+  }
+ }
+}
