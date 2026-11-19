@@ -1,22 +1,45 @@
-import { Check, Lock } from '@phosphor-icons/react';
+import { Check, Lightning } from '@phosphor-icons/react';
 import { useLocation } from 'wouter';
 import { TopBar } from '../../components/ui';
-import { CHAPTERS } from '../../content/lessons';
+import { CHAPTERS, KIAT, nextLesson } from '../../content/lessons';
 import { useL, useT } from '../../i18n';
 import { useStore } from '../../state/store';
 
-/** The campaign map: every chapter is open, lessons inside a chapter unlock in order. */
+/** The campaign map. Every lesson is open; the suggested one is simply the next unfinished in order. */
 export function Lakon() {
   const t = useT();
   const l = useL();
   const [, go] = useLocation();
   const done = useStore((s) => s.lessons);
   const startChapter = useStore((s) => s.startChapter);
+  const suggested = nextLesson(done, startChapter)?.id;
 
   return (
     <div className="screen">
       <TopBar title={<h1>{t('nav.lakon')}</h1>} />
       <p className="lede">{t('lakon.lede')}</p>
+
+      <section className="kiat">
+        <header className="kiat-head">
+          <Lightning size={20} weight="fill" />
+          <div>
+            <h2>{t('lakon.kiat')}</h2>
+            <p className="dim">{t('lakon.kiatLede')}</p>
+          </div>
+        </header>
+        <div className="kiat-grid">
+          {KIAT.map((tip) => (
+            <button key={tip.id} className={`kiat-card${done[tip.id] ? ' kiat-done' : ''}`} onClick={() => go(`/lakon/${tip.id}`)}>
+              <span className="kiat-title">
+                {l(tip.title)}
+                {done[tip.id] && <Check size={14} weight="bold" />}
+              </span>
+              <span className="kiat-blurb">{l(tip.blurb)}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {CHAPTERS.map((ch) => (
         <section key={ch.n} className={`chapter${ch.n === startChapter ? ' chapter-here' : ''}`}>
           <header className="chapter-head">
@@ -29,13 +52,16 @@ export function Lakon() {
           <ol className="path">
             {ch.lessons.map((lesson, i) => {
               const isDone = Boolean(done[lesson.id]);
-              const open = i === 0 || Boolean(done[ch.lessons[i - 1].id]) || isDone;
+              const isNext = lesson.id === suggested;
               return (
-                <li key={lesson.id} className={`node${isDone ? ' node-done' : open ? ' node-open' : ' node-locked'}`}>
-                  <button disabled={!open} onClick={() => go(`/lakon/${lesson.id}`)}>
-                    <span className="node-dot">{isDone ? <Check size={18} weight="bold" /> : open ? <span className="num">{i + 1}</span> : <Lock size={16} />}</span>
+                <li key={lesson.id} className={`node${isDone ? ' node-done' : isNext ? ' node-open' : ' node-free'}`}>
+                  <button onClick={() => go(`/lakon/${lesson.id}`)}>
+                    <span className="node-dot">{isDone ? <Check size={18} weight="bold" /> : <span className="num">{i + 1}</span>}</span>
                     <span className="node-text">
-                      <span className="node-title">{l(lesson.title)}</span>
+                      <span className="node-title">
+                        {l(lesson.title)}
+                        {isNext && <span className="node-tag">{t('lakon.next')}</span>}
+                      </span>
                       <span className="node-blurb">{l(lesson.blurb)}</span>
                     </span>
                   </button>

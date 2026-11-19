@@ -2,6 +2,8 @@ import { langkahRahasia, remis } from './babak0b';
 import { matBenteng, matMenteri, pembukaan, polaMat, tukar } from './babak1b';
 import { garpu, paku, penjaga, pionAkhir, terbuka } from './babak2';
 import { aktif, bentengAkhir, seranganRaja, strukturPion } from './babak3';
+import { berkorban, profilaksis } from './babak4';
+import { KIAT } from './kiat';
 import type { L, Mood } from './types';
 
 export type SceneMark = 'good' | 'bad' | 'target' | 'danger';
@@ -425,7 +427,7 @@ const mata2: Lesson = {
         { id: 'Tidak ada ancaman', en: 'There is no threat' },
       ],
       correct: 1,
-      explain: { id: 'Rajamu terkurung Pionnya sendiri. Ini namanya mat baris belakang, pembunuh nomor satu di level pemula.', en: 'Your king is boxed in by his own pawns. This is the back-rank mate, the number one killer among beginners.' },
+      explain: { id: 'Rajamu terkurung Pionnya sendiri. Ini namanya back rank mate, pembunuh nomor satu di level pemula.', en: 'Your king is boxed in by his own pawns. This is the back-rank mate, the number one killer among beginners.' },
     },
     {
       kind: 'move',
@@ -599,16 +601,16 @@ export const CHAPTERS: Chapter[] = [
     n: 4,
     title: { id: 'Mahayuddha', en: 'The Great War' },
     range: { id: '1800 ke atas', en: '1800 and above' },
-    lessons: [],
-    upcoming: [
-      { id: 'Profilaksis', en: 'Prophylaxis' },
-      { id: 'Pengorbanan Posisional', en: 'Positional Sacrifices' },
-    ],
+    lessons: [profilaksis, berkorban],
+    upcoming: [],
   },
 ];
 
 export const ALL_LESSONS: Lesson[] = CHAPTERS.flatMap((c) => c.lessons);
-export const lessonById = (id: string) => ALL_LESSONS.find((l) => l.id === id);
+/** Every lesson: the chapters, plus the stand-alone tips. */
+export const ALL_CONTENT: Lesson[] = [...ALL_LESSONS, ...KIAT];
+export const lessonById = (id: string) => ALL_CONTENT.find((l) => l.id === id);
+export { KIAT };
 
 /** The next unfinished lesson at or after the chapter the player started in. */
 export function nextLesson(done: Record<string, unknown>, startChapter: number): Lesson | null {

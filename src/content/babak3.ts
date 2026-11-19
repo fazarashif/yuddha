@@ -8,7 +8,7 @@ const row = (rank: number, mark: SceneMark, skip: string[] = []): Record<string,
 export const strukturPion: Lesson = {
   id: 'b3-1',
   title: { id: 'Struktur Pion', en: 'Pawn Structure' },
-  blurb: { id: 'Pion terisolasi, dobel, pulau, dan Pion lolos.', en: 'Isolated and doubled pawns, islands, and passed pawns.' },
+  blurb: { id: 'Pion terisolasi, dobel, pulau Pion, dan passed pawn.', en: 'Isolated and doubled pawns, islands, and passed pawns.' },
   scenes: [
     {
       kind: 'say',
@@ -57,7 +57,7 @@ export const strukturPion: Lesson = {
     {
       kind: 'say',
       text: {
-        id: 'Sekarang kabar baiknya. Pion lolos adalah Pion yang tidak bisa dihentikan Pion lawan: tidak ada Pion lawan di depannya, di garisnya sendiri maupun di garis sebelahnya. Di akhir permainan, Pion lolos sering bernilai seperti bidak penuh.',
+        id: 'Sekarang kabar baiknya. Passed pawn adalah Pion yang tidak bisa dihentikan Pion lawan: tidak ada Pion lawan di depannya, di garisnya sendiri maupun di garis sebelahnya. Di endgame, passed pawn sering bernilai seperti bidak penuh.',
         en: 'Now the good news. A passed pawn is one that no enemy pawn can stop: there is no enemy pawn ahead of it, on its own file or the files beside it. In the endgame a passed pawn is often worth as much as a whole piece.',
       },
     },
@@ -74,7 +74,7 @@ export const strukturPion: Lesson = {
       fen: '6k1/ppp5/8/PPP5/8/8/8/7K w - - 0 1',
       marks: { a5: 'good', b5: 'good', c5: 'good' },
       text: {
-        id: 'Pion lolos juga bisa diciptakan. Di sini tiga Pion berhadapan dengan tiga Pion, dan tak satu pun lolos. Tapi Raja hitam terlalu jauh, dan ada satu terobosan yang membuat salah satu Pionmu tak terbendung.',
+        id: 'Passed pawn juga bisa diciptakan. Di sini tiga Pion berhadapan dengan tiga Pion, dan tak satu pun lolos. Tapi Raja hitam terlalu jauh, dan ada satu terobosan yang membuat salah satu Pionmu tak terbendung.',
         en: 'A passed pawn can also be created. Here three pawns face three pawns and none of them is passed. But the black king is too far away, and there is one breakthrough that makes one of your pawns unstoppable.',
       },
     },
@@ -114,7 +114,7 @@ export const strukturPion: Lesson = {
       kind: 'say',
       mood: 'happy',
       text: {
-        id: 'Sebelum memajukan Pion, tanyakan: Pion mana yang akan terisolasi, petak mana yang tak akan lagi terjaga, dan bisakah langkah ini memberiku Pion lolos? Pion yang dimajukan tanpa pikir tidak bisa ditarik kembali.',
+        id: 'Sebelum memajukan Pion, tanyakan: Pion mana yang akan terisolasi, petak mana yang tak akan lagi terjaga, dan bisakah langkah ini memberiku passed pawn? Pion yang dimajukan tanpa pikir tidak bisa ditarik kembali.',
         en: 'Before you push a pawn, ask: which pawn will be isolated, which square will never be guarded again, and could this move give me a passed pawn? A pawn pushed without thought can never be taken back.',
       },
     },
@@ -124,7 +124,7 @@ export const strukturPion: Lesson = {
 export const aktif: Lesson = {
   id: 'b3-2',
   title: { id: 'Bidak Aktif', en: 'Active Pieces' },
-  blurb: { id: 'Benteng di garis terbuka, Kuda di pos, Gajah yang baik.', en: 'Rooks on open files, knights on outposts, good bishops.' },
+  blurb: { id: 'Benteng di open file, Kuda di outpost, Gajah yang baik.', en: 'Rooks on open files, knights on outposts, good bishops.' },
   scenes: [
     {
       kind: 'say',
@@ -159,7 +159,7 @@ export const aktif: Lesson = {
       hint: 'd1d7',
       reply: 'e8b8',
       text: { id: 'Bentengmu sudah di garis terbuka. Masuklah ke baris ketujuh.', en: 'Your rook is already on the open file. Enter the seventh row.' },
-      right: { id: 'Pion b7 diserang, dan Benteng hitam terpaksa turun menjaganya. Sekarang lawan yang bermain pasif. Pion h3 yang kau majukan tadi juga penting: Rajamu tidak bisa diskakmat di baris belakang.', en: 'The b7 pawn is attacked, and the black rook has to come down to guard it. Now your opponent is the one playing passively. The h3 pawn matters too: your king cannot be mated on the back row.' },
+      right: { id: 'Pion b7 diserang, dan Benteng hitam terpaksa turun menjaganya. Sekarang lawan yang bermain pasif. Pion h3 yang kau majukan tadi juga penting: Rajamu tidak bisa terkena back rank mate.', en: 'The b7 pawn is attacked, and the black rook has to come down to guard it. Now your opponent is the one playing passively. The h3 pawn matters too: your king cannot be mated on the back row.' },
       wrong: { id: 'Bawa Benteng menyusuri garis d sampai baris ketujuh.', en: 'Take the rook down the d file to the seventh row.' },
     },
     {
@@ -167,7 +167,7 @@ export const aktif: Lesson = {
       fen: '3r1rk1/pp2bppp/3p4/4p3/4P3/2N5/PPP2PPP/3R1RK1 w - - 0 1',
       marks: { d5: 'target', e4: 'good' },
       text: {
-        id: 'Kuda paling kuat di pos: petak di wilayah lawan yang dijaga Pionmu dan tidak bisa diusir Pion lawan. Lihat d5. Pion e4 menjaganya, dan Hitam tidak punya Pion c atau e yang bisa menyerangnya.',
+        id: 'Kuda paling kuat di outpost: petak di wilayah lawan yang dijaga Pionmu dan tidak bisa diusir Pion lawan. Lihat d5. Pion e4 menjaganya, dan Hitam tidak punya Pion c atau e yang bisa menyerangnya.',
         en: 'A knight is strongest on an outpost: a square in enemy territory that your pawn guards and no enemy pawn can attack. Look at d5. The e4 pawn guards it, and Black has no c or e pawn that could ever attack it.',
       },
     },
@@ -176,7 +176,7 @@ export const aktif: Lesson = {
       fen: '3r1rk1/pp2bppp/3p4/4p3/4P3/2N5/PPP2PPP/3R1RK1 w - - 0 1',
       accept: ['c3d5'],
       hint: 'c3d5',
-      text: { id: 'Tempatkan Kudamu di pos itu.', en: 'Put your knight on that outpost.' },
+      text: { id: 'Tempatkan Kudamu di outpost itu.', en: 'Put your knight on that outpost.' },
       right: { id: 'Dari d5, Kuda menyerang Gajah e7 dan petak-petak sampai c7 dan f6. Gajah hitam berjalan di petak gelap, jadi ia pun tidak bisa menantangnya.', en: 'From d5 the knight hits the bishop on e7 and squares as far as c7 and f6. The black bishop moves on dark squares, so it cannot challenge the knight either.' },
       wrong: { id: 'Lompatkan Kuda ke d5.', en: 'Jump the knight to d5.' },
     },
@@ -232,7 +232,7 @@ export const seranganRaja: Lesson = {
       fen: 'r1bq1rk1/ppp2ppp/5n2/3p2B1/8/2PQ4/PPB2PPP/R4RK1 w - - 0 1',
       marks: { c2: 'good', d3: 'good', h7: 'target' },
       text: {
-        id: 'Lihat garis serong dari c2 ke h7. Gajah dan Menterimu berbaris di sana, seperti dua prajurit yang saling menopang. Para pecatur menyebutnya baterai. Sasarannya Pion h7.',
+        id: 'Lihat garis serong dari c2 ke h7. Gajah dan Menterimu berbaris di sana, seperti dua prajurit yang saling menopang. Para pecatur menyebutnya battery. Sasarannya Pion h7.',
         en: 'Look at the diagonal from c2 to h7. Your bishop and queen stand lined up on it, two soldiers backing each other. Chess players call this a battery. Its target is the h7 pawn.',
       },
     },
@@ -263,7 +263,7 @@ export const seranganRaja: Lesson = {
       accept: ['d3h7'],
       hint: 'd3h7',
       mate: true,
-      text: { id: 'Sekarang baterainya menembak.', en: 'Now the battery fires.' },
+      text: { id: 'Sekarang battery-nya menembak.', en: 'Now the battery fires.' },
       right: { id: 'Skakmat. Raja tidak bisa memakan Menteri karena Gajah di c2 menjaganya dari jauh.', en: 'Checkmate. The king cannot take the queen, because the bishop on c2 guards her from afar.' },
       wrong: { id: 'Makan Pion h7 dengan Menteri.', en: 'Take the h7 pawn with the queen.' },
     },
@@ -326,19 +326,19 @@ export const seranganRaja: Lesson = {
 
 export const bentengAkhir: Lesson = {
   id: 'b3-4',
-  title: { id: 'Akhir Permainan Benteng', en: 'Rook Endgames' },
+  title: { id: 'Endgame Benteng', en: 'Rook Endgames' },
   blurb: { id: 'Pertahanan Philidor dan jembatan Lucena.', en: 'The Philidor defence and the Lucena bridge.' },
   scenes: [
     {
       kind: 'say',
       text: {
-        id: 'Akhir permainan Benteng adalah yang paling sering muncul di papan. Dua posisi di dalamnya wajib kau kenal, karena hampir semua akhir permainan Benteng dengan satu Pion berujung ke salah satunya: Philidor untuk bertahan, Lucena untuk menang.',
+        id: 'Endgame Benteng adalah yang paling sering muncul di papan. Dua posisi di dalamnya wajib kau kenal, karena hampir semua endgame Benteng dengan satu Pion berujung ke salah satunya: Philidor untuk bertahan, Lucena untuk menang.',
         en: 'Rook endgames are the most common endgames on the board. Two positions inside them you must know, because almost every rook endgame with one pawn ends up in one of them: Philidor to defend, Lucena to win.',
       },
     },
     {
       kind: 'quiz',
-      text: { id: 'Pertama, satu aturan umum. Di mana tempat terbaik Benteng untuk mendukung Pion lolos?', en: 'First, one general rule. Where is the best place for a rook to support a passed pawn?' },
+      text: { id: 'Pertama, satu aturan umum. Di mana tempat terbaik Benteng untuk mendukung passed pawn?', en: 'First, one general rule. Where is the best place for a rook to support a passed pawn?' },
       options: [
         { id: 'Di depan Pion', en: 'In front of the pawn' },
         { id: 'Di belakang Pion', en: 'Behind the pawn' },
@@ -401,7 +401,7 @@ export const bentengAkhir: Lesson = {
       accept: ['d1d4'],
       hint: 'd1d4',
       marks: { d4: 'target' },
-      text: { id: 'Langkah kedua, yang paling terkenal: bangun jembatan. Naikkan Bentengmu ke baris 4.', en: 'Step two, the famous one: build the bridge. Lift your rook to row 4.' },
+      text: { id: 'Langkah kedua, yang paling terkenal: bangun jembatan, building a bridge. Naikkan Bentengmu ke baris 4.', en: 'Step two, the famous one: build the bridge. Lift your rook to row 4.' },
       right: { id: 'Jembatan siap. Rajamu akan berjalan keluar menuju b5, menghindari skak-skak dari samping, lalu Bentengmu menutup skak terakhir di b4. Begitu skaknya habis, Pion promosi.', en: 'The bridge is ready. Your king will walk out towards b5, dodging the checks from the side, then your rook blocks the last check on b4. Once the checks run out, the pawn promotes.' },
       wrong: { id: 'Naikkan Benteng dari d1 ke d4.', en: 'Lift the rook from d1 to d4.' },
     },
@@ -423,7 +423,7 @@ export const bentengAkhir: Lesson = {
       kind: 'say',
       mood: 'happy',
       text: {
-        id: 'Dengan ini Babak Siasat selesai. Kau tahu Pion mana yang sehat, bidak mana yang malas, kapan Raja lawan siap diserang, dan cara menutup akhir permainan Benteng. Yang tersisa hanyalah memainkannya, berkali-kali.',
+        id: 'Dengan ini Babak Siasat selesai. Kau tahu Pion mana yang sehat, bidak mana yang malas, kapan Raja lawan siap diserang, dan cara menutup endgame Benteng. Yang tersisa hanyalah memainkannya, berkali-kali.',
         en: 'With this the chapter of Strategy is complete. You know which pawns are healthy, which pieces are lazy, when the enemy king is ripe for attack, and how to close a rook endgame. All that is left is to play it, again and again.',
       },
     },

@@ -215,7 +215,7 @@ export const remis: Lesson = {
         { id: 'Raja dan satu Pion', en: 'King and one pawn' },
       ],
       correct: 2,
-      explain: { id: 'Pion bisa naik pangkat menjadi Menteri. Itu sebabnya satu Pion kadang lebih berharga daripada satu Gajah di akhir permainan.', en: 'A pawn can be promoted to a queen. That is why a single pawn is sometimes worth more than a bishop in the endgame.' },
+      explain: { id: 'Pion bisa naik pangkat menjadi Menteri. Itu sebabnya satu Pion kadang lebih berharga daripada satu Gajah di endgame.', en: 'A pawn can be promoted to a queen. That is why a single pawn is sometimes worth more than a bishop in the endgame.' },
     },
     {
       kind: 'say',

@@ -48,7 +48,10 @@ export const id = {
   'laku.line4': 'Prajurit yang tertidur selalu ada. Tugasmu menemukannya lebih dulu.',
   'laku.line5': 'Kalah hari ini, pelajaran untuk besok. Ayo mulai.',
 
-  'lakon.lede': 'Lima babak dari pemula sampai mahir. Semua babak terbuka; pilih yang sesuai kemampuanmu.',
+  'lakon.lede': 'Lima babak dari pemula sampai mahir. Semua pelajaran terbuka: ikuti urutannya, atau langsung lompat ke yang kau butuhkan.',
+  'lakon.kiat': 'Kiat Kilat',
+  'lakon.kiatLede': 'Tips dan trik singkat, dua sampai tiga menit. Buka kapan saja, urutan bebas.',
+  'lakon.next': 'disarankan',
   'lakon.yourStart': 'titik mulaimu',
   'lakon.soon': 'Segera hadir',
 
@@ -316,7 +319,10 @@ export const en: Record<Key, string> = {
   'laku.line4': 'There is always a sleeping soldier. Your job is to find it first.',
   'laku.line5': 'A loss today is a lesson for tomorrow. Let us begin.',
 
-  'lakon.lede': 'Five chapters from beginner to advanced. All are open; pick the one that fits your level.',
+  'lakon.lede': 'Five chapters from beginner to advanced. Every lesson is open: follow the order, or jump straight to what you need.',
+  'lakon.kiat': 'Quick Tips',
+  'lakon.kiatLede': 'Short tips and tricks, two or three minutes each. Open any of them, any time.',
+  'lakon.next': 'suggested',
   'lakon.yourStart': 'your starting point',
   'lakon.soon': 'Coming soon',
 

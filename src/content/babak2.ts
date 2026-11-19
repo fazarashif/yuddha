@@ -4,13 +4,13 @@ import type { Lesson, SceneMark } from './lessons';
 
 export const garpu: Lesson = {
   id: 'b2-1',
-  title: { id: 'Garpu', en: 'Forks' },
+  title: { id: 'Fork', en: 'Forks' },
   blurb: { id: 'Satu bidak, dua sasaran.', en: 'One piece, two targets.' },
   scenes: [
     {
       kind: 'say',
       text: {
-        id: 'Selamat datang di Babak Senjata. Mata Ksatria mengajarimu melihat. Sekarang kau belajar memukul. Senjata pertama bernama garpu: satu bidak menyerang dua sasaran sekaligus, dan lawan hanya sempat menyelamatkan satu.',
+        id: 'Selamat datang di Babak Senjata. Mata Ksatria mengajarimu melihat. Sekarang kau belajar memukul. Senjata pertama bernama fork, garpu: satu bidak menyerang dua sasaran sekaligus, dan lawan hanya sempat menyelamatkan satu.',
         en: 'Welcome to the chapter of Weapons. The Warrior\'s Eye taught you to see. Now you learn to strike. The first weapon is the fork: one piece attacks two targets at once, and your opponent has time to save only one.',
       },
     },
@@ -20,7 +20,7 @@ export const garpu: Lesson = {
       orient: 'w',
       marks: { c7: 'good', a8: 'target', e8: 'target' },
       text: {
-        id: 'Lihat Kuda di c7. Ia menyerang Raja di e8 dan Benteng di a8 sekaligus. Raja wajib lolos dari skak, jadi Benteng tertinggal. Kuda adalah pemegang garpu terbaik, karena lompatannya tidak bisa dihalangi.',
+        id: 'Lihat Kuda di c7. Ia menyerang Raja di e8 dan Benteng di a8 sekaligus. Raja wajib lolos dari skak, jadi Benteng tertinggal. Kuda adalah pemberi fork terbaik, karena lompatannya tidak bisa dihalangi.',
         en: 'Look at the knight on c7. It attacks the king on e8 and the rook on a8 together. The king must answer the check, so the rook is left behind. The knight is the best forker of all, because its jump cannot be blocked.',
       },
     },
@@ -30,7 +30,7 @@ export const garpu: Lesson = {
       accept: ['d5c7'],
       hint: 'd5c7',
       reply: 'e8d7',
-      text: { id: 'Kudamu bisa memakan Kuda di f6, tapi itu hanya tukar impas. Cari garpu.', en: 'Your knight could take the knight on f6, but that is only an even trade. Look for a fork.' },
+      text: { id: 'Kudamu bisa memakan Kuda di f6, tapi itu hanya tukar impas. Cari fork.', en: 'Your knight could take the knight on f6, but that is only an even trade. Look for a fork.' },
       right: { id: 'Skak! Raja harus menyingkir, dan Benteng di a8 tidak bisa ikut.', en: 'Check! The king must step aside, and the rook on a8 cannot come along.' },
       wrong: { id: 'Cari petak tempat Kuda memberi skak sambil membidik Benteng a8.', en: 'Find the square where the knight gives check while aiming at the rook on a8.' },
       punish: {
@@ -52,8 +52,8 @@ export const garpu: Lesson = {
       accept: ['d5f6'],
       hint: 'd5f6',
       reply: 'g8g7',
-      text: { id: 'Kau tertinggal jauh: Kuda melawan Menteri. Tapi Raja dan Menteri hitam berdiri dalam jangkauan satu lompatan. Temukan garpunya.', en: 'You are far behind: a knight against a queen. But the black king and queen both stand within one jump. Find the fork.' },
-      right: { id: 'Garpu Raja dan Menteri, hadiah terbesar bagi seekor Kuda. Pada langkah berikutnya Menteri itu milikmu.', en: 'A fork of king and queen, the greatest prize a knight can win. On the next move that queen is yours.' },
+      text: { id: 'Kau tertinggal jauh: Kuda melawan Menteri. Tapi Raja dan Menteri hitam berdiri dalam jangkauan satu lompatan. Temukan fork-nya.', en: 'You are far behind: a knight against a queen. But the black king and queen both stand within one jump. Find the fork.' },
+      right: { id: 'Fork Raja dan Menteri, hadiah terbesar bagi seekor Kuda. Pada langkah berikutnya Menteri itu milikmu.', en: 'A fork of king and queen, the greatest prize a knight can win. On the next move that queen is yours.' },
       wrong: { id: 'Cari petak tempat Kuda memberi skak sekaligus membidik Menteri d7.', en: 'Find the square where the knight gives check and aims at the queen on d7.' },
     },
     {
@@ -62,7 +62,7 @@ export const garpu: Lesson = {
       accept: ['d4d5'],
       hint: 'd4d5',
       marks: { c6: 'target', e6: 'target' },
-      text: { id: 'Garpu termurah dipegang Pion. Kuda di c6 dan Gajah di e6 berdiri dengan satu petak di antaranya. Tusuk tepat di tengah.', en: 'The cheapest fork belongs to the pawn. The knight on c6 and the bishop on e6 stand with one square between them. Stab right into the middle.' },
+      text: { id: 'Fork termurah dimainkan Pion. Kuda di c6 dan Gajah di e6 berdiri dengan satu petak di antaranya. Tusuk tepat di tengahnya.', en: 'The cheapest fork belongs to the pawn. The knight on c6 and the bishop on e6 stand with one square between them. Stab right into the middle.' },
       right: { id: 'Pion bernilai 1 menyerang dua bidak bernilai 3. Salah satunya pasti jatuh, dan Pion e4 menjaga temannya.', en: 'A pawn worth 1 attacks two pieces worth 3. One of them must fall, and the e4 pawn guards its friend.' },
       wrong: { id: 'Majukan Pion ke petak yang menyerang c6 dan e6 sekaligus.', en: 'Push a pawn to the square that attacks both c6 and e6.' },
     },
@@ -73,7 +73,7 @@ export const garpu: Lesson = {
       hint: 'd1d5',
       reply: 'g8h8',
       marks: { a5: 'target' },
-      text: { id: 'Menteri memegang garpu jarak jauh. Gajah hitam di a5 tidak dijaga, dan Raja hitam berdiri di garis serong yang terbuka. Satu langkah Menteri menyerang keduanya.', en: 'The queen forks from a distance. The black bishop on a5 is unguarded, and the black king stands on an open diagonal. One queen move attacks both.' },
+      text: { id: 'Menteri bisa memberi fork dari jauh. Gajah hitam di a5 tidak dijaga, dan Raja hitam berdiri di garis serong yang terbuka. Satu langkah Menteri menyerang keduanya.', en: 'The queen forks from a distance. The black bishop on a5 is unguarded, and the black king stands on an open diagonal. One queen move attacks both.' },
       right: { id: 'Skak, dan Gajah a5 ikut terbidik. Setelah Raja menyingkir, Gajah itu gratis.', en: 'Check, with the bishop on a5 in your sights as well. Once the king steps aside, that bishop is free.' },
       wrong: { id: 'Cari skak yang juga membidik Gajah a5.', en: 'Find a check that also aims at the bishop on a5.' },
     },
@@ -81,7 +81,7 @@ export const garpu: Lesson = {
       kind: 'tap',
       fen: 'r1bqkb1r/ppp2ppp/3p1n2/4p3/1n2P3/2N2N2/PPPBQPPP/R3KB1R w KQkq - 0 1',
       answers: ['c2'],
-      text: { id: 'Senjata ini juga dipegang lawan. Kuda hitam di b4 mengincar satu petak untuk garpu Raja dan Benteng. Ketuk petak itu.', en: 'Your opponent carries this weapon too. The black knight on b4 has its eye on one square to fork king and rook. Tap that square.' },
+      text: { id: 'Senjata ini juga dipegang lawan. Kuda hitam di b4 mengincar satu petak untuk fork Raja dan Benteng. Ketuk petak itu.', en: 'Your opponent carries this weapon too. The black knight on b4 has its eye on one square to fork king and rook. Tap that square.' },
       right: { id: 'Kuda memakan Pion c2 dengan skak, lalu Benteng a1 hilang. Tak satu pun bidakmu menjaga c2, karena Gajah d2 menghalangi Menterimu.', en: 'The knight takes the pawn on c2 with check, then the rook on a1 is lost. Not one of your pieces guards c2, because the bishop on d2 blocks your queen.' },
       wrong: { id: 'Dari b4, Kuda bisa melompat ke petak yang menyerang e1 dan a1 sekaligus.', en: 'From b4 the knight can jump to a square that attacks both e1 and a1.' },
     },
@@ -105,7 +105,7 @@ export const garpu: Lesson = {
       kind: 'say',
       mood: 'happy',
       text: {
-        id: 'Garpu lahir dari bidak yang tidak dijaga dan Raja yang terbuka. Di tiap giliran, periksa dulu semua skak dan semua lompatan Kuda, milikmu dan milik lawan.',
+        id: 'Fork lahir dari bidak yang tidak dijaga dan Raja yang terbuka. Di tiap giliran, periksa dulu semua skak dan semua lompatan Kuda, milikmu dan milik lawan.',
         en: 'Forks are born from unguarded pieces and an exposed king. On every turn, first look at every check and every knight jump, yours and your opponent\'s.',
       },
     },
@@ -114,7 +114,7 @@ export const garpu: Lesson = {
 
 export const paku: Lesson = {
   id: 'b2-2',
-  title: { id: 'Pin dan Tusuk', en: 'Pins and Skewers' },
+  title: { id: 'Pin dan Skewer', en: 'Pins and Skewers' },
   blurb: { id: 'Bidak yang berdiri segaris adalah sasaran.', en: 'Pieces standing in a line are targets.' },
   scenes: [
     {
@@ -186,7 +186,7 @@ export const paku: Lesson = {
     {
       kind: 'say',
       text: {
-        id: 'Tusuk adalah pin yang dibalik: bidak yang lebih berharga berdiri di depan. Ia terpaksa menyingkir, dan yang di belakangnya jatuh.',
+        id: 'Skewer adalah pin yang dibalik: bidak yang lebih berharga berdiri di depan. Ia terpaksa menyingkir, dan yang di belakangnya jatuh.',
         en: 'A skewer is a pin turned around: the more valuable piece stands in front. It is forced to step aside, and the one behind it falls.',
       },
     },
@@ -196,7 +196,7 @@ export const paku: Lesson = {
       accept: ['a1d1'],
       hint: 'a1d1',
       reply: 'd5e6',
-      text: { id: 'Raja hitam berjalan-jalan di tengah papan, dan Menterinya berdiri tepat di belakangnya. Tusuk.', en: 'The black king is strolling in the middle of the board, and his queen stands right behind him. Skewer them.' },
+      text: { id: 'Raja hitam berjalan-jalan di tengah papan, dan Menterinya berdiri tepat di belakangnya. Lakukan skewer.', en: 'The black king is strolling in the middle of the board, and his queen stands right behind him. Skewer them.' },
       right: { id: 'Skak! Raja terpaksa keluar dari garis d, dan Menteri di belakangnya tak terlindung.', en: 'Check! The king is forced off the d file, and the queen behind him is left bare.' },
       wrong: { id: 'Beri skak dengan Benteng di garis d.', en: 'Give check with the rook on the d file.' },
     },
@@ -214,7 +214,7 @@ export const paku: Lesson = {
       kind: 'say',
       mood: 'happy',
       text: {
-        id: 'Pin melumpuhkan, tusuk memaksa. Keduanya lahir dari bidak yang berdiri segaris. Sebelum melangkah, lihat garis-garis menuju Raja dan Menterimu: adakah bidakmu yang berbaris di sana?',
+        id: 'Pin melumpuhkan, skewer memaksa. Keduanya lahir dari bidak yang berdiri segaris. Sebelum melangkah, lihat garis-garis menuju Raja dan Menterimu: adakah bidakmu yang berbaris di sana?',
         en: 'A pin paralyses, a skewer forces. Both are born from pieces standing in a line. Before you move, look along the lines to your king and queen: are any of your pieces lined up there?',
       },
     },
@@ -223,7 +223,7 @@ export const paku: Lesson = {
 
 export const terbuka: Lesson = {
   id: 'b2-3',
-  title: { id: 'Serangan Terbuka', en: 'Discovered Attacks' },
+  title: { id: 'Discovered Attack', en: 'Discovered Attacks' },
   blurb: { id: 'Satu bidak menyingkir, yang di belakangnya menyerang.', en: 'One piece steps aside, the one behind it attacks.' },
   scenes: [
     {
@@ -238,7 +238,7 @@ export const terbuka: Lesson = {
       fen: '4k3/ppq2ppp/8/8/8/4N3/PPP2PPP/4R1K1 w - - 0 1',
       marks: { e1: 'good', e8: 'danger' },
       text: {
-        id: 'Benteng e1 membidik Raja e8, tapi Kudamu sendiri menghalangi. Begitu Kuda melompat, Benteng memberi skak. Itu skak terbuka. Dan Kuda bebas melompat ke mana saja, sebab lawan sibuk mengurus skak.',
+        id: 'Benteng e1 membidik Raja e8, tapi Kudamu sendiri menghalangi. Begitu Kuda melompat, Benteng memberi skak. Itu discovered check, skak terbuka. Dan Kuda bebas melompat ke mana saja, sebab lawan sibuk mengurus skak.',
         en: 'The rook on e1 aims at the king on e8, but your own knight is in the way. The moment the knight jumps, the rook gives check. That is a discovered check. And the knight may jump anywhere it likes, because your opponent is busy with the check.',
       },
     },
@@ -276,15 +276,15 @@ export const terbuka: Lesson = {
       hint: 'e4d6',
       mate: true,
       text: {
-        id: 'Yang paling dahsyat: skak ganda. Bidak yang menyingkir ikut memberi skak, jadi Raja diserang dari dua arah. Dua penyerang tidak bisa dimakan atau dihalangi sekaligus, maka Raja wajib melangkah. Di sini Raja hitam tidak punya petak. Tuntaskan.',
+        id: 'Yang paling dahsyat: double check, skak ganda. Bidak yang menyingkir ikut memberi skak, jadi Raja diserang dari dua arah. Dua penyerang tidak bisa dimakan atau dihalangi sekaligus, maka Raja wajib melangkah. Di sini Raja hitam tidak punya petak. Tuntaskan.',
         en: 'The most terrible of all: double check. The piece that leaves gives check as well, so the king is attacked from two sides. Two attackers cannot both be taken or blocked, so the king has to move. Here the black king has no square. Finish it.',
       },
-      right: { id: 'Skakmat. Kudamu sebenarnya bisa dimakan, tapi itu tidak menghentikan skak dari Benteng. Dalam skak ganda, hanya Raja yang boleh bergerak.', en: 'Checkmate. Your knight could in fact be taken, but that would not stop the check from the rook. In a double check, only the king may move.' },
+      right: { id: 'Skakmat. Kudamu sebenarnya bisa dimakan, tapi itu tidak menghentikan skak dari Benteng. Dalam double check, hanya Raja yang boleh bergerak.', en: 'Checkmate. Your knight could in fact be taken, but that would not stop the check from the rook. In a double check, only the king may move.' },
       wrong: { id: 'Lompatkan Kuda ke petak yang menyerang Raja e8. Benteng di belakangnya ikut memberi skak.', en: 'Jump the knight to a square that attacks the king on e8. The rook behind it gives check too.' },
     },
     {
       kind: 'quiz',
-      text: { id: 'Rajamu terkena skak ganda. Apa yang bisa kau lakukan?', en: 'Your king is in double check. What can you do?' },
+      text: { id: 'Rajamu terkena double check. Apa yang bisa kau lakukan?', en: 'Your king is in double check. What can you do?' },
       options: [
         { id: 'Memakan salah satu penyerang', en: 'Take one of the attackers' },
         { id: 'Menghalangi salah satu garis', en: 'Block one of the lines' },
@@ -318,7 +318,7 @@ export const terbuka: Lesson = {
       kind: 'say',
       mood: 'happy',
       text: {
-        id: 'Serangan terbuka lahir saat dua bidak berdiri segaris dengan sebuah sasaran. Cari barisan seperti itu di tiap posisi. Kalau milikmu, pakailah. Kalau milik lawan, bubarkan.',
+        id: 'Discovered attack lahir saat dua bidak berdiri segaris dengan sebuah sasaran. Cari barisan seperti itu di tiap posisi. Kalau milikmu, pakailah. Kalau milik lawan, bubarkan.',
         en: 'A discovered attack is born when two pieces stand in line with a target. Look for such a line in every position. If it is yours, use it. If it is your opponent\'s, break it up.',
       },
     },
@@ -389,10 +389,10 @@ export const penjaga: Lesson = {
       reply: 'd8d5',
       marks: { d8: 'danger', d5: 'target' },
       text: {
-        id: 'Cara ketiga: penjaga yang kelebihan beban. Benteng d8 punya dua tugas: menjaga Gajah d5 dan menjaga baris belakang dari skakmat. Ia tidak bisa mengerjakan keduanya. Makan Gajah itu.',
+        id: 'Cara ketiga: penjaga yang kelebihan beban, overload. Benteng d8 punya dua tugas: menjaga Gajah d5 dan menjaga back rank dari skakmat. Ia tidak bisa mengerjakan keduanya. Makan Gajah itu.',
         en: 'The third way: the overloaded guard. The rook on d8 has two jobs: guarding the bishop on d5, and guarding the back row against mate. It cannot do both. Take that bishop.',
       },
-      right: { id: 'Benteng hitam memakan balik, dan dengan begitu ia meninggalkan baris belakang.', en: 'The black rook takes back, and in doing so it leaves the back row.' },
+      right: { id: 'Benteng hitam memakan balik, dan dengan begitu ia meninggalkan back rank.', en: 'The black rook takes back, and in doing so it leaves the back row.' },
       wrong: { id: 'Ambil Gajah d5 dengan Benteng yang berdiri di garis d.', en: 'Take the bishop on d5 with the rook standing on the d file.' },
     },
     {
@@ -401,7 +401,7 @@ export const penjaga: Lesson = {
       accept: ['e1e8'],
       hint: 'e1e8',
       mate: true,
-      text: { id: 'Baris belakang kosong. Hukum dia.', en: 'The back row is empty. Punish it.' },
+      text: { id: 'Back rank kosong. Hukum dia.', en: 'The back row is empty. Punish it.' },
       right: { id: 'Skakmat. Seandainya Benteng hitam tidak memakan balik, kau tetap untung satu Gajah. Penjaga dengan dua tugas selalu gagal di salah satunya.', en: 'Checkmate. Had the black rook not taken back, you would still be a bishop up. A guard with two jobs always fails at one of them.' },
       wrong: { id: 'Beri skak di baris paling atas.', en: 'Give check on the top row.' },
     },
@@ -434,7 +434,7 @@ const SQUARE: Record<string, SceneMark> = Object.fromEntries(
 
 export const pionAkhir: Lesson = {
   id: 'b2-5',
-  title: { id: 'Akhir Permainan Pion', en: 'Pawn Endgames' },
+  title: { id: 'Endgame Pion', en: 'Pawn Endgames' },
   blurb: { id: 'Bujur sangkar, oposisi, dan Raja di depan Pion.', en: 'The square, the opposition, and the king in front of the pawn.' },
   scenes: [
     {
@@ -450,7 +450,7 @@ export const pionAkhir: Lesson = {
       orient: 'w',
       marks: SQUARE,
       text: {
-        id: 'Bisakah Raja mengejar Pion yang lari? Tidak perlu menghitung langkah satu per satu. Bayangkan bujur sangkar dari Pion sampai baris terakhir. Kalau Raja bisa masuk ke dalamnya pada gilirannya, Pion tertangkap.',
+        id: 'Bisakah Raja mengejar Pion yang lari? Tidak perlu menghitung langkah satu per satu. Bayangkan bujur sangkar, rule of the square, dari Pion sampai baris terakhir. Kalau Raja bisa masuk ke dalamnya pada gilirannya, Pion tertangkap.',
         en: 'Can a king catch a running pawn? There is no need to count move by move. Picture a square reaching from the pawn to the last row. If the king can step inside it on his turn, the pawn is caught.',
       },
     },
@@ -562,7 +562,7 @@ export const pionAkhir: Lesson = {
       kind: 'say',
       mood: 'happy',
       text: {
-        id: 'Garpu, pin, tusuk, serangan terbuka, cara menyingkirkan penjaga, dan hitungan Pion: senjatamu lengkap. Asahlah tiap hari di ruang puzzle, sampai tanganmu mengenalinya sebelum pikiranmu.',
+        id: 'Fork, pin, skewer, discovered attack, cara menyingkirkan penjaga, dan hitungan Pion: senjatamu lengkap. Asahlah tiap hari di ruang puzzle, sampai tanganmu mengenalinya sebelum pikiranmu.',
         en: 'Forks, pins, skewers, discovered attacks, removing the guard, and counting with pawns: your weapons are complete. Sharpen them every day in the puzzle room, until your hand knows them before your mind does.',
       },
     },

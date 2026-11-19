@@ -12,11 +12,13 @@ Lisensi: [GPL-3.0](LICENSE).
   langkah, peringatan sebelum blunder) dan mode murni yang mengubah rating.
 - Ulasan partai: kelas tiap langkah, grafik evaluasi, komentar Ki Sabda, dan "coba lagi".
 - Kitab Luka: kesalahan dari partai sendiri diulang secara berkala.
-- Lakon: dua puluh satu pelajaran interaktif. Babak 0 (empat pelajaran, aturan dasar sampai
-  rokade, en passant, dan remis), Babak 1 (delapan pelajaran), Babak 2 (lima pelajaran:
-  garpu, pin dan tusuk, serangan terbuka, menyingkirkan penjaga, akhir permainan Pion), dan
-  Babak 3 (empat pelajaran: struktur Pion, bidak aktif, serangan Raja, akhir permainan
-  Benteng) lengkap. Empat pelajaran akhir permainan ditutup dengan latihan melawan mesin.
+- Lakon: dua puluh tiga pelajaran interaktif di lima babak (Babak 0 sampai 4), semuanya
+  terbuka dan bisa diambil dalam urutan apa pun; yang berikutnya menurut urutan ditandai
+  "disarankan". Empat pelajaran endgame ditutup dengan latihan melawan mesin.
+- Kiat Kilat: tujuh tips dan trik singkat yang berdiri sendiri (cek tiga detik, mat dua
+  langkah, jebakan Legal, smothered mate, perpetual check, kapan bertukar, Raja di endgame).
+- Istilah catur yang lazim dipakai dalam bahasa Inggris (fork, skewer, passed pawn, endgame,
+  dan seterusnya) dibiarkan dalam bahasa Inggris di teks Indonesia.
 - Puzzle adaptif: 12.304 puzzle dari basis data Lichess (CC0), rating 400 sampai 2200,
   dengan rating puzzle yang mengikuti kemampuan dan statistik per pola.
 - Pemanasan: latihan 60 detik mencari bidak gantung.
@@ -31,8 +33,7 @@ Lisensi: [GPL-3.0](LICENSE).
 ## Yang belum ada
 
 - Impor partai dari Lichess.
-- Pelajaran Babak 4.
-- Pelatih pembukaan dan latihan akhir permainan yang lebih luas.
+- Pelatih pembukaan dan latihan endgame yang lebih luas.
 - Kalibrasi kekuatan penantang terhadap rating sungguhan.
 
 ## Menjalankan

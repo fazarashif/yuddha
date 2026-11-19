@@ -9,7 +9,7 @@ import type { Mark } from '../../components/Board';
 import { Bubble, Meter, TopBar } from '../../components/ui';
 import { KI_SABDA } from '../../content/characters';
 import { judgeMove } from '../../content/judge';
-import { lessonById, nextLesson } from '../../content/lessons';
+import { KIAT, lessonById, nextLesson } from '../../content/lessons';
 import type { Scene } from '../../content/lessons';
 import type { L } from '../../content/types';
 import { useL, useT } from '../../i18n';
@@ -200,7 +200,9 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
   if (!lesson) return null;
 
   if (finished) {
-    const upNext = nextLesson({ ...lessons, [lesson.id]: true }, startChapter);
+    // A quick tip stands on its own, so it does not lead into the chapter lessons.
+    const isTip = KIAT.some((k) => k.id === lesson.id);
+    const upNext = isTip ? null : nextLesson({ ...lessons, [lesson.id]: true }, startChapter);
     return (
       <div className="screen lesson-end">
         <Avatar spec={KI_SABDA} size={150} mood="happy" label="Ki Sabda" />

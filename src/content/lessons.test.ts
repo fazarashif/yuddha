@@ -2,7 +2,7 @@ import { Chess } from 'chess.js';
 import { describe, expect, it } from 'vitest';
 import { hangingPieces, parseUci } from '../chess/vision';
 import { judgeMove } from './judge';
-import { ALL_LESSONS } from './lessons';
+import { ALL_CONTENT, ALL_LESSONS } from './lessons';
 
 const legal = (fen: string, uci: string) => {
   try {
@@ -14,7 +14,7 @@ const legal = (fen: string, uci: string) => {
 };
 
 describe('lesson content', () => {
-  for (const lesson of ALL_LESSONS) {
+  for (const lesson of ALL_CONTENT) {
     lesson.scenes.forEach((scene, i) => {
       const name = `${lesson.id} scene ${i + 1} (${scene.kind})`;
       it(`${name} is well formed`, () => {
@@ -199,6 +199,58 @@ describe('lesson content', () => {
     const philidor = new Chess(scene('b3-4', 3).fen!);
     philidor.move(parseUci('b1b6'));
     expect(philidor.moves({ square: 'f5', verbose: true }).some((m) => m.to[1] === '6')).toBe(false);
+  });
+
+  it('quick tip claims agree with the board', () => {
+    const scene = (id: string, n: number) => ALL_CONTENT.find((l) => l.id === id)!.scenes[n];
+    const withTurn = (fen: string, turn: 'w' | 'b') => fen.replace(/ [wb] /, ` ${turn} `);
+    // The queen on f6 really threatens mate on f2.
+    const threat = new Chess(withTurn(scene('k-cek', 1).fen!, 'b'));
+    threat.move(parseUci('f6f2'));
+    expect(threat.isCheckmate()).toBe(true);
+    // Légal's trap: if Black takes the knight instead, the g4 bishop falls.
+    const legalTrap = new Chess(scene('k-legal', 1).fen!);
+    legalTrap.move(parseUci('f3e5'));
+    legalTrap.move(parseUci('d6e5'));
+    expect(legalTrap.move(parseUci('d1g4')).captured).toBe('b');
+    // Smothered mate: the knight jump is a double check.
+    const smother = new Chess(scene('k-tercekik', 1).fen!);
+    smother.move(parseUci('f7h6'));
+    expect(smother.attackers('g8', 'w').sort()).toEqual(['c4', 'h6']);
+    // Perpetual: each check leaves exactly one king move, and the cycle closes.
+    const perp = new Chess(scene('k-abadi', 1).fen!);
+    for (const [w, b] of [['d1h5', 'h7g8'], ['h5e8', 'g8h7'], ['e8h5', 'h7g8'], ['h5e8', 'g8h7']]) {
+      perp.move(parseUci(w));
+      expect(perp.inCheck()).toBe(true);
+      expect(perp.moves()).toEqual([perp.moves({ verbose: true })[0].san]);
+      perp.move(parseUci(b));
+    }
+    expect(perp.isThreefoldRepetition()).toBe(false);
+    perp.move(parseUci('d1h5'.replace('d1', 'e8')));
+    perp.move(parseUci('h7g8'));
+    expect(perp.isThreefoldRepetition()).toBe(true);
+  });
+
+  it('chapter 4 claims agree with the board', () => {
+    const scene = (id: string, n: number) => ALL_CONTENT.find((l) => l.id === id)!.scenes[n];
+    // Ruy Lopez: the c8 bishop can reach g4, where it pins the f3 knight to the queen.
+    const ruy = new Chess(scene('b4-1', 1).fen!.replace(' w ', ' b '));
+    ruy.move(parseUci('c8g4'));
+    expect(ruy.attackers('f3', 'b')).toContain('g4');
+    expect(new Chess(ruy.fen()).get('d1')).toEqual({ type: 'q', color: 'w' });
+    // h3 then covers g4; in the Italian, h6 covers g5.
+    const h3 = new Chess(scene('b4-1', 2).fen!);
+    h3.move(parseUci('h2h3'));
+    expect(h3.attackers('g4', 'w')).toContain('h3');
+    const h6 = new Chess(scene('b4-1', 3).fen!);
+    h6.move(parseUci('h7h6'));
+    expect(h6.attackers('g5', 'b')).toContain('h6');
+    // Greek gift: nothing black guards h7 except the king, and a knight on f6 would guard h7 and h5.
+    const greek = new Chess(scene('b4-2', 1).fen!);
+    expect(greek.attackers('h7', 'b')).toEqual(['g8']);
+    const knight = new Chess('4k3/8/5n2/8/8/8/8/4K3 w - - 0 1');
+    expect(knight.attackers('h7', 'b')).toEqual(['f6']);
+    expect(knight.attackers('h5', 'b')).toEqual(['f6']);
   });
 
   it('goal tasks reject careless moves', () => {
