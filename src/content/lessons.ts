@@ -1,6 +1,7 @@
 import { langkahRahasia, remis } from './babak0b';
 import { matBenteng, matMenteri, pembukaan, polaMat, tukar } from './babak1b';
 import { garpu, paku, penjaga, pionAkhir, terbuka } from './babak2';
+import { aktif, bentengAkhir, seranganRaja, strukturPion } from './babak3';
 import type { L, Mood } from './types';
 
 export type SceneMark = 'good' | 'bad' | 'target' | 'danger';
@@ -591,13 +592,8 @@ export const CHAPTERS: Chapter[] = [
     n: 3,
     title: { id: 'Siasat', en: 'Strategy' },
     range: { id: '1400 sampai 1800', en: '1400 to 1800' },
-    lessons: [],
-    upcoming: [
-      { id: 'Struktur Pion', en: 'Pawn Structure' },
-      { id: 'Bidak Aktif', en: 'Active Pieces' },
-      { id: 'Serangan Raja', en: 'Attacking the King' },
-      { id: 'Akhir Permainan Benteng', en: 'Rook Endgames' },
-    ],
+    lessons: [strukturPion, aktif, seranganRaja, bentengAkhir],
+    upcoming: [],
   },
   {
     n: 4,

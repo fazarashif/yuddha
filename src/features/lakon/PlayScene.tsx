@@ -11,8 +11,10 @@ import type { L } from '../../content/types';
 import { useL, useT } from '../../i18n';
 import type { PieceType } from '../../pieces/PieceArt';
 import { useStore } from '../../state/store';
+import { freshMove, judgeOwnMove, judgeReply, startOf } from './practice';
 
 type PlaySceneData = Extract<Scene, { kind: 'play' }>;
+
 type Status = 'you' | 'wait' | 'won' | 'failed';
 
 /** The defender's reply: the engine's choice, or any legal move if the engine is unavailable. */
@@ -43,6 +45,8 @@ export function PlayScene({ scene, onSolved, onMistake }: { scene: PlaySceneData
   const [failText, setFailText] = useState<L | null>(null);
   const [hint, setHint] = useState<{ from: string; to: string } | null>(null);
   const side = useRef(chess.current.turn()).current;
+  const start = useRef(startOf(scene.fen)).current;
+  const goal = scene.goal ?? 'mate';
 
   useEffect(
     () => () => {
@@ -57,6 +61,11 @@ export function PlayScene({ scene, onSolved, onMistake }: { scene: PlaySceneData
     const h = c.history({ verbose: true });
     const last = h[h.length - 1];
     setLastMove(last ? [last.from, last.to] : null);
+  };
+
+  const win = () => {
+    play('win');
+    setStatus('won');
   };
 
   const fail = (text: L) => {
@@ -90,17 +99,14 @@ export function PlayScene({ scene, onSolved, onMistake }: { scene: PlaySceneData
     show();
     const count = made + 1;
     setMade(count);
-    if (c.isCheckmate()) {
-      play('win');
-      setStatus('won');
-      return;
-    }
-    // A promotion only counts once the new piece has survived the defender's answer.
-    const promoted = scene.goal === 'promote' && Boolean(m.promotion);
+    const own = judgeOwnMove(c, goal, side);
+    if (own === 'won') return win();
     play(c.inCheck() ? 'check' : m.captured ? 'capture' : 'move');
-    if (c.isStalemate()) return fail(scene.stalemate);
-    if (c.isDraw()) return fail(scene.lost);
-    if (!promoted && count >= scene.maxMoves) return fail(scene.tooLong);
+    if (own === 'stalemate') return fail(scene.stalemate);
+    if (own === 'lost') return fail(scene.lost);
+    if (own === 'repeated') return fail(scene.tooLong);
+    // A promotion on the last allowed move still gets its chance to survive the answer.
+    if (count >= scene.maxMoves && !(goal === 'promote' && m.promotion)) return fail(scene.tooLong);
 
     setStatus('wait');
     const answer = await reply(c.fen());
@@ -109,13 +115,11 @@ export function PlayScene({ scene, onSolved, onMistake }: { scene: PlaySceneData
     const r = c.move(parseUci(answer));
     show();
     play(r.captured ? 'capture' : 'move');
-    // If the defender's capture leaves no way to mate, the attempt is over.
-    if (c.isDraw()) return fail(scene.lost);
-    if (promoted) {
-      play('win');
-      setStatus('won');
-      return;
-    }
+    const after = judgeReply(c, goal, side, start);
+    if (after === 'won') return win();
+    if (after === 'lost') return fail(scene.lost);
+    if (after === 'repeated') return fail(scene.tooLong);
+    if (count >= scene.maxMoves) return fail(scene.tooLong);
     setStatus('you');
   };
 
@@ -123,9 +127,10 @@ export function PlayScene({ scene, onSolved, onMistake }: { scene: PlaySceneData
     if (status !== 'you') return;
     const my = gen.current;
     try {
-      const lines = await getEngine().analyse(chess.current.fen(), { depth: 12, multipv: 1 });
-      if (my !== gen.current || !lines[0]) return;
-      const { from, to } = parseUci(lines[0].move);
+      const lines = await getEngine().analyse(chess.current.fen(), { depth: goal === 'promote' ? 16 : 12, multipv: 3 });
+      const best = freshMove(chess.current, lines);
+      if (my !== gen.current || !best) return;
+      const { from, to } = parseUci(best);
       play('hint');
       setHint({ from, to });
     } catch {

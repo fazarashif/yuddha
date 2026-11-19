@@ -142,6 +142,65 @@ describe('lesson content', () => {
     expect(new Chess(scene('b2-4', 3).fen!).attackers('d5', 'b')).toEqual([]);
   });
 
+  it('strategy claims agree with the board', () => {
+    const scene = (id: string, n: number) => ALL_LESSONS.find((l) => l.id === id)!.scenes[n];
+    const pawnsOf = (fen: string, color: 'w' | 'b') =>
+      new Chess(fen).board().flat().filter((p) => p && p.type === 'p' && p.color === color).map((p) => p!.square as string);
+    const files = (sqs: string[]) => sqs.map((sq) => 'abcdefgh'.indexOf(sq[0]));
+    const isolated = (fen: string) => {
+      const own = pawnsOf(fen, 'w');
+      return own.filter((sq) => !files(own).some((f) => Math.abs(f - files([sq])[0]) === 1)).sort();
+    };
+    const passed = (fen: string) => {
+      const enemy = pawnsOf(fen, 'b');
+      return pawnsOf(fen, 'w').filter((sq) => {
+        const f = files([sq])[0];
+        return !enemy.some((e) => Math.abs(files([e])[0] - f) <= 1 && Number(e[1]) > Number(sq[1]));
+      });
+    };
+    const islands = (fen: string) => {
+      const fs = [...new Set(files(pawnsOf(fen, 'w')))].sort((a, b) => a - b);
+      return fs.filter((f, i) => i === 0 || f - fs[i - 1] > 1).length;
+    };
+
+    const tap = (id: string, n: number) => {
+      const s = scene(id, n);
+      if (s.kind !== 'tap') throw new Error('not a tap scene');
+      return s;
+    };
+    // Pawn structure: the isolated, doubled and passed pawns, and the island count.
+    expect(isolated(tap('b3-1', 1).fen)).toEqual(['d4']);
+    const doubled = pawnsOf(tap('b3-1', 3).fen, 'w').filter((sq, _, all) => all.filter((o) => o[0] === sq[0]).length > 1);
+    expect(doubled.sort()).toEqual(tap('b3-1', 3).answers.slice().sort());
+    expect(islands(scene('b3-1', 4).fen!)).toBe(3);
+    expect(passed(tap('b3-1', 6).fen)).toEqual(['d5']);
+    expect(passed(scene('b3-1', 7).fen!)).toEqual([]);
+
+    // Active pieces: the open files are open, the outpost cannot be hit by a pawn, the bishop is bad.
+    const open = scene('b3-2', 1).fen!;
+    for (const f of ['d', 'e']) expect([...pawnsOf(open, 'w'), ...pawnsOf(open, 'b')].some((sq) => sq[0] === f)).toBe(false);
+    const outpost = scene('b3-2', 4).fen!;
+    expect(new Chess(outpost).attackers('d5', 'w')).toContain('e4');
+    expect(pawnsOf(outpost, 'b').some((sq) => ['c', 'e'].includes(sq[0]) && Number(sq[1]) > 5)).toBe(false);
+    const light = (sq: string) => ('abcdefgh'.indexOf(sq[0]) + Number(sq[1]) - 1) % 2 === 1;
+    const bad = scene('b3-2', 6).fen!;
+    expect(light('e2')).toBe(true);
+    expect(pawnsOf(bad, 'w').filter((sq) => ['c4', 'd5', 'e4', 'f3'].includes(sq)).every(light)).toBe(true);
+    const knights = new Chess(scene('b3-2', 7).fen!);
+    expect([knights.moves({ square: 'a1' }).length, knights.moves({ square: 'd4' }).length]).toEqual([2, 8]);
+
+    // Attacking the king: f6 is the only guard of h7 besides the king, and g6 loses the queen.
+    const battery = new Chess(scene('b3-3', 2).fen!);
+    expect(battery.attackers('h7', 'b').filter((sq) => sq !== 'g8')).toEqual(['f6']);
+    const g6 = new Chess(scene('b3-3', 5).fen!);
+    expect(g6.move(parseUci('f6d8')).captured).toBe('q');
+
+    // Rook endgames: in Philidor the white king is kept off row 6.
+    const philidor = new Chess(scene('b3-4', 3).fen!);
+    philidor.move(parseUci('b1b6'));
+    expect(philidor.moves({ square: 'f5', verbose: true }).some((m) => m.to[1] === '6')).toBe(false);
+  });
+
   it('goal tasks reject careless moves', () => {
     const find = (id: string, n: number) => {
       const s = ALL_LESSONS.find((l) => l.id === id)!.scenes[n];
