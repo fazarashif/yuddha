@@ -6,3 +6,4 @@ public/engine
 *.local
 .DS_Store
 /preview
+.calibrate

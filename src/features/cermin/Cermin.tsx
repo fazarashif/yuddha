@@ -10,6 +10,7 @@ import { THEME_NAME } from '../puzzle/themes';
 import { unreviewed, useBatch } from '../tanding/reviews';
 import { SaranList, useAdvice } from '../saran/Saran';
 import { openingStats } from './openingStats';
+import { Progress } from './Progress';
 import type { PuzzleTheme } from '../puzzle/themes';
 
 const MOTIF_LABEL: Record<Motif['kind'], Key> = {
@@ -27,19 +28,14 @@ export function Cermin() {
   const t = useT();
   const l = useL();
   const [, go] = useLocation();
-  const puzzleRating = useStore((s) => s.puzzleRating);
   const puzzlesDone = useStore((s) => s.puzzlesDone);
   const themeStats = useStore((s) => s.themeStats);
   const games = useStore((s) => s.games);
   const luka = useStore((s) => s.luka);
-  const rating = useStore((s) => s.playRating);
   const visionBest = useStore((s) => s.visionBest);
 
   const reviewed = games.filter((g) => g.accuracy !== undefined);
   const recent = reviewed.slice(0, 10).reverse();
-  const avg = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
-  const blundersPerGame = avg(reviewed.slice(0, 10).map((g) => g.blunders ?? 0));
-  const accuracy = avg(reviewed.slice(0, 10).map((g) => g.accuracy ?? 0));
   // Games against the built-in opponents and imported games are tallied apart.
   const tally = (list: typeof games) => {
     const w = list.filter((g) => g.result === 'win').length;
@@ -83,24 +79,7 @@ export function Cermin() {
         </>
       ) : (
         <>
-          <div className="stats-row">
-            <div className="stat">
-              <span className="stat-n num">{rating}</span>
-              <span className="stat-l">{t('cermin.rating')}</span>
-            </div>
-            <div className="stat">
-              <span className="stat-n num">{reviewed.length ? blundersPerGame.toFixed(1) : '-'}</span>
-              <span className="stat-l">{t('cermin.blunders')}</span>
-            </div>
-            <div className="stat">
-              <span className="stat-n num">{reviewed.length ? Math.round(accuracy) : '-'}</span>
-              <span className="stat-l">{t('review.accuracy')}</span>
-            </div>
-            <div className="stat">
-              <span className="stat-n num">{puzzlesDone ? puzzleRating : '-'}</span>
-              <span className="stat-l">{t('cermin.puzzleRating')}</span>
-            </div>
-          </div>
+          <Progress />
           <p className="note num">
             {here.n > 0 && `${t('cermin.record', here)} · `}
             {chesscom.n > 0 && `${t('cermin.recordCc', chesscom)} · `}

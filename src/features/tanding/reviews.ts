@@ -1,6 +1,8 @@
 import { Chess } from 'chess.js';
 import { create } from 'zustand';
 import { getEngine } from '../../chess/engine';
+import { moveAccuracy } from '../../chess/eval';
+import { phaseOf } from '../../chess/phase';
 import { reviewGame } from '../../chess/review';
 import type { Review } from '../../chess/review';
 import { checkBook } from '../../content/book';
@@ -36,12 +38,27 @@ export function cardsFrom(game: GameRecord, r: Review, repertoire = useStore.get
   return cards;
 }
 
+/** The player's accuracy and inaccurate moves in each phase of the game. */
+export function phasesOf(game: GameRecord, r: Review): NonNullable<GameRecord['phases']> {
+  const sums = { o: { n: 0, acc: 0, bad: 0 }, m: { n: 0, acc: 0, bad: 0 }, e: { n: 0, acc: 0, bad: 0 } };
+  for (const m of r.moves) {
+    if (m.color !== game.color) continue;
+    const p = sums[phaseOf(m.fenBefore, m.ply)];
+    p.n += 1;
+    p.acc += moveAccuracy(m.loss);
+    if (m.cls === 'inaccuracy' || m.cls === 'mistake' || m.cls === 'blunder') p.bad += 1;
+  }
+  for (const p of Object.values(sums)) p.acc = p.n ? Math.round(p.acc / p.n) : 0;
+  return sums;
+}
+
 function store(game: GameRecord, r: Review) {
   const s = useStore.getState();
   s.attachReview(game.id, {
     accuracy: Math.round(r.accuracy[game.color]),
     blunders: r.counts[game.color].blunder,
     mistakes: r.counts[game.color].mistake,
+    phases: phasesOf(game, r),
   });
   s.addLuka(cardsFrom(game, r));
 }
@@ -105,7 +122,7 @@ export const useBatch = create<Batch>((set, get) => ({
       for (const id of queue) {
         if (stopRequested) break;
         const game = useStore.getState().games.find((g) => g.id === id);
-        if (!game || game.accuracy !== undefined) {
+        if (!game || game.phases !== undefined) {
           set((b) => ({ done: b.done + 1 }));
           continue;
         }
@@ -132,4 +149,5 @@ export const useBatch = create<Batch>((set, get) => ({
 }));
 
 /** Games that have not been reviewed yet, newest first. */
-export const unreviewed = (games: GameRecord[]) => games.filter((g) => g.accuracy === undefined && g.plies > 1);
+/** Games without a complete review (reviews from before phases were stored count as incomplete). */
+export const unreviewed = (games: GameRecord[]) => games.filter((g) => g.phases === undefined && g.plies > 1);

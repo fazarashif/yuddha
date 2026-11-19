@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { Motif } from '../chess/review';
 import type { Repertoire } from '../content/book';
 import type { RepertoireSlot } from '../content/openings';
+import type { Phase } from '../chess/phase';
 import type { Lang } from '../content/types';
 import type { PieceSet } from '../pieces/PieceArt';
 
@@ -36,6 +37,8 @@ export interface GameRecord {
   opponent?: { name: string; rating: number };
   myRating?: number;
   timeClass?: string;
+  /** Per phase of the game: the player's moves, their average accuracy, and the inaccurate ones. */
+  phases?: Record<Phase, { n: number; acc: number; bad: number }>;
 }
 
 /** How many games are kept, newest first. */
@@ -53,6 +56,19 @@ export interface LukaCard {
   interval: number;
   reps: number;
   lapses: number;
+}
+
+/** One day's ratings, for the progress charts. */
+export interface RatingPoint {
+  day: number;
+  play: number;
+  puzzle: number;
+}
+
+/** Today's ratings replace any earlier entry for today; the log keeps the last 400 days. */
+export function logRatings(log: RatingPoint[], play: number, puzzle: number, day = dayNumber()): RatingPoint[] {
+  const rest = log.filter((p) => p.day !== day);
+  return [...rest, { day, play, puzzle }].sort((a, b) => a.day - b.day).slice(-400);
 }
 
 export const dayNumber = (d = new Date()) => Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000);
@@ -81,6 +97,8 @@ export interface State {
   chesscomUser: string;
   /** Opening lesson ids chosen as the player's repertoire. */
   repertoire: Repertoire;
+  /** The play and puzzle ratings at the end of each day they changed, oldest first. */
+  ratingLog: RatingPoint[];
   /** When the saved data last changed on this device; used to settle sync conflicts. */
   touched: number;
 
@@ -90,7 +108,7 @@ export interface State {
   markDaily: (step: DailyStep) => void;
   addXp: (n: number) => void;
   recordGame: (game: GameRecord, newRating: number | null) => void;
-  attachReview: (id: string, patch: Pick<GameRecord, 'accuracy' | 'blunders' | 'mistakes'>) => void;
+  attachReview: (id: string, patch: Pick<GameRecord, 'accuracy' | 'blunders' | 'mistakes' | 'phases'>) => void;
   importGames: (username: string, games: GameRecord[]) => void;
   addLuka: (cards: Omit<LukaCard, 'due' | 'interval' | 'reps' | 'lapses'>[]) => void;
   gradeLuka: (id: string, correct: boolean) => void;
@@ -122,6 +140,7 @@ export const DATA_KEYS = [
   'luka',
   'chesscomUser',
   'repertoire',
+  'ratingLog',
 ] as const satisfies readonly (keyof State)[];
 export type DataKey = (typeof DATA_KEYS)[number];
 export type SaveData = Pick<State, DataKey | 'touched'>;
@@ -148,6 +167,7 @@ const initial = {
   luka: [] as LukaCard[],
   chesscomUser: '',
   repertoire: { w: null, e4: null, d4: null } as Repertoire,
+  ratingLog: [] as RatingPoint[],
   touched: 0,
 };
 
@@ -197,6 +217,7 @@ export const useStore = create<State>()(
         set((s) => ({
           games: [game, ...s.games].slice(0, MAX_GAMES),
           playRating: newRating ?? s.playRating,
+          ratingLog: newRating === null ? s.ratingLog : logRatings(s.ratingLog, newRating, s.puzzleRating),
           beaten: game.result === 'win' ? { ...s.beaten, [game.botId]: (s.beaten[game.botId] ?? 0) + 1 } : s.beaten,
           xp: s.xp + (game.result === 'win' ? 30 : game.result === 'draw' ? 15 : 8),
         })),
@@ -236,8 +257,10 @@ export const useStore = create<State>()(
             const cur = themeStats[t] ?? { seen: 0, solved: 0 };
             themeStats[t] = { seen: cur.seen + 1, solved: cur.solved + (solved ? 1 : 0) };
           }
+          const puzzleRating = Math.max(400, Math.round(s.puzzleRating + k * ((solved ? 1 : 0) - expected)));
           return {
-            puzzleRating: Math.max(400, Math.round(s.puzzleRating + k * ((solved ? 1 : 0) - expected))),
+            puzzleRating,
+            ratingLog: logRatings(s.ratingLog, s.playRating, puzzleRating),
             puzzlesDone: s.puzzlesDone + 1,
             puzzleSeen: [...s.puzzleSeen, id].slice(-4000),
             themeStats,

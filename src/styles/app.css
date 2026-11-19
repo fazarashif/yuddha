@@ -365,3 +365,28 @@ input[type='range'] { width: 100%; accent-color: var(--gold); height: 28px; }
 .btn-small { min-height: 38px; padding: 6px 12px; font-size: 0.86rem; gap: 6px; }
 .hbar-link { cursor: pointer; }
 .hbar-link:active { opacity: 0.7; }
+
+/* Progress tiles and skill map ---------------------------------------------- */
+.ptiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (min-width: 720px) { .ptiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.ptile { display: flex; flex-direction: column; gap: 2px; padding: 12px 12px 8px; border-radius: var(--r-md); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.ptile-label { font-size: 0.78rem; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ptile-value { font-size: 1.6rem; font-weight: 800; line-height: 1.1; }
+.ptile-delta { display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; color: var(--text-dim); }
+.ptile-up > svg { color: var(--good); }
+.ptile-down > svg { color: var(--bara); }
+.spark { position: relative; margin-top: 4px; }
+.spark svg { display: block; width: 100%; height: 30px; overflow: visible; touch-action: pan-y; }
+.spark-empty { height: 30px; border-bottom: 1px dashed var(--line-strong); }
+.spark-line { fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.spark-cross { stroke: var(--line-strong); stroke-width: 1; }
+.spark-dot { position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 2px var(--surface); pointer-events: none; }
+.spark-read { display: block; font-size: 0.7rem; color: var(--text-dim); min-height: 1em; margin-top: 2px; }
+.meters { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.meter-row { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; }
+.meter-name { font-weight: 600; }
+.meter-figure { font-weight: 800; }
+.meter-track { grid-column: 1 / -1; height: 8px; border-radius: 4px; background: var(--surface-3); overflow: hidden; }
+.meter-track > span { display: block; height: 100%; border-radius: 4px; background: var(--gold); }
+.meter-low .meter-track > span { background: var(--bara); }
+.meter-note { grid-column: 1 / -1; }

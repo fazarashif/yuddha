@@ -15,7 +15,9 @@ import { PIECE_VALUE, kingSquare, legalDests, parseUci, uciOf } from '../../ches
 import { Avatar } from '../../components/Avatar';
 import { Board } from '../../components/Board';
 import { Bubble, Sheet, TopBar } from '../../components/ui';
+import { botLines } from '../../content/botBooks';
 import { botById } from '../../content/characters';
+import { pickReply } from '../lakon/drill';
 import type { L } from '../../content/types';
 import { useL, useT } from '../../i18n';
 import { PieceArt } from '../../pieces/PieceArt';
@@ -69,6 +71,25 @@ export function Game({ botId }: { botId: string }) {
     // The colour is fixed for the lifetime of this screen.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // The challenger's opening book: its own favourites, or the other side of the player's repertoire.
+  const rehearse = query.get('r') === '1';
+  const book = useMemo(
+    () => (bot ? botLines(bot.id, playerColor === 'w' ? 'b' : 'w', rehearse ? 'repertoire' : 'own', useStore.getState().repertoire) : []),
+    // Fixed for the lifetime of this game.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  /** The book move for the challenger in the current position, if the game is still in book. */
+  const fromBook = (choice: BotChoice | null): BotChoice | null => {
+    const san = pickReply(book, chess.current.history(), Math.random);
+    if (!san || !choice) return choice;
+    try {
+      return { ...choice, move: uciOf(new Chess(chess.current.fen()).move(san)) };
+    } catch {
+      return choice;
+    }
+  };
 
   const pieceSet = useStore((s) => s.settings.pieceSet);
   const playRating = useStore((s) => s.playRating);
@@ -149,6 +170,7 @@ export function Game({ botId }: { botId: string }) {
       let choice = ready ?? null;
       try {
         choice ??= await chooseBotMove(getEngine(), chess.current.fen(), bot.brain);
+        choice = fromBook(choice);
       } catch {
         setEngineError(true);
         return;
@@ -197,7 +219,8 @@ export function Game({ botId }: { botId: string }) {
     // One search serves both the blunder check and the reply.
     let choice: BotChoice | null;
     try {
-      choice = await chooseBotMove(getEngine(), c.fen(), bot.brain);
+      // The search still runs in book: guided mode needs its evaluation for the blunder check.
+      choice = fromBook(await chooseBotMove(getEngine(), c.fen(), bot.brain));
     } catch {
       setEngineError(true);
       return;
@@ -277,7 +300,7 @@ export function Game({ botId }: { botId: string }) {
 
   return (
     <div className="play">
-      <TopBar back="/tanding" title={guided ? t('game.guided') : t('game.pure')} />
+      <TopBar back="/tanding" title={`${guided ? t('game.guided') : t('game.pure')}${rehearse ? ` · ${t('select.book.rep')}` : ''}`} />
       <div className="play-body">
         <div className="play-side play-opponent">
           <Avatar spec={bot.face} size={46} mood={outcome?.result === 'win' ? 'surprised' : outcome?.result === 'loss' ? 'happy' : 'neutral'} label={bot.name} />

@@ -77,3 +77,32 @@ describe('book check', () => {
     expect(r.followed).toBe(9);
   });
 });
+
+describe('challenger books', () => {
+  it('every signature line is legal and every challenger is known', async () => {
+    const { SIGNATURE } = await import('./botBooks');
+    const { BOTS } = await import('./characters');
+    expect(Object.keys(SIGNATURE).sort()).toEqual(BOTS.map((b) => b.id).sort());
+    for (const [id, book] of Object.entries(SIGNATURE)) {
+      for (const line of [...(book.w ?? []), ...(book.b ?? [])]) {
+        const c = new Chess();
+        for (const san of line.split(' ')) expect(() => c.move(san), `${id}: ${san} in ${line}`).not.toThrow();
+      }
+    }
+  });
+
+  it('in repertoire mode the challenger takes the other side of the player\'s choice', async () => {
+    const { botLines } = await import('./botBooks');
+    // The player is White with the London: the challenger, Black, answers 1.d4.
+    const asBlack = botLines('cantrik-lugu', 'b', 'repertoire', { ...NONE, w: 'p-london' });
+    expect(new Set(asBlack.map((l) => l[0]))).toEqual(new Set(['d4']));
+    // The player is Black with the Caro-Kann only: the challenger opens 1.e4 and goes into it.
+    const asWhite = botLines('cantrik-lugu', 'w', 'repertoire', { ...NONE, e4: 'p-caro' });
+    expect(asWhite.every((l) => l[0] === 'e4' && l[1] === 'c6')).toBe(true);
+    // Without a repertoire, the whole library for that side.
+    const all = botLines('cantrik-lugu', 'w', 'repertoire', NONE);
+    expect(new Set(all.map((l) => l[0]))).toEqual(new Set(['e4', 'd4']));
+    expect(all.length).toBeGreaterThan(10);
+    expect(botLines('buta-cilik', 'w', 'own', NONE)).toEqual([]);
+  });
+});

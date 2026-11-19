@@ -49,7 +49,7 @@ export function mergeSaves(local: SaveData, incoming: unknown): SaveData {
     themeStats[name] = !theirs || mine.seen >= theirs.seen ? mine : theirs;
   }
 
-  const games = unionBy<GameRecord>(local.games, remote.games, (g) => g.id, (x, y) => (y.accuracy !== undefined && x.accuracy === undefined ? y : x))
+  const games = unionBy<GameRecord>(local.games, remote.games, (g) => g.id, (x, y) => ((y.phases && !x.phases) || (y.accuracy !== undefined && x.accuracy === undefined) ? y : x))
     .sort((x, y) => y.at - x.at)
     .slice(0, MAX_GAMES);
 
@@ -69,6 +69,10 @@ export function mergeSaves(local: SaveData, incoming: unknown): SaveData {
     playRating: lead.playRating,
     puzzleRating: lead.puzzleRating,
     chesscomUser: lead.chesscomUser || local.chesscomUser || remote.chesscomUser,
+    // One entry per day from both devices; on the same day the leading copy wins.
+    ratingLog: [...new Map([...(remote.ratingLog ?? []), ...(local.ratingLog ?? []), ...(lead.ratingLog ?? [])].map((p) => [p.day, p] as const)).values()]
+      .sort((a, b) => a.day - b.day)
+      .slice(-400),
     // Saves from before the repertoire existed have none.
     repertoire: lead.repertoire ?? local.repertoire ?? remote.repertoire ?? { w: null, e4: null, d4: null },
     xp: Math.max(local.xp, remote.xp),

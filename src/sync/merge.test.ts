@@ -22,6 +22,7 @@ const base = (over: Partial<SaveData> = {}): SaveData => ({
   luka: [],
   chesscomUser: '',
   repertoire: { w: null, e4: null, d4: null },
+  ratingLog: [],
   touched: 0,
   ...over,
 });

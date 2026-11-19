@@ -23,6 +23,7 @@ export function Select() {
   const [pick, setPick] = useState<Bot | null>(null);
   const [color, setColor] = useState<'w' | 'r' | 'b'>('w');
   const [guided, setGuided] = useState(true);
+  const [rehearse, setRehearse] = useState(false);
 
   return (
     <div className="screen">
@@ -83,8 +84,20 @@ export function Select() {
               </div>
               <p className="field-help">{guided ? t('select.guidedHelp') : t('select.pureHelp')}</p>
             </div>
+            <div className="field">
+              <span className="field-label">{t('select.book')}</span>
+              <div className="seg">
+                <button className={!rehearse ? 'seg-on' : ''} onClick={() => setRehearse(false)}>
+                  {t('select.book.own')}
+                </button>
+                <button className={rehearse ? 'seg-on' : ''} onClick={() => setRehearse(true)}>
+                  {t('select.book.rep')}
+                </button>
+              </div>
+              <p className="field-help">{rehearse ? t('select.bookHelp.rep') : t('select.bookHelp.own')}</p>
+            </div>
             <div className="sheet-actions">
-              <button className="btn btn-primary" onClick={() => go(`/tanding/${pick.id}?c=${color}&g=${guided ? 1 : 0}`)}>
+              <button className="btn btn-primary" onClick={() => go(`/tanding/${pick.id}?c=${color}&g=${guided ? 1 : 0}${rehearse ? '&r=1' : ''}`)}>
                 {t('select.start')}
               </button>
             </div>

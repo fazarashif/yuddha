@@ -34,6 +34,11 @@ Lisensi: [GPL-3.0](LICENSE).
   bisa dilatih per pola, dan puzzle harian di Laku diarahkan ke pola terlemah.
 - Pemanasan: latihan 60 detik mencari bidak gantung.
 - Laku Harian, streak, pangkat, dan Cermin (statistik dari partai sendiri).
+- Kemajuan dan peta skill di Cermin: rating Chess.com (atau rating tanding), rating puzzle,
+  blunder per partai, dan akurasi per minggu, plus skor empat area (taktik, pembukaan,
+  middlegame, endgame) dengan area terlemah ditandai.
+- Penantang memainkan pembukaan khasnya (termasuk jebakan), atau sisi lawan dari repertoarmu
+  dengan pilihan "Latih repertoarku".
 - Bahasa Indonesia dan Inggris. Efek suara dan musik latar dibuat langsung di perangkat.
 - Impor partai dari Chess.com lewat nama pengguna; partai impor langsung diulas otomatis di
   latar belakang, dan kesalahannya masuk Kitab Luka. Partai yang belum diulas bisa diulas
@@ -67,6 +72,9 @@ npm run build
 ```
 
 `npm install` menyalin mesin catur Stockfish (versi lite satu-thread) ke `public/engine`.
+
+`npm run calibrate -- <penantang> <lawan> <jumlah partai>` mengadu penantang dengan penantang
+lain atau dengan Stockfish yang dibatasi (`sf1320`, `sf1600`, ...), untuk mengukur kekuatannya.
 
 Data puzzle di `public/puzzles` dibuat oleh `scripts/build-puzzles.py` dari basis data
 puzzle Lichess; petunjuknya ada di bagian atas skrip itu.
