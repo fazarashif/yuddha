@@ -19,10 +19,12 @@ const uciOf = (m: { from: string; to: string; promotion?: string }) => `${m.from
  * Turns a line into move scenes. The learner plays their own moves, and the other side's next move
  * is shown on the board as the reply. Building it with chess.js means an illegal line fails loudly.
  */
-function walk(steps: Step[]): Scene[] {
+function walk(steps: Step[], from = ''): Scene[] {
   const c = new Chess();
   const scenes: Scene[] = [];
   let last: string | undefined;
+  // Moves already known from an earlier walk are played silently first.
+  for (const san of from.split(/\s+/).filter(Boolean)) last = uciOf(c.move(san));
   steps.forEach((step, i) => {
     if (typeof step === 'string') {
       last = uciOf(c.move(step));
@@ -579,6 +581,265 @@ const qgd: Lesson = {
   ],
 };
 
+/* Ruy Lopez ----------------------------------------------------------------------------------- */
+
+const ruyLopez: Lesson = {
+  id: 'p-ruy',
+  title: { id: 'Ruy Lopez', en: 'Ruy Lopez' },
+  blurb: { id: '1.e4 untuk Putih: tekanan panjang pada Kuda yang menjaga e5.', en: '1.e4 for White: long-term pressure on the knight that guards e5.' },
+  scenes: [
+    {
+      kind: 'say',
+      fen: after('e4 e5 Nf3 Nc6 Bb5'),
+      marks: { b5: 'good', c6: 'target', e5: 'target' },
+      text: {
+        id: 'Ruy Lopez, juga disebut Spanish Opening, dinamai pendeta Spanyol dari abad ke-16. Gajah b5 menyerang Kuda c6, satu-satunya penjaga Pion e5. Ancamannya belum langsung, tapi tekanan ini bertahan sampai jauh ke babak tengah.',
+        en: 'The Ruy Lopez, or Spanish Opening, named after a sixteenth-century Spanish priest. The b5 bishop attacks the c6 knight, the only guard of the e5 pawn. The threat is not immediate, but the pressure lasts deep into the middlegame.',
+      },
+    },
+    {
+      kind: 'say',
+      text: {
+        id: 'Kelebihan:\n• Tekanan jangka panjang pada e5 dan pusat Hitam.\n• Pembukaan 1.e4 e5 yang paling dihormati, dimainkan semua juara dunia.\n• Rencana babak tengahnya kaya, dan ada versi sederhana (Exchange Variation) kalau ingin cepat ke endgame.',
+        en: 'Strengths:\n• Long-term pressure on e5 and Black\'s centre.\n• The most respected 1.e4 e5 opening, played by every world champion.\n• Rich middlegame plans, and a simple version (the Exchange Variation) if you want a quick endgame.',
+      },
+    },
+    {
+      kind: 'say',
+      text: {
+        id: 'Kekurangan:\n• Teorinya paling banyak di antara pembukaan 1.e4 e5.\n• Permainannya lambat dan penuh manuver; butuh kesabaran.\n• Hitam punya pertahanan kokoh seperti Berlin Defense, yang membuat tekanan Putih sulit terasa.',
+        en: 'Weaknesses:\n• The most theory of any 1.e4 e5 opening.\n• Slow, manoeuvring play that needs patience.\n• Black has solid defences such as the Berlin Defense that blunt White\'s pressure.',
+      },
+    },
+    ...walk([
+      ['e4', { id: 'Rebut pusat.', en: 'Take the centre.' }, { id: 'e4 membuka jalan untuk Gajah dan Menteri.', en: 'e4 opens lines for the bishop and the queen.' }],
+      'e5',
+      ['Nf3', { id: 'Serang Pion e5 sambil mengembangkan.', en: 'Attack the e5 pawn while developing.' }, { id: 'Kuda f3 menyerang e5.', en: 'The f3 knight attacks e5.' }],
+      'Nc6',
+      ['Bb5', { id: 'Inilah Ruy Lopez: serang penjaga e5.', en: 'This is the Ruy Lopez: attack the guard of e5.' }, { id: 'Gajah b5 menekan Kuda c6. Kalau Kuda itu hilang, e5 kehilangan penjaganya.', en: 'The b5 bishop presses on the c6 knight. If that knight disappears, e5 loses its guard.' }],
+      'a6',
+      ['Ba4', { id: 'Gajahmu diusir. Pertahankan tekanannya, jangan tukar dulu.', en: 'Your bishop is chased. Keep the pressure, do not trade yet.' }, { id: 'Di a4 Gajah tetap menekan Kuda c6, dan nanti bisa mundur lagi ke b3.', en: 'On a4 the bishop keeps pressing on the c6 knight, and can drop back to b3 later.' }],
+      'Nf6',
+      ['O-O', { id: 'Pion e4 diserang. Tidak perlu dijaga: rokade dulu.', en: 'The e4 pawn is attacked. No need to guard it: castle first.' }, { id: 'Kalau Hitam memakan e4, Re1 akan merebutnya kembali. Raja aman dulu.', en: 'If Black takes on e4, Re1 will win it back. King safety first.' }],
+      'Be7',
+      ['Re1', { id: 'Jaga e4 dengan Benteng.', en: 'Guard e4 with the rook.' }, { id: 'Benteng e1 menjaga e4 dan menyiapkan c3 lalu d4.', en: 'The e1 rook guards e4 and prepares c3 and then d4.' }],
+      'b5',
+      ['Bb3', { id: 'Gajahmu diusir lagi. Mundur ke garis serong yang membidik f7.', en: 'Your bishop is chased again. Drop back to the diagonal aiming at f7.' }, { id: 'Di b3 Gajah aman dan tetap membidik f7.', en: 'On b3 the bishop is safe and still aims at f7.' }],
+      'd6',
+      ['c3', { id: 'Siapkan d4, dan beri Gajah petak mundur di c2.', en: 'Prepare d4, and give the bishop a retreat on c2.' }, { id: 'c3 menyiapkan d4 dan membuka c2 untuk Gajah.', en: 'c3 prepares d4 and frees c2 for the bishop.' }],
+      'O-O',
+      ['h3', { id: 'Sebelum d4, satu langkah profilaksis yang kau kenal dari Babak 4.', en: 'Before d4, one prophylactic move you know from chapter 4.' }, { id: 'h3 mencegah Gajah hitam ke g4. Inilah Closed Ruy Lopez. Rencananya: d4, Kuda b1 ke d2, f1, lalu g3, dan tekanan perlahan di sisi Raja.', en: 'h3 keeps the black bishop off g4. This is the Closed Ruy Lopez. The plan: d4, the b1 knight to d2, f1 and g3, and slow pressure on the kingside.' }],
+    ]),
+    {
+      kind: 'quiz',
+      fen: after('e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6'),
+      marks: { e5: 'target', f3: 'good' },
+      text: { id: 'Exchange Variation: Putih menukar Gajah dengan Kuda di c6. Sekarang e5 tanpa penjaga. Bolehkah Kuda f3 langsung memakannya?', en: 'The Exchange Variation: White trades bishop for knight on c6. Now e5 has no guard. May the f3 knight take it at once?' },
+      options: [
+        { id: 'Boleh, Pion gratis', en: 'Yes, a free pawn' },
+        { id: 'Jangan: Menteri hitam ke d4 menyerang Kuda e5 dan Pion e4 sekaligus', en: 'No: the black queen goes to d4 and hits the e5 knight and the e4 pawn at once' },
+      ],
+      correct: 1,
+      explain: { id: 'Setelah 5.Nxe5? Qd4, Hitam merebut kembali Pionnya dan bidaknya lebih aktif. Di Exchange Variation, rokade dulu, baru ancaman pada e5 jadi nyata.', en: 'After 5.Nxe5? Qd4 Black wins the pawn back with more active pieces. In the Exchange Variation, castle first; only then is the threat to e5 real.' },
+    },
+    {
+      kind: 'move',
+      fen: after('e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 d4 b5 Bb3 Nxd4 Nxd4 exd4'),
+      last: 'e5d4',
+      accept: ['c2c3', 'a2a4', 'b3d5', 'e1g1'],
+      hint: 'c2c3',
+      marks: { b3: 'danger' },
+      text: { id: 'Hitam baru saja memakan di d4. Menterimu bisa memakan balik, tapi hati-hati: ini jebakan tertua di Ruy Lopez, Noah\'s Ark. Cari langkah yang lebih aman.', en: 'Black has just taken on d4. Your queen could take back, but careful: this is the oldest trap in the Ruy Lopez, Noah\'s Ark. Find a safer move.' },
+      right: { id: 'Bagus. Kau merebut Pionnya kembali nanti dengan aman, tanpa memberi Hitam tempo.', en: 'Good. You will win the pawn back safely later, without giving Black time.' },
+      wrong: { id: 'Coba c3: menawarkan Pion untuk membuka garis, sambil menghindari jebakan.', en: 'Try c3: it offers a pawn to open lines while avoiding the trap.' },
+      punish: {
+        d1d4: { id: 'Noah\'s Ark! Setelah ...c5 Menterimu harus pergi, lalu ...c4 mengurung Gajah b3 di balik Pion a6, b5, dan c4. Gajahmu hilang.', en: 'Noah\'s Ark! After ...c5 your queen must move, then ...c4 traps the b3 bishop behind the a6, b5 and c4 pawns. The bishop is lost.' },
+      },
+    },
+    {
+      kind: 'move',
+      fen: after('e4 e5 Nf3 Nc6 Bb5 Nf6 O-O Ng4 h3 h5'),
+      last: 'h7h5',
+      accept: ['c2c3', 'd2d4', 'b5a4', 'd2d3'],
+      hint: 'c2c3',
+      marks: { g4: 'target', h5: 'danger' },
+      text: { id: 'Hitam membiarkan Kudanya di g4 dan memajukan Pion h. Ini Fishing Pole Trap, umpan di ujung kail. Jangan makan umpannya; mainkan langkah yang berguna.', en: 'Black leaves the knight on g4 and pushes the h pawn. This is the Fishing Pole Trap: bait on the end of a line. Do not take the bait; play a useful move.' },
+      right: { id: 'Tepat. Kuda g4 tetap tidak berguna di sana, dan Putih unggul nyaman.', en: 'Exactly. The g4 knight is still doing nothing there, and White is comfortably better.' },
+      wrong: { id: 'Langkah tenang seperti c3 atau d4 sudah cukup. Yang penting: jangan memakan di g4.', en: 'A quiet move like c3 or d4 is enough. The key is: do not take on g4.' },
+      punish: {
+        h3g4: { id: 'Itu umpannya! Setelah ...hxg4, garis h terbuka, Kuda f3 diserang, dan Menteri hitam masuk ke h4 dengan ancaman skakmat.', en: 'That is the bait! After ...hxg4 the h file opens, the f3 knight is attacked, and the black queen comes to h4 threatening mate.' },
+      },
+    },
+    {
+      kind: 'say',
+      text: {
+        id: 'Tips:\n• Melawan Berlin Defense (3...Nf6), mainkan 4.d3: tenang, tanpa teori Berlin endgame.\n• Melawan 3...Bc5, siapkan c3 lalu d4 untuk mengusir Gajah dan merebut pusat.\n• Kalau ingin posisi sederhana, Exchange Variation (4.Bxc6) memberi struktur Pion yang lebih baik untuk endgame.',
+        en: 'Tips:\n• Against the Berlin Defense (3...Nf6), play 4.d3: calm, without Berlin endgame theory.\n• Against 3...Bc5, prepare c3 and then d4 to chase the bishop and take the centre.\n• If you want simple positions, the Exchange Variation (4.Bxc6) gives you the better pawn structure for the endgame.',
+      },
+    },
+    {
+      kind: 'drill',
+      side: 'w',
+      text: { id: 'Latihan hafalan sebagai Putih. Hitam akan memilih jalur utama, Berlin, atau 3...Bc5. Setelah 3...a6, kau boleh memilih jalur utama atau Exchange Variation.', en: 'Memory drill as White. Black will choose the main line, the Berlin, or 3...Bc5. After 3...a6 you may choose the main line or the Exchange Variation.' },
+      lines: [
+        'e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7 Re1 b5 Bb3 d6 c3 O-O h3',
+        'e4 e5 Nf3 Nc6 Bb5 a6 Bxc6 dxc6 O-O f6 d4',
+        'e4 e5 Nf3 Nc6 Bb5 Nf6 d3 Bc5 c3 O-O O-O d6 Nbd2',
+        'e4 e5 Nf3 Nc6 Bb5 Bc5 c3 Nf6 O-O O-O d4 Bb6 Re1',
+      ],
+      right: { id: 'Tekanan Spanyol sudah di tanganmu. Sabar, dan biarkan Gajah b3 bekerja.', en: 'The Spanish pressure is in your hands. Be patient, and let the b3 bishop do its work.' },
+    },
+  ],
+};
+
+/* Sicilian Dragon ----------------------------------------------------------------------------- */
+
+const sicilian: Lesson = {
+  id: 'p-sicilian',
+  title: { id: 'Sicilian Dragon', en: 'Sicilian Dragon' },
+  blurb: { id: 'Jawaban tajam untuk 1.e4: fianchetto, garis c, dan serangan balik.', en: 'A sharp answer to 1.e4: a fianchetto, the c file, and counterattack.' },
+  scenes: [
+    {
+      kind: 'say',
+      fen: after('e4 c5'),
+      orient: 'b',
+      marks: { c5: 'good', d4: 'target' },
+      text: {
+        id: 'Sicilian Defense, 1...c5, jawaban paling populer untuk 1.e4 di tingkat tertinggi. Hitam tidak meniru Putih. Pion c ditukar dengan Pion d putih, sehingga Hitam mendapat garis c yang setengah terbuka dan dua Pion pusat melawan satu.',
+        en: 'The Sicilian Defense, 1...c5, the most popular answer to 1.e4 at the top level. Black does not copy White. The c pawn is traded for White\'s d pawn, so Black gets a half-open c file and two central pawns against one.',
+      },
+    },
+    {
+      kind: 'say',
+      fen: after('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6'),
+      orient: 'b',
+      marks: { g7: 'good', a1: 'target', d4: 'target' },
+      text: {
+        id: 'Kita memakai versi Dragon. Namanya dari bentuk Pion Hitam yang mirip naga. Gajah hitam akan duduk di g7 dan membidik sepanjang garis serong panjang sampai a1. Itu napas api sang naga.',
+        en: 'We use the Dragon version, named after Black\'s pawn shape, which looks like a dragon. The black bishop will sit on g7 and aim along the long diagonal all the way to a1. That is the dragon\'s fiery breath.',
+      },
+    },
+    {
+      kind: 'say',
+      text: {
+        id: 'Kelebihan:\n• Tidak simetris dan penuh pertarungan, jadi peluang menang Hitam besar.\n• Gajah g7 sangat kuat, dan garis c memberi serangan balik.\n• Rencananya jelas dan mudah dikenali: ...Rc8, ...Ne5, ...Nc4, dan kadang korban ...Rxc3.',
+        en: 'Strengths:\n• Asymmetrical and full of fight, so Black has real winning chances.\n• The g7 bishop is very strong, and the c file gives counterplay.\n• The plans are clear and easy to recognise: ...Rc8, ...Ne5, ...Nc4, and sometimes the ...Rxc3 sacrifice.',
+      },
+    },
+    {
+      kind: 'say',
+      text: {
+        id: 'Kekurangan:\n• Tajam: satu kesalahan bisa langsung kalah, terutama melawan Yugoslav Attack, saat Putih rokade panjang dan menyerbu dengan Pion h.\n• Putih punya banyak anti-Sicilian (Alapin, Smith-Morra, Grand Prix), jadi kau perlu jawaban untuk masing-masing.\n• Teorinya banyak di jalur utama.',
+        en: 'Weaknesses:\n• Sharp: one mistake can lose at once, especially against the Yugoslav Attack, where White castles long and storms with the h pawn.\n• White has many anti-Sicilians (the Alapin, the Smith-Morra, the Grand Prix), so you need an answer to each.\n• Lots of theory in the main line.',
+      },
+    },
+    ...walk([
+      'e4',
+      ['c5', { id: 'Jawab 1.e4 dengan Pion c.', en: 'Answer 1.e4 with the c pawn.' }, { id: 'c5 menguasai d4 dari samping, tanpa meniru Putih.', en: 'c5 controls d4 from the side, without copying White.' }],
+      'Nf3',
+      ['d6', { id: 'Siapkan Kuda ke f6 dan jaga petak e5.', en: 'Prepare the knight for f6 and cover e5.' }, { id: 'd6 menjaga e5 sehingga Pion e putih tidak bisa maju dengan mudah.', en: 'd6 covers e5 so the white e pawn cannot advance easily.' }],
+      'd4',
+      ['cxd4', { id: 'Putih membuka pusat. Tukar.', en: 'White opens the centre. Trade.' }, { id: 'Pion c ditukar dengan Pion d. Sekarang kau punya dua Pion pusat, d dan e, melawan satu.', en: 'The c pawn is traded for the d pawn. Now you have two central pawns, d and e, against one.' }],
+      'Nxd4',
+      ['Nf6', { id: 'Kembangkan Kuda sambil menyerang e4.', en: 'Develop the knight while attacking e4.' }, { id: 'Kuda f6 menyerang e4 dan memaksa Putih menjaganya.', en: 'The f6 knight attacks e4 and forces White to guard it.' }],
+      'Nc3',
+      ['g6', { id: 'Inilah langkah Dragon: siapkan tempat untuk Gajah.', en: 'This is the Dragon move: make room for the bishop.' }, { id: 'Gajah f8 akan masuk ke g7. Ini fianchetto.', en: 'The f8 bishop will go to g7. This is a fianchetto.' }],
+      'Be3',
+      ['Bg7', { id: 'Tempatkan Gajah di garis serong panjang.', en: 'Put the bishop on the long diagonal.' }, { id: 'Begitu Kuda f6 berpindah, Gajah g7 membidik d4 dan terus sampai b2 dan a1.', en: 'As soon as the f6 knight moves, the g7 bishop aims at d4 and on to b2 and a1.' }],
+      'f3',
+      ['O-O', { id: 'Amankan Rajamu.', en: 'Make your king safe.' }, { id: 'Raja aman di balik Pion f, g, h dan Gajah g7.', en: 'The king is safe behind the f, g and h pawns and the g7 bishop.' }],
+      'Qd2',
+      ['Nc6', { id: 'Kembangkan Kuda yang lain dan tekan d4.', en: 'Develop the other knight and press on d4.' }, { id: 'Kuda c6 menekan Kuda d4, dan Gajah g7 akan ikut begitu Kuda f6 pindah.', en: 'The c6 knight presses on the d4 knight, and the g7 bishop joins in once the f6 knight moves.' }],
+      'Bc4',
+      ['Bd7', { id: 'Kembangkan Gajah terakhir, dan hubungkan Benteng.', en: 'Develop the last bishop and connect the rooks.' }, { id: 'Gajah d7 memberi ruang bagi Benteng a8 untuk pindah ke c8.', en: 'The d7 bishop clears the way for the a8 rook to go to c8.' }],
+      'O-O-O',
+      ['Rc8', { id: 'Putih rokade panjang. Raja putih di sisi c: bawa Benteng ke garis c yang setengah terbuka.', en: 'White has castled long. The white king is on the c side: bring a rook to the half-open c file.' }, { id: 'Begitu Kuda c6 berpindah, Benteng c8 membidik c3 dan Raja putih di baliknya.', en: 'Once the c6 knight moves, the c8 rook aims at c3 and the white king behind it.' }],
+      'Bb3',
+      ['Ne5', { id: 'Kuda menuju c4, petak emas di depan Raja putih.', en: 'The knight heads for c4, the golden square in front of the white king.' }, { id: 'Dari e5, Kuda akan melompat ke c4 untuk menukar Gajah b3 atau menyerang Menteri d2. Inilah Yugoslav Attack: Putih menyerbu dengan h4 dan h5, kau menyerang di garis c. Yang lebih cepat menang.', en: 'From e5 the knight will jump to c4 to trade the b3 bishop or hit the d2 queen. This is the Yugoslav Attack: White storms with h4 and h5, you attack down the c file. The faster side wins.' }],
+    ]),
+    {
+      kind: 'quiz',
+      text: { id: 'Di Dragon, Hitam sering memberikan Benteng c8 untuk Kuda c3 (...Rxc3). Mengapa?', en: 'In the Dragon, Black often gives the c8 rook for the c3 knight (...Rxc3). Why?' },
+      options: [
+        { id: 'Untuk menyederhanakan posisi', en: 'To simplify the position' },
+        { id: 'Merusak Pion di depan Raja putih, melepaskan tekanan dari e4, dan membebaskan Gajah g7', en: 'To wreck the pawns in front of the white king, release the pressure on e4, and free the g7 bishop' },
+      ],
+      correct: 1,
+      explain: { id: 'Inilah exchange sacrifice yang kau pelajari di Seni Berkorban. Setelah bxc3, Raja putih terbuka dan Gajah g7 menatapnya tanpa penghalang.', en: 'This is the exchange sacrifice from The Art of Sacrifice. After bxc3 the white king is exposed and the g7 bishop stares at it with nothing in the way.' },
+    },
+    ...walk(
+      [
+        'c3',
+        ['Nf6', { id: 'Anti-Sicilian pertama: Alapin, 2.c3. Putih ingin d4 dengan dukungan Pion. Serang e4 lebih dulu.', en: 'The first anti-Sicilian: the Alapin, 2.c3. White wants d4 with pawn support. Hit e4 first.' }, { id: 'Kuda f6 menyerang e4. c3 merebut petak Kuda c3, jadi Putih tidak bisa menjaganya dengan Kuda.', en: 'The f6 knight attacks e4. c3 has taken the knight\'s c3 square, so White cannot guard it with the knight.' }],
+        'e5',
+        ['Nd5', { id: 'Kudamu diusir. Lompat ke pusat.', en: 'Your knight is chased. Jump to the centre.' }, { id: 'Kuda d5 berdiri kuat di pusat dan menekan c3 dan e3.', en: 'The d5 knight stands strong in the centre, pressing on c3 and e3.' }],
+        'd4',
+        ['cxd4', { id: 'Tukar di d4.', en: 'Trade on d4.' }, { id: 'Pusat Putih mulai berkurang.', en: 'White\'s centre starts to shrink.' }],
+        'Nf3',
+        ['Nc6', { id: 'Kembangkan Kuda dan tekan d4.', en: 'Develop the knight and press on d4.' }, { id: 'Kuda c6 menekan d4 dan e5.', en: 'The c6 knight presses on d4 and e5.' }],
+        'cxd4',
+        ['d6', { id: 'Serang Pion e5 yang maju terlalu jauh.', en: 'Attack the over-advanced e5 pawn.' }, { id: 'd6 menantang e5. Posisinya seimbang dan bidakmu aktif.', en: 'd6 challenges e5. The position is balanced and your pieces are active.' }],
+      ],
+      'e4 c5',
+    ),
+    {
+      kind: 'say',
+      fen: after('e4 c5 d4 cxd4 c3 dxc3 Nxc3 Nc6 Nf3 e6 Bc4 Qc7 O-O Nf6 Qe2 Ng4'),
+      orient: 'b',
+      last: 'f6g4',
+      marks: { g4: 'good', c7: 'good', h2: 'target' },
+      text: {
+        id: 'Anti-Sicilian kedua: Smith-Morra Gambit, 2.d4 cxd4 3.c3. Putih mengorbankan Pion untuk pengembangan cepat. Kalau kau menerimanya, ada jebakan cantik yang bisa kau pasang: Siberian Trap. Di sini Kuda g4 dan Menteri c7 sama-sama membidik h2.',
+        en: 'The second anti-Sicilian: the Smith-Morra Gambit, 2.d4 cxd4 3.c3. White gives a pawn for quick development. If you accept it, there is a beautiful trap you can set: the Siberian Trap. Here the g4 knight and the c7 queen both aim at h2.',
+      },
+    },
+    {
+      kind: 'move',
+      fen: after('e4 c5 d4 cxd4 c3 dxc3 Nxc3 Nc6 Nf3 e6 Bc4 Qc7 O-O Nf6 Qe2 Ng4 h3'),
+      orient: 'b',
+      last: 'h2h3',
+      accept: ['c6d4'],
+      hint: 'c6d4',
+      reply: 'f3d4',
+      text: { id: 'Putih mengusir Kudamu dengan h3. Jangan mundur! Serang Menteri putih dengan Kuda yang lain.', en: 'White chases your knight with h3. Do not retreat! Attack the white queen with your other knight.' },
+      right: { id: 'Menteri putih diserang. Kalau Kuda f3 memakan Kudamu, Kuda itu meninggalkan h2...', en: 'The white queen is attacked. If the f3 knight takes your knight, it leaves h2 behind...' },
+      wrong: { id: 'Kuda c6 ke d4, menyerang Menteri e2.', en: 'Knight from c6 to d4, hitting the e2 queen.' },
+    },
+    {
+      kind: 'move',
+      fen: after('e4 c5 d4 cxd4 c3 dxc3 Nxc3 Nc6 Nf3 e6 Bc4 Qc7 O-O Nf6 Qe2 Ng4 h3 Nd4 Nxd4'),
+      orient: 'b',
+      last: 'f3d4',
+      accept: ['c7h2'],
+      hint: 'c7h2',
+      mate: true,
+      text: { id: 'Kuda f3 sudah pergi. Tuntaskan.', en: 'The f3 knight is gone. Finish it.' },
+      right: { id: 'Skakmat. Kuda g4 menjaga h2, dan Raja putih terkurung. Itulah Siberian Trap.', en: 'Checkmate. The g4 knight guards h2, and the white king is boxed in. That is the Siberian Trap.' },
+      wrong: { id: 'Menteri c7 ke h2.', en: 'Queen from c7 to h2.' },
+    },
+    {
+      kind: 'say',
+      text: {
+        id: 'Tips:\n• Melawan Grand Prix (2.Nc3 lalu f4), pakai susunan Dragon yang sama: ...Nc6, ...g6, ...Bg7, ...d6 atau ...e6.\n• Kalau tidak ingin teori Smith-Morra, tolak gambitnya dengan 3...Nf6; posisinya mirip Alapin.\n• Melawan Yugoslav Attack, jangan biarkan Gajah g7 ditukar gratis oleh Bh6, dan serang secepat mungkin di garis c.',
+        en: 'Tips:\n• Against the Grand Prix (2.Nc3 and f4), use the same Dragon setup: ...Nc6, ...g6, ...Bg7, ...d6 or ...e6.\n• If you do not want Smith-Morra theory, decline the gambit with 3...Nf6; the position resembles the Alapin.\n• Against the Yugoslav Attack, do not let the g7 bishop be traded off for free by Bh6, and attack down the c file as fast as you can.',
+      },
+    },
+    {
+      kind: 'drill',
+      side: 'b',
+      text: { id: 'Latihan hafalan sebagai Hitam. Putih akan memilih Yugoslav Attack, jalur Be2, Alapin, Smith-Morra, atau Grand Prix.', en: 'Memory drill as Black. White will choose the Yugoslav Attack, the Be2 line, the Alapin, the Smith-Morra, or the Grand Prix.' },
+      lines: [
+        'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6 Be3 Bg7 f3 O-O Qd2 Nc6 Bc4 Bd7 O-O-O Rc8 Bb3 Ne5',
+        'e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6 Be2 Bg7 O-O O-O Nb3 Nc6',
+        'e4 c5 c3 Nf6 e5 Nd5 d4 cxd4 Nf3 Nc6 cxd4 d6',
+        'e4 c5 d4 cxd4 c3 dxc3 Nxc3 Nc6 Nf3 e6 Bc4 Qc7 O-O Nf6 Qe2 Ng4',
+        'e4 c5 Nc3 Nc6 f4 g6 Nf3 Bg7 Bc4 e6 f5 Nge7',
+      ],
+      right: { id: 'Sang naga siap. Lima jalan Putih, lima jawabanmu.', en: 'The dragon is ready. Five roads for White, five answers from you.' },
+    },
+  ],
+};
+
 /* Choosing a repertoire ----------------------------------------------------------------------- */
 
 const repertoire: Lesson = {
@@ -607,8 +868,8 @@ const repertoire: Lesson = {
     {
       kind: 'say',
       text: {
-        id: 'Saran di Pustaka ini:\n• Putih: Italian Game kalau suka posisi terbuka, London System kalau suka susunan tetap yang kokoh.\n• Hitam melawan 1.e4: 1...e5 kalau suka permainan terbuka, Caro-Kann kalau suka posisi aman.\n• Hitam melawan 1.d4: Queen\'s Gambit Declined.',
-        en: 'Suggestions in this library:\n• White: the Italian Game if you like open positions, the London System if you like a fixed, solid setup.\n• Black against 1.e4: 1...e5 if you like open play, the Caro-Kann if you like safe positions.\n• Black against 1.d4: the Queen\'s Gambit Declined.',
+        id: 'Saran di Pustaka ini:\n• Putih: Italian Game kalau suka posisi terbuka, Ruy Lopez kalau suka tekanan panjang dan manuver, London System kalau suka susunan tetap yang kokoh.\n• Hitam melawan 1.e4: 1...e5 kalau suka permainan terbuka, Caro-Kann kalau suka posisi aman, Sicilian Dragon kalau suka pertarungan tajam.\n• Hitam melawan 1.d4: Queen\'s Gambit Declined.',
+        en: 'Suggestions in this library:\n• White: the Italian Game if you like open positions, the Ruy Lopez if you like long pressure and manoeuvring, the London System if you like a fixed, solid setup.\n• Black against 1.e4: 1...e5 if you like open play, the Caro-Kann if you like safe positions, the Sicilian Dragon if you like a sharp fight.\n• Black against 1.d4: the Queen\'s Gambit Declined.',
       },
     },
     {
@@ -631,20 +892,22 @@ const repertoire: Lesson = {
   ],
 };
 
-export const OPENINGS: Lesson[] = [repertoire, italian, london, openGame, caroKann, qgd];
+export const OPENINGS: Lesson[] = [repertoire, italian, ruyLopez, london, openGame, caroKann, sicilian, qgd];
 
 export const OPENING_INFO: Record<string, OpeningInfo> = {
   'p-italian': { side: 'w', style: { id: 'Klasik, terbuka', en: 'Classical, open' } },
+  'p-ruy': { side: 'w', style: { id: 'Klasik, manuver', en: 'Classical, manoeuvring' } },
   'p-london': { side: 'w', style: { id: 'Kokoh, sistematis', en: 'Solid, systematic' } },
   'p-e5': { side: 'b', style: { id: 'Klasik, terbuka', en: 'Classical, open' } },
   'p-caro': { side: 'b', style: { id: 'Kokoh', en: 'Solid' } },
+  'p-sicilian': { side: 'b', style: { id: 'Tajam, serangan balik', en: 'Sharp, counterattacking' } },
   'p-qgd': { side: 'b', style: { id: 'Kokoh, klasik', en: 'Solid, classical' } },
 };
 
 /** How the library page groups the openings. */
 export const OPENING_GROUPS: { title: L; ids: string[] }[] = [
   { title: { id: 'Mulai di sini', en: 'Start here' }, ids: ['p-intro'] },
-  { title: { id: 'Untuk Putih', en: 'For White' }, ids: ['p-italian', 'p-london'] },
-  { title: { id: 'Untuk Hitam melawan 1.e4', en: 'For Black against 1.e4' }, ids: ['p-e5', 'p-caro'] },
+  { title: { id: 'Untuk Putih', en: 'For White' }, ids: ['p-italian', 'p-ruy', 'p-london'] },
+  { title: { id: 'Untuk Hitam melawan 1.e4', en: 'For Black against 1.e4' }, ids: ['p-e5', 'p-caro', 'p-sicilian'] },
   { title: { id: 'Untuk Hitam melawan 1.d4', en: 'For Black against 1.d4' }, ids: ['p-qgd'] },
 ];

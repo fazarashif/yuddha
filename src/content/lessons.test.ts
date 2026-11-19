@@ -269,6 +269,25 @@ describe('lesson content', () => {
     const listed = OPENING_GROUPS.flatMap((g) => g.ids).sort();
     expect(listed).toEqual(OPENINGS.map((o) => o.id).sort());
     for (const id of listed) if (id !== 'p-intro') expect(OPENING_INFO[id], id).toBeTruthy();
+    // Claims in the new lines: the knight on f6 blocks the g7 bishop, the knight on c6 blocks the c8 rook,
+    // the c7 queen and g4 knight both hit h2 in the Siberian Trap, and Qxd4 in Noah's Ark loses the bishop.
+    const fenOf = (moves: string) => {
+      const c = new Chess();
+      for (const san of moves.split(' ')) c.move(san);
+      return c;
+    };
+    const dragon = fenOf('e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6 Be3 Bg7 f3 O-O Qd2 Nc6 Bc4 Bd7 O-O-O Rc8');
+    expect(dragon.attackers('d4', 'b')).toEqual(['c6']);
+    expect(dragon.attackers('c3', 'b')).toEqual([]);
+    const siberian = fenOf('e4 c5 d4 cxd4 c3 dxc3 Nxc3 Nc6 Nf3 e6 Bc4 Qc7 O-O Nf6 Qe2 Ng4 h3');
+    expect(siberian.attackers('h2', 'b').sort()).toEqual(['c7', 'g4']);
+    const noah = fenOf('e4 e5 Nf3 Nc6 Bb5 a6 Ba4 d6 d4 b5 Bb3 Nxd4 Nxd4 exd4 Qxd4 c5 Qd5 Be6 Qc6+ Bd7 Qd5 c4');
+    // The bishop is attacked, and every square it can reach is covered by a black pawn.
+    expect(noah.attackers('b3', 'b')).toEqual(['c4']);
+    for (const m of noah.moves({ square: 'b3', verbose: true })) {
+      const pawnGuards = noah.attackers(m.to, 'b').filter((sq) => noah.get(sq)?.type === 'p');
+      expect(pawnGuards.length, m.san).toBeGreaterThan(0);
+    }
     // The Caro-Kann trap: Nd6 really is mate.
     const caro = ALL_CONTENT.find((l) => l.id === 'p-caro')!.scenes.find((s) => s.kind === 'tap')!;
     const mate = new Chess(caro.fen!);

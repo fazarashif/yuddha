@@ -15,8 +15,9 @@ Lisensi: [GPL-3.0](LICENSE).
 - Lakon: dua puluh tiga pelajaran interaktif di lima babak (Babak 0 sampai 4), semuanya
   terbuka dan bisa diambil dalam urutan apa pun; yang berikutnya menurut urutan ditandai
   "disarankan". Empat pelajaran endgame ditutup dengan latihan melawan mesin.
-- Pustaka Pembukaan: Italian Game dan London System untuk Putih, 1...e5 dan Caro-Kann untuk
-  Hitam melawan 1.e4, Queen's Gambit Declined melawan 1.d4, plus pengantar memilih repertoar.
+- Pustaka Pembukaan: Italian Game, Ruy Lopez, dan London System untuk Putih; 1...e5,
+  Caro-Kann, dan Sicilian Dragon (dengan Alapin, Smith-Morra, Grand Prix) untuk Hitam melawan
+  1.e4; Queen's Gambit Declined melawan 1.d4; plus pengantar memilih repertoar.
   Tiap pembukaan berisi ide, kelebihan dan kekurangan, alur langkah utama dengan alasan tiap
   langkah, jebakan, tips, dan latihan hafalan dengan variasi acak.
 - Kiat Kilat: tujuh tips dan trik singkat yang berdiri sendiri (cek tiga detik, mat dua
@@ -37,7 +38,7 @@ Lisensi: [GPL-3.0](LICENSE).
 ## Yang belum ada
 
 - Impor partai dari Lichess.
-- Pembukaan lain (misalnya Sicilian, Ruy Lopez untuk Putih) dan latihan endgame yang lebih luas.
+- Pembukaan lain (misalnya King's Indian, French) dan latihan endgame yang lebih luas.
 - Kalibrasi kekuatan penantang terhadap rating sungguhan.
 
 ## Menjalankan
