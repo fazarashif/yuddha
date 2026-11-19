@@ -2,7 +2,8 @@ import { Chess } from 'chess.js';
 import { describe, expect, it } from 'vitest';
 import { hangingPieces, parseUci } from '../chess/vision';
 import { judgeMove } from './judge';
-import { ALL_CONTENT, ALL_LESSONS } from './lessons';
+import { ALL_CONTENT, ALL_LESSONS, OPENINGS } from './lessons';
+import { OPENING_GROUPS, OPENING_INFO } from './openings';
 
 const legal = (fen: string, uci: string) => {
   try {
@@ -251,6 +252,28 @@ describe('lesson content', () => {
     const knight = new Chess('4k3/8/5n2/8/8/8/8/4K3 w - - 0 1');
     expect(knight.attackers('h7', 'b')).toEqual(['f6']);
     expect(knight.attackers('h5', 'b')).toEqual(['f6']);
+  });
+
+  it('opening drills and the library agree with the lessons', () => {
+    for (const lesson of OPENINGS) {
+      for (const scene of lesson.scenes) {
+        if (scene.kind !== 'drill') continue;
+        for (const line of scene.lines) {
+          const c = new Chess();
+          for (const san of line.split(' ')) expect(() => c.move(san), `${lesson.id}: ${san} in ${line}`).not.toThrow();
+          // A drill line ends on a move by the learner, so the learner always has the last word.
+          expect(c.turn(), `${lesson.id}: ${line}`).not.toBe(scene.side);
+        }
+      }
+    }
+    const listed = OPENING_GROUPS.flatMap((g) => g.ids).sort();
+    expect(listed).toEqual(OPENINGS.map((o) => o.id).sort());
+    for (const id of listed) if (id !== 'p-intro') expect(OPENING_INFO[id], id).toBeTruthy();
+    // The Caro-Kann trap: Nd6 really is mate.
+    const caro = ALL_CONTENT.find((l) => l.id === 'p-caro')!.scenes.find((s) => s.kind === 'tap')!;
+    const mate = new Chess(caro.fen!);
+    mate.move('Nd6#');
+    expect(mate.isCheckmate()).toBe(true);
   });
 
   it('goal tasks reject careless moves', () => {

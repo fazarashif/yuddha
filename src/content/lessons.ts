@@ -4,6 +4,7 @@ import { garpu, paku, penjaga, pionAkhir, terbuka } from './babak2';
 import { aktif, bentengAkhir, seranganRaja, strukturPion } from './babak3';
 import { berkorban, profilaksis } from './babak4';
 import { KIAT } from './kiat';
+import { OPENINGS } from './openings';
 import type { L, Mood } from './types';
 
 export type SceneMark = 'good' | 'bad' | 'target' | 'danger';
@@ -20,6 +21,8 @@ interface SceneBase {
   fen?: string;
   orient?: 'w' | 'b';
   marks?: Record<string, SceneMark>;
+  /** The move that led to this position (UCI), highlighted on the board. */
+  last?: string;
 }
 
 export type Scene =
@@ -54,6 +57,14 @@ export type Scene =
       tooLong: L;
       /** Shown when the winning material is lost, or the pawn becomes too little to win with. */
       lost: L;
+    })
+  /** Play opening lines from memory: the learner's moves must follow the book, the other side picks a line. */
+  | (SceneBase & {
+      kind: 'drill';
+      side: 'w' | 'b';
+      /** Lines from the starting position, as space-separated SAN. */
+      lines: string[];
+      right: L;
     });
 
 export interface Lesson {
@@ -608,9 +619,9 @@ export const CHAPTERS: Chapter[] = [
 
 export const ALL_LESSONS: Lesson[] = CHAPTERS.flatMap((c) => c.lessons);
 /** Every lesson: the chapters, plus the stand-alone tips. */
-export const ALL_CONTENT: Lesson[] = [...ALL_LESSONS, ...KIAT];
+export const ALL_CONTENT: Lesson[] = [...ALL_LESSONS, ...KIAT, ...OPENINGS];
 export const lessonById = (id: string) => ALL_CONTENT.find((l) => l.id === id);
-export { KIAT };
+export { KIAT, OPENINGS };
 
 /** The next unfinished lesson at or after the chapter the player started in. */
 export function nextLesson(done: Record<string, unknown>, startChapter: number): Lesson | null {

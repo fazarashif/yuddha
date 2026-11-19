@@ -9,12 +9,13 @@ import type { Mark } from '../../components/Board';
 import { Bubble, Meter, TopBar } from '../../components/ui';
 import { KI_SABDA } from '../../content/characters';
 import { judgeMove } from '../../content/judge';
-import { KIAT, lessonById, nextLesson } from '../../content/lessons';
+import { KIAT, OPENINGS, lessonById, nextLesson } from '../../content/lessons';
 import type { Scene } from '../../content/lessons';
 import type { L } from '../../content/types';
 import { useL, useT } from '../../i18n';
 import type { PieceType } from '../../pieces/PieceArt';
 import { useStore } from '../../state/store';
+import { DrillScene } from './DrillScene';
 import { PlayScene } from './PlayScene';
 
 type Verdict = { ok: boolean; text: L } | null;
@@ -29,7 +30,7 @@ function SceneView({ scene, onSolved, onMistake }: { scene: Scene; onSolved: () 
   const [wrongSq, setWrongSq] = useState<string | null>(null);
   const [hinted, setHinted] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
-  const [lastMove, setLastMove] = useState<[string, string] | null>(null);
+  const [lastMove, setLastMove] = useState<[string, string] | null>(scene.last ? [scene.last.slice(0, 2), scene.last.slice(2, 4)] : null);
   const replyTimer = useRef<number | undefined>(undefined);
   const solved = verdict?.ok === true;
 
@@ -186,6 +187,8 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
   const [i, setI] = useState(0);
   const [mistakes, setMistakes] = useState(0);
   const finished = lesson ? i >= lesson.scenes.length : false;
+  // Opening lessons belong to the library page, everything else to the campaign map.
+  const home = OPENINGS.some((o) => o.id === lessonId) ? '/pembukaan' : '/lakon';
 
   useEffect(() => {
     if (finished && lesson) {
@@ -201,7 +204,7 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
 
   if (finished) {
     // A quick tip stands on its own, so it does not lead into the chapter lessons.
-    const isTip = KIAT.some((k) => k.id === lesson.id);
+    const isTip = KIAT.some((k) => k.id === lesson.id) || OPENINGS.some((k) => k.id === lesson.id);
     const upNext = isTip ? null : nextLesson({ ...lessons, [lesson.id]: true }, startChapter);
     return (
       <div className="screen lesson-end">
@@ -215,7 +218,7 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
               {t('lesson.nextLesson')}
             </button>
           )}
-          <button className={upNext ? 'btn btn-ghost' : 'btn btn-primary'} onClick={() => go('/lakon')}>
+          <button className={upNext ? 'btn btn-ghost' : 'btn btn-primary'} onClick={() => go(home)}>
             {t('lesson.backToMap')}
           </button>
         </div>
@@ -225,9 +228,11 @@ export function LessonPlayer({ lessonId }: { lessonId: string }) {
 
   return (
     <div className="lesson">
-      <TopBar close={() => go('/lakon')} title={<Meter value={i} max={lesson.scenes.length} />} />
+      <TopBar close={() => go(home)} title={<Meter value={i} max={lesson.scenes.length} />} />
       {lesson.scenes[i].kind === 'play' ? (
         <PlayScene key={`${lesson.id}-${i}`} scene={lesson.scenes[i]} onSolved={() => setI(i + 1)} onMistake={() => setMistakes((n) => n + 1)} />
+      ) : lesson.scenes[i].kind === 'drill' ? (
+        <DrillScene key={`${lesson.id}-${i}`} scene={lesson.scenes[i]} onSolved={() => setI(i + 1)} onMistake={() => setMistakes((n) => n + 1)} />
       ) : (
         <SceneView key={`${lesson.id}-${i}`} scene={lesson.scenes[i]} onSolved={() => setI(i + 1)} onMistake={() => setMistakes((n) => n + 1)} />
       )}

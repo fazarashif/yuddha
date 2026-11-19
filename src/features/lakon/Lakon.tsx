@@ -1,4 +1,4 @@
-import { Check, Lightning } from '@phosphor-icons/react';
+import { BookOpen, CaretRight, Check, Lightning } from '@phosphor-icons/react';
 import { useLocation } from 'wouter';
 import { TopBar } from '../../components/ui';
 import { CHAPTERS, KIAT, nextLesson } from '../../content/lessons';
@@ -18,6 +18,15 @@ export function Lakon() {
     <div className="screen">
       <TopBar title={<h1>{t('nav.lakon')}</h1>} />
       <p className="lede">{t('lakon.lede')}</p>
+
+      <button className="library-card" onClick={() => go('/pembukaan')}>
+        <BookOpen size={28} weight="duotone" />
+        <span className="library-text">
+          <span className="library-title">{t('lakon.openings')}</span>
+          <span className="library-sub">{t('lakon.openingsSub')}</span>
+        </span>
+        <CaretRight size={18} />
+      </button>
 
       <section className="kiat">
         <header className="kiat-head">

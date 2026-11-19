@@ -5,6 +5,7 @@ import { setVolumes, startMusic, unlockAudio } from './audio/sound';
 import { Cermin } from './features/cermin/Cermin';
 import { Impor } from './features/impor/Impor';
 import { Lakon } from './features/lakon/Lakon';
+import { Pembukaan } from './features/lakon/Pembukaan';
 import { LessonPlayer } from './features/lakon/LessonPlayer';
 import { Laku } from './features/laku/Laku';
 import { Latihan } from './features/latihan/Latihan';
@@ -40,7 +41,8 @@ function Nav() {
     <nav className="nav" aria-label="Utama">
       <span className="nav-mark">Yuddha</span>
       {TABS.map(({ to, key, icon: Icon }) => {
-        const on = to === '/' ? path === '/' : path.startsWith(to);
+        // The opening library lives under the Lakon tab.
+        const on = to === '/' ? path === '/' : path.startsWith(to) || (to === '/lakon' && path.startsWith('/pembukaan'));
         return (
           <Link key={to} href={to} className={`nav-tab${on ? ' nav-on' : ''}`} aria-current={on ? 'page' : undefined}>
             <Icon size={24} weight={on ? 'fill' : 'regular'} />
@@ -104,6 +106,7 @@ export function App() {
         <Switch>
           <Route path="/" component={Laku} />
           <Route path="/lakon" component={Lakon} />
+          <Route path="/pembukaan" component={Pembukaan} />
           <Route path="/lakon/:id">{(p) => <LessonPlayer key={p.id} lessonId={p.id} />}</Route>
           <Route path="/tanding" component={Select} />
           <Route path="/tanding/:id">{(p) => <Game key={p.id} botId={p.id} />}</Route>
